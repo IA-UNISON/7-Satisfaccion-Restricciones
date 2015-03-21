@@ -69,12 +69,23 @@ class Sudoku(csp.ProblemaCSP):
         csp.ProblemaCSP.__init__(self)
 
         self.dominio = {i: [val] if val > 0 else range(1, 10) for (i, val) in enumerate(pos_ini)}
+        #print self.dominio
 
         #=================================================================
         # 20 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         #=================================================================
-
-        raise NotImplementedError("¡Es parte de la tarea completar este método!")
+        #print self.dominio
+        self.vecinos = {i: [] for (i,_) in enumerate(pos_ini)}
+        for (i,_) in enumerate(pos_ini):
+            r1 = i/9
+            c1 = i - (r1*9)
+            for(j,_) in enumerate(pos_ini):
+                r2 = j/9
+                c2 = j - (r2*9)
+                if((r1,c1)!=(r2,c2) and ((r1/3 == r2/3 and c1/3 == c2/3) or (r2 == r1 and c1+9 > c2)or (r2 < r1+9 and c1==c2))):
+                    self.vecinos[i].append(j)
+        #print self.vecinos
+        #raise NotImplementedError("¡Es parte de la tarea completar este método!")
 
     def restriccion_binaria(self, (xi, vi), (xj, vj)):
         """
@@ -84,7 +95,11 @@ class Sudoku(csp.ProblemaCSP):
         #===========================================================================
         # 20 puntos: INSERTAR SU CÓDIGO AQUI (restricciones entre variables vecinas)
         #===========================================================================
-        raise NotImplementedError("¡Es parte de la tarea implementar este método!")
+        if(vi == vj):
+            return False
+        return True
+
+        #raise NotImplementedError("¡Es parte de la tarea implementar este método!")
 
     def imprime_sdk(self, asignacion):
         """
