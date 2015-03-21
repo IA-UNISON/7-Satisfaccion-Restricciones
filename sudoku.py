@@ -70,31 +70,37 @@ class Sudoku(csp.ProblemaCSP):
 
         self.dominio = {i: [val] if val > 0 else range(1, 10) for (i, val) in enumerate(pos_ini)}
 
-	self.vecinos = {}
-    	for i in range(len(pos_ini)):
-	    r = [pos_ini[e] for e in xrange((i/9)*9, (i/9)*9 + 9)]
-	    c = [pos_ini[e] for e in xrange(i%9, 73+i%9, 9)]
-         x = (pos_ini[i]%9)/3
-         y = (pos_ini[i]/9)/3
-         esquina = x*3 + 27*y
-         b = pos_ini[esquina:esquina + 3]
-         b += pos_ini[esquina + 9:esquina + 12]
-         b += pos_ini[esquina + 18:esquina + 21]
-         todos = set(b + r + c)
-         todos.remove(pos_ini[i])
-         todos.remove(0)
-         self.vecinos[i] = todos
+        self.vecinos = {}
+        for i in range(len(pos_ini)):
+            r = [pos_ini[e] for e in xrange((i/9)*9, (i/9)*9 + 9)]
+            c = [pos_ini[e] for e in xrange(i%9, 73+i%9, 9)]
+            x = (i%9)/3
+            y = (i/9)/3
+            esquina = x*3 + 27*y
+            b = pos_ini[esquina:esquina + 3]
+            b += pos_ini[esquina + 9:esquina + 12]
+            b += pos_ini[esquina + 18:esquina + 21]
+            todos = set(b + r + c)
+            todos.remove(pos_ini[i])
+            if 0 in todos: todos.remove(0)
+            self.vecinos[i] = list(todos)
+            
+
         #=================================================================
         # 20 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         #=================================================================
 
-        raise NotImplementedError("¡Es parte de la tarea completar este método!")
+#        raise NotImplementedError("¡Es parte de la tarea completar este método!")
 
     def restriccion_binaria(self, (xi, vi), (xj, vj)):
         """
         El mero chuqui. Por favor comenta tu código correctamente
 
         """
+        if (vi == vj) and ( (xi/9 == xj/9) or (xi%9 == xj%9)
+            or ((xi%9)/3 == (xj%9)/3 and (xi/9)/3 == (xj/9)/3)):
+                return False
+        else: return True
         #===========================================================================
         # 20 puntos: INSERTAR SU CÓDIGO AQUI (restricciones entre variables vecinas)
         #===========================================================================
@@ -138,6 +144,7 @@ if __name__ == "__main__":
     print "Solucionando un Sudoku dificil"
     sudoku1 = Sudoku(s1)
     sudoku1.imprime_sdk(s1)
+    print sudoku1.vecinos
     sol1 = csp.solucion_CSP_bin(sudoku1)
     sudoku1.imprime_sdk(sol1)
 
