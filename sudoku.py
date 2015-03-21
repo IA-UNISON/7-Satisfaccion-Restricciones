@@ -72,17 +72,18 @@ class Sudoku(csp.ProblemaCSP):
 
         self.vecinos = {}
         for i in range(len(pos_ini)):
-            r = [pos_ini[e] for e in xrange((i/9)*9, (i/9)*9 + 9)]
-            c = [pos_ini[e] for e in xrange(i%9, 73+i%9, 9)]
-            x = (i%9)/3
-            y = (i/9)/3
-            esquina = x*3 + 27*y
-            b = pos_ini[esquina:esquina + 3]
-            b += pos_ini[esquina + 9:esquina + 12]
-            b += pos_ini[esquina + 18:esquina + 21]
+            r = range((i/9)*9, (i/9 + 1)*9) # Obtenemos los indices del renglon
+            c = range(i%9, 73+i%9, 9) # Aqui los de la columna
+            x = (i%9)/3 # Posicion en x del indice i
+            y = (i/9)/3 # Posicion en y del indice i
+            esquina = x*3 + 27*y # La posicion de la esquina del bloque donde
+            # se encuentra el indice i
+            b = range(esquina, esquina + 3) # En las tres lineas siguientes
+            # los indices del bloque entero
+            b += range(esquina + 9, esquina + 12)
+            b += range(esquina + 18, esquina + 21)
             todos = set(b + r + c)
-            todos.remove(pos_ini[i])
-            if 0 in todos: todos.remove(0)
+            todos.remove(i)
             self.vecinos[i] = list(todos)
             
 
@@ -140,14 +141,13 @@ if __name__ == "__main__":
           0, 0, 2, 6, 0, 9, 5, 0, 0,
           8, 0, 0, 2, 0, 3, 0, 0, 9,
           0, 0, 5, 0, 1, 0, 3, 0, 0]
-
+    
     print "Solucionando un Sudoku dificil"
     sudoku1 = Sudoku(s1)
     sudoku1.imprime_sdk(s1)
-    print sudoku1.vecinos
     sol1 = csp.solucion_CSP_bin(sudoku1)
     sudoku1.imprime_sdk(sol1)
-
+    
 
     s2 = [4, 0, 0, 0, 0, 0, 8, 0, 5,
           0, 3, 0, 0, 0, 0, 0, 0, 0,
