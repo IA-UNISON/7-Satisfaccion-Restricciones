@@ -16,7 +16,8 @@ En este modulo no es necesario modificar nada.
 """
 
 __author__ = 'juliowaissman'
-
+from random import choice
+from itertools import combinations
 
 class ProblemaCSP:
     """
@@ -196,8 +197,18 @@ def restaura(problemaCSP, reduccion):
         problemaCSP.dominio[variable] += reduccion[variable]
 
 
+def num_conflictos2(problema, asig):    
+    
+    conflictos = 0
+    var = []
+    for (a, b) in combinations(asig.keys(), 2):
+        if not problema.restriccion_binaria((a, asig[a]), (b, asig[b])):
+            conflictos += 1
+            var.append(a)
 
-def min_conflictos(problemaCSP):
+    return conflictos, var
+
+def min_conflictos(problemaCSP, max_it=1000):
     """
     Algoritmo de mínimos conflictos
 
@@ -205,6 +216,14 @@ def min_conflictos(problemaCSP):
 
     @return: Un diccionario con la asignación correspondiente.
     """ 
+    asig = {i: choice(problemaCSP.dominio[i]) for i in problemaCSP.dominio.keys()}
+    conf, lista_conf = num_conflictos2(problemaCSP, asig)
+    for i in range(max_it):
+        if conf == 0:
+            return asig
+    var_conf = random.choice(lista_conf)
+
+    
     #=================================================================
     # 20 puntos: INSERTAR SU CÓDIGO AQUI (minimos conflictos)
     #=================================================================

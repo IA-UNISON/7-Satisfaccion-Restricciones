@@ -70,17 +70,38 @@ class Sudoku(csp.ProblemaCSP):
 
         self.dominio = {i: [val] if val > 0 else range(1, 10) for (i, val) in enumerate(pos_ini)}
 
+        self.vecinos = {}
+        for i in range(len(pos_ini)):
+            r = range((i/9)*9, (i/9 + 1)*9) # Obtenemos los indices del renglon
+            c = range(i%9, 73+i%9, 9) # Aqui los de la columna
+            x = (i%9)/3 # Posicion en x del indice i
+            y = (i/9)/3 # Posicion en y del indice i
+            esquina = x*3 + 27*y # La posicion de la esquina del bloque donde
+            # se encuentra el indice i
+            b = range(esquina, esquina + 3) # En las tres lineas siguientes
+            # los indices del bloque entero
+            b += range(esquina + 9, esquina + 12)
+            b += range(esquina + 18, esquina + 21)
+            todos = set(b + r + c)
+            todos.remove(i)
+            self.vecinos[i] = list(todos)
+            
+
         #=================================================================
         # 20 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         #=================================================================
 
-        raise NotImplementedError("¡Es parte de la tarea completar este método!")
+#        raise NotImplementedError("¡Es parte de la tarea completar este método!")
 
     def restriccion_binaria(self, (xi, vi), (xj, vj)):
         """
         El mero chuqui. Por favor comenta tu código correctamente
 
         """
+        if (vi == vj) and ( (xi/9 == xj/9) or (xi%9 == xj%9)
+            or ((xi%9)/3 == (xj%9)/3 and (xi/9)/3 == (xj/9)/3)):
+                return False
+        else: return True
         #===========================================================================
         # 20 puntos: INSERTAR SU CÓDIGO AQUI (restricciones entre variables vecinas)
         #===========================================================================
@@ -120,13 +141,13 @@ if __name__ == "__main__":
           0, 0, 2, 6, 0, 9, 5, 0, 0,
           8, 0, 0, 2, 0, 3, 0, 0, 9,
           0, 0, 5, 0, 1, 0, 3, 0, 0]
-
+    
     print "Solucionando un Sudoku dificil"
     sudoku1 = Sudoku(s1)
     sudoku1.imprime_sdk(s1)
     sol1 = csp.solucion_CSP_bin(sudoku1)
     sudoku1.imprime_sdk(sol1)
-
+    
 
     s2 = [4, 0, 0, 0, 0, 0, 8, 0, 5,
           0, 3, 0, 0, 0, 0, 0, 0, 0,
