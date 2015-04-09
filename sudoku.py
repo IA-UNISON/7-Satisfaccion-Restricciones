@@ -74,7 +74,32 @@ class Sudoku(csp.ProblemaCSP):
         # 20 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         #=================================================================
 
-        raise NotImplementedError("¡Es parte de la tarea completar este método!")
+        """
+        Los vecinos sera un diccionario que por cada indice de pos_ini le correspondera una lista de columnas,renglones
+        y bloques.
+
+        """
+
+        self.vecinos = {}
+
+        for i in xrange(len(pos_ini)):
+
+            columna = i % 9
+            renglon = i // 9
+            listacolumna = range(columna, 81, 9)
+            listarenglon = range(9 * renglon, 9 * (renglon + 1))
+
+            x = columna // 3
+            y = renglon // 3
+            temp = (3 * x) + (27 * y)
+            listabloque = range(temp, temp + 3)
+            listabloque += range(temp + 9, temp + 12)
+            listabloque += range(temp + 18, temp + 21)
+
+            self.vecinos[i] = list(sorted(set(listacolumna + listarenglon + listabloque)))
+            self.vecinos[i].remove(i)
+
+        #raise NotImplementedError("¡Es parte de la tarea completar este método!")
 
     def restriccion_binaria(self, (xi, vi), (xj, vj)):
         """
@@ -84,7 +109,25 @@ class Sudoku(csp.ProblemaCSP):
         #===========================================================================
         # 20 puntos: INSERTAR SU CÓDIGO AQUI (restricciones entre variables vecinas)
         #===========================================================================
-        raise NotImplementedError("¡Es parte de la tarea implementar este método!")
+
+        """
+        xi y xj son posiciones, ademas vi y vj son valores en el dominio de las variables.
+
+        La restriccion binaria es si vi == vj y las posiciones pertenecen a la misma columna regresamos falso
+
+        o si vi == vj y las posiciones pertenecen al mismo renglon regresamos falso
+
+        o si vi == vj y las posiciones pertenecen al mismo grupo como se menciono arriba en la definicion de la tarea regresamos falso
+
+        otro caso se regresa verdadero.
+
+        """
+
+        if (vi == vj) and ((xi % 9 == xj % 9) or (xi // 9 == xj // 9) or ((((xi % 9) // 3) == ((xj % 9) // 3)) and (((xi // 9) // 3) == ((xj // 9) // 3)))):
+            return False
+        return True
+
+        #raise NotImplementedError("¡Es parte de la tarea implementar este método!")
 
     def imprime_sdk(self, asignacion):
         """
@@ -109,6 +152,7 @@ if __name__ == "__main__":
     # Una forma de verificar si el código que escribiste es correcto
     # es verificando que la solución sea satisfactoria para estos dos
     # sudokus. (20 puntos)
+    # La solucion  es satisfactoria para el s1 y el s2. ;)
     #===========================================================================
 
     s1 = [0, 0, 3, 0, 2, 0, 6, 0, 0,

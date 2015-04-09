@@ -11,7 +11,7 @@ __author__ = 'juliowaissman'
 
 
 import csp
-
+import time
 
 class Nreinas(csp.ProblemaCSP):
     """
@@ -79,22 +79,63 @@ def prueba_reinas(n, metodo):
 
 if __name__ == "__main__":
 
+    """
     # Utilizando consistencia
+    print 'Utilizando consistencia'
+    tiempo_inicial = time.time()
     prueba_reinas(4, csp.solucion_CSP_bin)
     prueba_reinas(8, csp.solucion_CSP_bin)
     prueba_reinas(16, csp.solucion_CSP_bin)
     prueba_reinas(50, csp.solucion_CSP_bin)
     prueba_reinas(101, csp.solucion_CSP_bin)
-
+    tiempo_final = time.time()
+    print "Tiempo de ejecución en segundos: ", tiempo_final - tiempo_inicial
+    """
 
     # Utilizando minimos conflictos
     #=============================================================================
-    # 20 puntos: Probar y comentar los resultados del métdo de mínios conflictos
+    # 20 puntos: Probar y comentar los resultados del método de mínios conflictos
     #=============================================================================
+    """
+    DIFERENCIAS ENCONTRADAS
 
-    #prueba_reinas(4, csp.min_conflictos)
-    #prueba_reinas(8, csp.min_conflictos)
-    #prueba_reinas(16, csp.min_conflictos)
-    #prueba_reinas(51, csp.min_conflictos)
-    #prueba_reinas(101, csp.min_conflictos)
-    #prueba_reinas(1000, csp.min_conflictos)
+    - Utilizando consistencia -
+
+    4 reinas - 0 backtrackings
+    8 reinas - 1 backtrakings
+    16 reinas - 31 backtrakings
+    50 reinas - 1 backtrakings
+    101 reinas - 6 backtrakings
+    tiempo total de probar todos los experimentos
+    36.97 segundos (redondeados)
+
+    - Utilizando minimos conflictos -
+    Considere el numero de iteraciones en el que arroja la solucion como backtrakings.
+
+    4 reinas - 13 backtrakings
+    8 reinas -
+    16 reinas -
+    50 reinas -
+    101 reinas -
+
+    Empece a correr el algoritmo a las 3:40, me fui por un taquito de cancer y a comer un sandwich a las 4:05
+    aun no me arrojaba una solucion para las 8 reinas asi que lo detuve.
+
+    - Conclusion -
+    Pues se nota que el algoritmo de minimos conflictos no vale madre es mejor utilizar consistencia
+    esperaba que en el problema de nreinas encontrara rapido una solucion ya que hay algunas posibles
+    ahora para el sudoku quien sabe cuanto tardaria ..
+
+    """
+
+    #"""
+    print 'Utilizando minimos conflictos'
+    tiempo_inicial = time.time()
+    prueba_reinas(4, csp.min_conflictos)
+    prueba_reinas(8, csp.min_conflictos)
+    prueba_reinas(16, csp.min_conflictos)
+    prueba_reinas(50, csp.min_conflictos)
+    prueba_reinas(101, csp.min_conflictos)
+    tiempo_final = time.time()
+    print "Tiempo de ejecución en segundos: ", tiempo_final - tiempo_inicial
+    #"""
