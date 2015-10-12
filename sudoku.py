@@ -67,7 +67,28 @@ class Sudoku(csp.GrafoRestriccion):
         #=================================================================
         # 25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         #=================================================================
-
+        vecinos = {i: [] for (i,val) in enumerate(pos_ini)}#pos_ini es pisicion inicial
+        for (i,val) in enumerate(pos_ini):
+          ren = i/9#renglon en que nos posicionamos
+          col = i % 9#columna donde nos posicionamos
+          for (j,val2) in enumerate(pos_ini): #por cada posicion se evaluaran todas las posiciones de nuevo
+          #para ver si son venicos o no, se que no es lo mas eficionte pero si lo mejor que pude hacer
+            renE = j/9 #renglon a evaluar
+            colE = j % 9#columna a evaluar
+            if((ren,col)!=(renE,colE)):
+              if( ren==renE or col == colE):
+                vecinos[i].append(j)
+              aux1=j
+              aux2=j
+              for x in range(0,81):
+                if(x == aux1+10):
+                  aux1+=10
+                  #print aux1
+                #if(x == aux2-10):
+                  #aux2-=10
+                  #print aux2
+        print vecinos
+          
         if not vecinos:
             raise NotImplementedError("¡Es parte de la tarea completar este método!")
 
@@ -79,7 +100,10 @@ class Sudoku(csp.GrafoRestriccion):
         #===========================================================================
         # 25 puntos: INSERTAR SU CÓDIGO AQUI (restricciones entre variables vecinas)
         #===========================================================================
-        raise NotImplementedError("¡Es parte de la tarea implementar este método!")
+        if vi == vj:
+          return False
+        return True
+        #raise NotImplementedError("¡Es parte de la tarea implementar este método!")
 
     def imprime_sdk(self, asignacion):
         """
@@ -135,3 +159,14 @@ if __name__ == "__main__":
     sudoku2.imprime_sdk(s2)
     sol2 = csp.solucion_CSP_bin(sudoku2)
     sudoku2.imprime_sdk(sol2)
+"""
+0, 1,2, 3, 4, 5, 6, 7, 8,
+9,10,11,12,13,14,15,16,17,
+18,19,20,21,22,23,24,25,26,
+27,28,29,30,31,32,33,34,35,
+36,37,38,39,40,41,42,43,45,
+46,46,47,48,49,50,51,52,53,
+54,55,56,57,58,59,60,61,62,
+63,64,65,66,67,68,69,70,71,
+72,73,74,75,76,77,78,79,80
+"""
