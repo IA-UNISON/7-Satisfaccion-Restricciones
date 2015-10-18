@@ -67,9 +67,23 @@ class Sudoku(csp.GrafoRestriccion):
         #=================================================================
         # 25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         #=================================================================
+        self.vecinos = {i: [] for (i, val) in enumerate(pos_ini)}
 
-        if not vecinos:
-            raise NotImplementedError("¡Es parte de la tarea completar este método!")
+        for i in range(len(pos_ini)):
+            raw_input('ciclo')
+            for k in range(len(pos_ini)):
+                print "i:",i,"-k:",k
+                if i != k and i / 9 == k / 9:
+                    self.vecinos[i].append(k)
+                else:
+                    if i != k and i % 9 == k % 9:
+                        self.vecinos[i].append(k)
+                    else:
+                        if i != k and k not in self.vecinos[i] and i % 9 / 3 == k % 9 / 3 and i / 27 == k / 27:
+                            self.vecinos[i].append(k)
+        #if not vecinos:
+        #   raise NotImplementedError("¡Es parte de la tarea completar este método!")
+
 
     def restriccion_binaria(self, (xi, vi), (xj, vj)):
         """
@@ -79,7 +93,15 @@ class Sudoku(csp.GrafoRestriccion):
         #===========================================================================
         # 25 puntos: INSERTAR SU CÓDIGO AQUI (restricciones entre variables vecinas)
         #===========================================================================
-        raise NotImplementedError("¡Es parte de la tarea implementar este método!")
+
+        # Hacemos una comparacion entre los vecinos, pues el problema es que  
+	# estos no pueden ser iguales es decir el mismo numero de vecinos.
+
+	if vi != vj:
+            return True
+        return False
+
+        #raise NotImplementedError("¡Es parte de la tarea implementar este método!")
 
     def imprime_sdk(self, asignacion):
         """
