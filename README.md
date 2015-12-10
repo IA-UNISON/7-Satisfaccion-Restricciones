@@ -8,7 +8,7 @@ Objetivo
 
 En esta tarea se espera que los estudiantes desarrollen la habilidad para expresar un problema 
 de satisfacción de restricciones binarias de manera formal, y que los algoritmos básicos de
-satisfacción de restricciones puedan ustilizarse. De forma adicional, se espera que en esta tarea
+satisfacción de restricciones puedan utilizarse. De forma adicional, se espera que en esta tarea
 los estudiantes puedan desarrollar y probar un algoritmo de satisfacción de restricciones por búsqueda 
 local relativamente simple.
 
