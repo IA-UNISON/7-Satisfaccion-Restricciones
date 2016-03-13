@@ -34,8 +34,8 @@ class Nreinas(csp.GrafoRestriccion):
         """
         csp.GrafoRestriccion.__init__(self)
         for var in range(n):
-            self.dominio[var] = range(n)
-            self.vecinos[var] = [i for i in range(n) if i != var]
+            self.dominio[var] = set(range(n))
+            self.vecinos[var] = {i for i in range(n) if i != var}
 
     def restriccion(self, (xi, vi), (xj, vj)):
         """
