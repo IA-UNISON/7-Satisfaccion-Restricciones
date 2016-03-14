@@ -16,6 +16,7 @@ En este modulo no es necesario modificar nada.
 """
 
 import copy
+import random
 
 __author__ = 'juliowaissman'
 
@@ -88,20 +89,7 @@ def asignacion_grafo_restriccion(gr, ap=None, consist=1, dmax=None, traza=False)
 
         if dominio is not None:
             for variable in dominio:
-                for valor in dominio[variable]:
-                    gr.dominio[variable].remove(valor)
-
-            if traza:
-                for i in range(0,9): #row
-                    for j in range(0,3): #column/3
-                        r = ""
-                        for k in range(0, 9): #column
-                            for l in range(0,3): #num
-                                r += str(j*3+l+1) if j*3+l+1 in gr.dominio[i*9+k] else " "
-                            r += "|"
-                        print r
-                    print "---+---+---+---+---+---+---+---+---"
-                print "\n[",var,"] =",val,"\n"
+                gr.dominio[variable] -= dominio[variable]
 
             ap[var] = val
             
@@ -122,6 +110,7 @@ def selecciona_variable(gr, ap):
     return min([var for var in gr.dominio.keys() if var not in ap],
                key=lambda v:len(gr.dominio[v]))
     
+
 def ordena_valores(gr, ap, xi):
     def conflictos(vi):
         acc = 0
@@ -144,10 +133,10 @@ def consistencia(gr, ap, xi, vi, tipo):
     if tipo == 1:
         for xj in gr.vecinos[xi]:
             if xj not in ap:
-                dominio[xj] = []
+                dominio[xj] = set()
                 for vj in gr.dominio[xj]:
                     if not gr.restriccion((xi, vi), (xj, vj)):
-                        dominio[xj].append(vj)
+                        dominio[xj].add(vj)
                 if len(dominio[xj]) == len(gr.dominio[xj]):
                     return None
         return dominio
@@ -156,9 +145,7 @@ def consistencia(gr, ap, xi, vi, tipo):
         #   Implementar el algoritmo de AC3
         #   y probarlo con las n-reinas
         #================================================
-        worklist = ({(j, xi) for j in gr.vecinos[xi]} |
-                    {(j, xi) for j in gr.vecinos.keys() 
-                             if xi in gr.vecinos[j]})
+        worklist = {(j, xi) for j in gr.vecinos[xi]}
 
         
         dominio[xi] = gr.dominio[xi] - {vi}
@@ -182,21 +169,17 @@ def consistencia(gr, ap, xi, vi, tipo):
         while worklist:
             (i, j) = worklist.pop()
             if arc_reduce(i, j):
-                if not dominio[i]:
+                if dominio[i] and not gr.dominio[i] - dominio[i]:
                     return None
                 else:
-                    worklist|= ({(i, k) for k in gr.vecinos[i] 
-                                        if k != j } |
-                                {(i, k) for k in gr.vecinos.keys()
-                                        if i in gr.vecinos[k] 
-                                        and k != j })
+                    worklist|= {(i, k) for k in gr.vecinos[i] if k != j }
 
         return dominio
 
 
 
 
-def min_conflictos(gr, rep=100, maxit=100):
+def min_conflictos(gr, rep=1000, maxit=100):
     for _ in xrange(maxit):
         a = minimos_conflictos(gr, rep)
         if a is not None:
@@ -208,4 +191,30 @@ def minimos_conflictos(gr, rep=100):
     #   Implementar el algoritmo de minimos conflictos
     #   y probarlo con las n-reinas
     #================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+    def conflictos(a, xi, vi):
+        acc = []
+        for xj in gr.vecinos[xi]:
+            if not gr.restriccion((xi, vi), (xj, a[xj])):
+                acc.append(xj)
+        return acc
+
+    a = {i: random.choice(list(gr.dominio[i])) for i in gr.dominio}
+    b = [i for i in a.keys() if conflictos(a, i, a[i])]
+    for _ in xrange(rep):
+        #print "a:", a
+        if not b:
+            return a
+        i = b.pop()
+        #print "a[i]", a[i]
+        a[i] = min(gr.dominio[i], key=lambda x: len(conflictos(a, i, x)))
+        confl_i = conflictos(a, i, a[i])
+        if confl_i:
+            b.insert(0, i)
+            for j in confl_i:
+                if j not in b:
+                    b.append(j)
+        #print "a'[i]", a[i]
+        #print "b: ", b
+        #print "conflictos", i, ":", conflictos((i, a[i]))
+    return None
+
