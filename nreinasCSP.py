@@ -104,14 +104,16 @@ if __name__ == "__main__":
     prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
     prueba_reinas(101, csp.min_conflictos)
 
+    prueba_reinas(1000, csp.min_conflictos)
     # Utilizando consistencia
     #=============================================================================
     # 25 puntos: Probar y comentar los resultados del métdo de arco consistencia
     #=============================================================================
-
+    #Por alguna extraña razon, AC3 es mas lento que AC2
 
     # Utilizando minimos conflictos
     #=============================================================================
     # 25 puntos: Probar y comentar los resultados del métdo de mínios conflictos
     #=============================================================================
-    prueba_reinas(1000, csp.min_conflictos)
+    # Quiza tengo mal el numero de repeticiones, pero el tiempo varía demasiado
+    # siendo a veces mejor y otras peor que AC2 y AC3

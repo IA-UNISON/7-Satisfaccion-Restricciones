@@ -147,36 +147,35 @@ def consistencia(gr, ap, xi, vi, tipo):
         #================================================
         worklist = {(j, xi) for j in gr.vecinos[xi]}
 
-        
         dominio[xi] = gr.dominio[xi] - {vi}
-        def arc_reduce(x, y):
-            change = False
-            remove = set()
-            xdom = gr.dominio[x] - (dominio[x] if x in dominio else remove)
-            for vx in xdom:
-                hacer_machaca = False
-                ydom = gr.dominio[y] - (dominio[y] if y in dominio else set())
-                for vy in ydom:
-                    if gr.restriccion((x, vx), (y, vy)):
-                        hacer_machaca = True
-                        break
-                if not hacer_machaca:
-                    remove.add(vx)
-                    change = True
-            dominio[x] = dominio[x] | remove if x in dominio else remove
-            return change
 
         while worklist:
             (i, j) = worklist.pop()
-            if arc_reduce(i, j):
+            if arc_reduce(gr, dominio, i, j):
                 if dominio[i] and not gr.dominio[i] - dominio[i]:
                     return None
                 else:
-                    worklist|= {(i, k) for k in gr.vecinos[i] if k != j }
+                    worklist |= {(i, k) for k in gr.vecinos[i] if k != j }
 
         return dominio
 
-
+def arc_reduce(gr, dominio, x, y):
+    change = False
+    remove = set()
+    xdom = gr.dominio[x] - (dominio[x] if x in dominio else remove)
+    for vx in xdom:
+        hacer_machaca = False
+        ydom = gr.dominio[y] - (dominio[y] if y in dominio else set())
+        for vy in ydom:
+            if gr.restriccion((x, vx), (y, vy)):
+                hacer_machaca = True
+                break
+        if not hacer_machaca:
+            remove.add(vx)
+            change = True
+    if change:
+        dominio[x] = dominio[x] | remove if x in dominio else remove
+    return change
 
 
 def min_conflictos(gr, rep=1000, maxit=100):
@@ -191,23 +190,18 @@ def minimos_conflictos(gr, rep=100):
     #   Implementar el algoritmo de minimos conflictos
     #   y probarlo con las n-reinas
     #================================================
-    def conflictos(a, xi, vi):
-        acc = []
-        for xj in gr.vecinos[xi]:
-            if not gr.restriccion((xi, vi), (xj, a[xj])):
-                acc.append(xj)
-        return acc
+    
 
     a = {i: random.choice(list(gr.dominio[i])) for i in gr.dominio}
-    b = [i for i in a.keys() if conflictos(a, i, a[i])]
+    b = [i for i in a.keys() if conflictos(gr, a, i, a[i])]
     for _ in xrange(rep):
         #print "a:", a
         if not b:
             return a
         i = b.pop()
         #print "a[i]", a[i]
-        a[i] = min(gr.dominio[i], key=lambda x: len(conflictos(a, i, x)))
-        confl_i = conflictos(a, i, a[i])
+        a[i] = min(gr.dominio[i], key=lambda x: len(conflictos(gr, a, i, x)))
+        confl_i = conflictos(gr, a, i, a[i])
         if confl_i:
             b.insert(0, i)
             for j in confl_i:
@@ -218,3 +212,9 @@ def minimos_conflictos(gr, rep=100):
         #print "conflictos", i, ":", conflictos((i, a[i]))
     return None
 
+def conflictos(gr, a, xi, vi):
+        acc = []
+        for xj in gr.vecinos[xi]:
+            if not gr.restriccion((xi, vi), (xj, a[xj])):
+                acc.append(xj)
+        return acc
