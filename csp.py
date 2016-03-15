@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+import random
 """
 csp.py
 ------------
@@ -161,4 +163,42 @@ def minimos_conflictos(gr, rep=100):
     #   Implementar el algoritmo de minimos conflictos
     #   y probarlo con las n-reinas
     #================================================
+    #variables = gr.vecinos[0] + gr.vecinos[1][0:1]
+    asignacion = { var : var for var in gr.dominio[0] }
+    print asignacion
+    for i in xrange(rep):
+
+        #Iteramos sobre las variables en la asignacion
+        
+        for variable in asignacion:
+
+            #Definimos variables para determinar cuales son los valores con los menores conflictos
+
+            conflicto_menor = -1
+            dict_valores = {}
+
+            #Iteramos sobre todos los valores posibles en el dominio de la variable actual
+
+            for valor in gr.dominio[variable]:
+                conflictos = 0
+                #Verificamos las restricciones que tienen las variables con sus vecinos
+
+                for vecino in gr.vecinos[variable]:
+                    if not gr.restriccion((variable, valor), (vecino, asignacion[vecino])):
+                        conflictos+=1
+                #Actualizamos cual es el menor conflicto actual hasta ahora
+
+                if(conflicto_menor == -1 or conflictos < conflicto_menor):
+                    conflicto_menor = conflictos
+                #Metemos los conflictos generados por cada vecino en un diccionario
+
+                dict_valores[valor] =conflictos
+            #selecciones los valores minimos de la lista de conflictos
+
+            lista_valores = [y for y in dict_valores if dict_valores[y]==conflicto_menor]
+            #asignamos un valor al azar entre las opciones disponibles
+
+            asignacion[variable] = random.choice(lista_valores)
+
+    return asignacion
     raise NotImplementedError("Minimos conflictos  a implementar")

@@ -65,11 +65,14 @@ class Nreinas(csp.GrafoRestriccion):
             print linea
             print interlinea
 
-def prueba_reinas(n, metodo, tipo=1, traza=False):
+def prueba_reinas(n, metodo, tipo=-1, traza=False):
     print "\n" + '-' * 20 + ' Para ', n, ' reinas ' + '_' * 20
     grafo_restriccion = Nreinas(n)
-    asignacion = metodo(grafo_restriccion, ap={}, 
-                        consist=tipo, traza=traza)
+    if(tipo == -1):
+        asignacion = metodo(grafo_restriccion)
+    else:
+        asignacion = metodo(grafo_restriccion, ap={}, 
+                            consist=tipo, traza=traza)
     if n < 20:
         Nreinas.muestra_asignacion(asignacion)
     else:
@@ -81,11 +84,11 @@ def prueba_reinas(n, metodo, tipo=1, traza=False):
 if __name__ == "__main__":
 
     # Utilizando consistencia
-    prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    prueba_reinas(16, csp.asignacion_grafo_restriccion, tipo=1)
-    prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
+    #prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+    #prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+    #prueba_reinas(16, csp.asignacion_grafo_restriccion, tipo=1)
+    #prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
+    #prueba_reinas(10, csp.asignacion_grafo_restriccion, tipo=1)
 
     # Utilizando consistencia
     #=============================================================================
@@ -97,13 +100,12 @@ if __name__ == "__main__":
     # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
     # prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
 
-
     # Utilizando minimos conflictos
     #=============================================================================
     # 25 puntos: Probar y comentar los resultados del métdo de mínios conflictos
     #=============================================================================
-    #prueba_reinas(4, csp.min_conflictos)
-    #prueba_reinas(8, csp.min_conflictos)
+    prueba_reinas(4, csp.min_conflictos)
+    prueba_reinas(8, csp.min_conflictos)
     #prueba_reinas(16, csp.min_conflictos)
     #prueba_reinas(51, csp.min_conflictos)
     #prueba_reinas(101, csp.min_conflictos)
