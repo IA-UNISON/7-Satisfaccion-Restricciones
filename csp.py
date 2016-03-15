@@ -134,6 +134,15 @@ def consistencia(gr, ap, xi, vi, tipo):
                     return None
         return dominio
     if tipo == 2:
+        for xj in gr.vecinos[xi]:
+            if xj not in ap:
+                dominio[xj] = []
+                for vj in gr.dominio[xj]:
+                    if not gr.restriccion((xi, vi), (xj, vj)):
+                        dominio[xj].append(vj)
+                if len(dominio[xj]) == len(gr.dominio[xj]):
+                    return None
+        return dominio
         raise NotImplementedError("AC-3  a implementar")
         #================================================
         #   Implementar el algoritmo de AC3
