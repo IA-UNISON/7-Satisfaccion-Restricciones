@@ -62,14 +62,29 @@ class Sudoku(csp.GrafoRestriccion):
         csp.GrafoRestriccion.__init__(self)
 
         self.dominio = {i: [val] if val > 0 else range(1, 10) for (i, val) in enumerate(pos_ini)}
+        print self.dominio
 
-        vecinos = {}
+        vecinos = {i: [] for i in range(0,81)}
         #=================================================================
         # 25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         #=================================================================
+        for i in range(0,81):
 
-        if not vecinos:
-            raise NotImplementedError("¡Es parte de la tarea completar este método!")
+            x = i%9  #Columna
+            y = int(i/9)  #Fila
+
+            xG = 3*int(x/3) #Columna grupo
+            yG = 3*int(y/3) #Fila grupo
+
+            for j in range(0,9):
+                if j != x: vecinos[i].append(j+ 9*y)
+                if j != y: vecinos[i].append(y+ 9*j)
+
+            for j in range(0,81):
+                if (3*int((j%9)/3)) == xG and (3*int(int(j/3)/3)) == yG:
+                    if j !=i: vecinos[1].append(j)
+        print vecinos
+
 
     def restriccion_binaria(self, (xi, vi), (xj, vj)):
         """
@@ -79,7 +94,12 @@ class Sudoku(csp.GrafoRestriccion):
         #===========================================================================
         # 25 puntos: INSERTAR SU CÓDIGO AQUI (restricciones entre variables vecinas)
         #===========================================================================
-        raise NotImplementedError("¡Es parte de la tarea implementar este método!")
+        """
+        Como tenemos un par de vecinos el unico factor relevante es
+        """
+        if vi != vj or vi == 0:
+            return False
+        else: return True
 
     def imprime_sdk(self, asignacion):
         """
@@ -115,7 +135,7 @@ if __name__ == "__main__":
     print "Solucionando un Sudoku dificil"
     sudoku1 = Sudoku(s1)
     sudoku1.imprime_sdk(s1)
-    sol1 = csp.solucion_CSP_bin(sudoku1)
+    sol1 = csp.asignacion_grafo_restriccion(sudoku1, ap={},consist=1)
     sudoku1.imprime_sdk(sol1)
 
 
@@ -133,5 +153,5 @@ if __name__ == "__main__":
     print "Y otro tambien dificil"
     sudoku2 = Sudoku(s2)
     sudoku2.imprime_sdk(s2)
-    sol2 = csp.solucion_CSP_bin(sudoku2)
+    sol2 = csp.asignacion_grafo_restriccion(sudoku2, ap={},consist=tipo)
     sudoku2.imprime_sdk(sol2)

@@ -16,11 +16,11 @@ En este modulo no es necesario modificar nada.
 """
 
 __author__ = 'juliowaissman'
-
+import random
 
 class GrafoRestriccion(object):
     """
-    Clase abstracta para hacer un grafo de restricción 
+    Clase abstracta para hacer un grafo de restricción
 
     """
 
@@ -45,7 +45,7 @@ class GrafoRestriccion(object):
 
         @return: True si se cumple la restricción
 
-        """ 
+        """
         raise NotImplementedError("Método a implementar")
 
 def asignacion_grafo_restriccion(gr, ap={}, consist=1, dmax=None, traza=False) :
@@ -61,20 +61,20 @@ def asignacion_grafo_restriccion(gr, ap={}, consist=1, dmax=None, traza=False) :
     @param consist: Un valor 0, 1 o 2 para máximo grado de consistencia
     @param dmax: Máxima profundidad de recursión, solo por seguridad
     @param traza: Si True muestra el proceso de asignación
-    
+
     @return: Una asignación completa (diccionario con variable:valor)
              o None si la asignación no es posible.
 
     """
     if dmax == None:  #  Ajusta la máxima produndidad de búsqueda
-        dmax = len(gr.dominio) 
-    
+        dmax = len(gr.dominio)
+
     if traza:
         print (len(gr.dominio) - dmax) * '\t', ap
 
     if set(ap.keys()) == set(gr.dominio.keys()):  #  Asignación completa
         return ap.copy()
-    
+
     var = selecciona_variable(gr, ap)
 
     for val in ordena_valores(gr, ap, var):
@@ -86,7 +86,7 @@ def asignacion_grafo_restriccion(gr, ap={}, consist=1, dmax=None, traza=False) :
                 for valor in dominio[variable]:
                     gr.dominio[variable].remove(valor)
             ap[var] = val
-            
+
             apn = asignacion_grafo_restriccion(gr, ap, consist, dmax - 1, traza)
 
             if apn is not None:
@@ -94,7 +94,7 @@ def asignacion_grafo_restriccion(gr, ap={}, consist=1, dmax=None, traza=False) :
             else:
                 del ap[var]
                 for variable in dominio:
-                    gr.dominio[variable] += dominio[variable] 
+                    gr.dominio[variable] += dominio[variable]
     gr.backtracking += 1
     return None
 
@@ -103,7 +103,7 @@ def selecciona_variable(gr, ap):
         return max(gr.dominio.keys(), key=lambda v:gr.vecinos[v])
     return min([var for var in gr.dominio.keys() if var not in ap],
                key=lambda v:len(gr.dominio[v]))
-    
+
 def ordena_valores(gr, ap, xi):
     def conflictos(vi):
         acc = 0
@@ -134,11 +134,28 @@ def consistencia(gr, ap, xi, vi, tipo):
                     return None
         return dominio
     if tipo == 2:
-        raise NotImplementedError("AC-3  a implementar")
         #================================================
         #   Implementar el algoritmo de AC3
         #   y probarlo con las n-reinas
         #================================================
+        for xj in gr.vecinos[xi]:
+            if xj not in ap:
+                dominio[xj] = []
+                for vj in gr.dominio[xj]:
+                    if not gr.restriccion((xi, vi), (xj, vj)):
+                        dominio[xj].append(vj)
+                if len(dominio[xj]) == len(gr.dominio[xj]):
+                    return None
+                for vj in gr.vecinos[xj]:
+                    if vj not in ap:
+                        dominio[vj] = []
+                        for yj in gr.dominio[vj]:
+                            if not gr.restriccion((xj, vj),(vj, yj)) and not gr.restriccion((xi,vi),(vj,yj)):
+                                dominio[vj].append(yj)
+                            if len(dominio[vj]) == len(gr.dominio[vj]):
+                                return None
+
+        return dominio
 
 def min_conflictos(gr, rep=100, maxit=100):
     for _ in xrange(maxit):
@@ -152,4 +169,4 @@ def minimos_conflictos(gr, rep=100):
     #   Implementar el algoritmo de minimos conflictos
     #   y probarlo con las n-reinas
     #================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+    return None
