@@ -15,6 +15,9 @@ el de arco consistencia. Así como el algoritmo de min-conflics.
 En este modulo no es necesario modificar nada.
 """
 
+import copy
+import random
+
 __author__ = 'juliowaissman'
 
 
@@ -48,7 +51,7 @@ class GrafoRestriccion(object):
         """ 
         raise NotImplementedError("Método a implementar")
 
-def asignacion_grafo_restriccion(gr, ap={}, consist=1, dmax=None, traza=False) :
+def asignacion_grafo_restriccion(gr, ap=None, consist=1, dmax=None, traza=False) :
     """
     Asigación de una solución al grafo de restriccion si existe
     por búsqueda primero en profundidad.
@@ -66,6 +69,9 @@ def asignacion_grafo_restriccion(gr, ap={}, consist=1, dmax=None, traza=False) :
              o None si la asignación no es posible.
 
     """
+    if ap == None:
+        ap = {}
+
     if dmax == None:  #  Ajusta la máxima produndidad de búsqueda
         dmax = len(gr.dominio) 
     
@@ -78,13 +84,13 @@ def asignacion_grafo_restriccion(gr, ap={}, consist=1, dmax=None, traza=False) :
     var = selecciona_variable(gr, ap)
 
     for val in ordena_valores(gr, ap, var):
-
+        
         dominio = consistencia(gr, ap, var, val, consist)
 
         if dominio is not None:
             for variable in dominio:
-                for valor in dominio[variable]:
-                    gr.dominio[variable].remove(valor)
+                gr.dominio[variable] -= dominio[variable]
+
             ap[var] = val
             
             apn = asignacion_grafo_restriccion(gr, ap, consist, dmax - 1, traza)
@@ -94,7 +100,7 @@ def asignacion_grafo_restriccion(gr, ap={}, consist=1, dmax=None, traza=False) :
             else:
                 del ap[var]
                 for variable in dominio:
-                    gr.dominio[variable] += dominio[variable] 
+                    gr.dominio[variable] |= dominio[variable] 
     gr.backtracking += 1
     return None
 
@@ -104,11 +110,12 @@ def selecciona_variable(gr, ap):
     return min([var for var in gr.dominio.keys() if var not in ap],
                key=lambda v:len(gr.dominio[v]))
     
+
 def ordena_valores(gr, ap, xi):
     def conflictos(vi):
         acc = 0
         for xj in gr.vecinos[xi]:
-            if xi not in ap:
+            if xj not in ap:
                 for vj in gr.dominio[xj]:
                     if not gr.restriccion((xi, vi), (xj, vj)):
                         acc += 1
@@ -126,21 +133,52 @@ def consistencia(gr, ap, xi, vi, tipo):
     if tipo == 1:
         for xj in gr.vecinos[xi]:
             if xj not in ap:
-                dominio[xj] = []
+                dominio[xj] = set()
                 for vj in gr.dominio[xj]:
                     if not gr.restriccion((xi, vi), (xj, vj)):
-                        dominio[xj].append(vj)
+                        dominio[xj].add(vj)
                 if len(dominio[xj]) == len(gr.dominio[xj]):
                     return None
         return dominio
     if tipo == 2:
-        raise NotImplementedError("AC-3  a implementar")
         #================================================
         #   Implementar el algoritmo de AC3
         #   y probarlo con las n-reinas
         #================================================
+        worklist = {(j, xi) for j in gr.vecinos[xi]}
 
-def min_conflictos(gr, rep=100, maxit=100):
+        dominio[xi] = gr.dominio[xi] - {vi}
+
+        while worklist:
+            (i, j) = worklist.pop()
+            if arc_reduce(gr, dominio, i, j):
+                if dominio[i] and not gr.dominio[i] - dominio[i]:
+                    return None
+                else:
+                    worklist |= {(i, k) for k in gr.vecinos[i] if k != j }
+
+        return dominio
+
+def arc_reduce(gr, dominio, x, y):
+    change = False
+    remove = set()
+    xdom = gr.dominio[x] - (dominio[x] if x in dominio else remove)
+    for vx in xdom:
+        hacer_machaca = False
+        ydom = gr.dominio[y] - (dominio[y] if y in dominio else set())
+        for vy in ydom:
+            if gr.restriccion((x, vx), (y, vy)):
+                hacer_machaca = True
+                break
+        if not hacer_machaca:
+            remove.add(vx)
+            change = True
+    if change:
+        dominio[x] = dominio[x] | remove if x in dominio else remove
+    return change
+
+
+def min_conflictos(gr, rep=1000, maxit=100):
     for _ in xrange(maxit):
         a = minimos_conflictos(gr, rep)
         if a is not None:
@@ -152,4 +190,31 @@ def minimos_conflictos(gr, rep=100):
     #   Implementar el algoritmo de minimos conflictos
     #   y probarlo con las n-reinas
     #================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+    
+
+    a = {i: random.choice(list(gr.dominio[i])) for i in gr.dominio}
+    b = [i for i in a.keys() if conflictos(gr, a, i, a[i])]
+    for _ in xrange(rep):
+        #print "a:", a
+        if not b:
+            return a
+        i = b.pop()
+        #print "a[i]", a[i]
+        a[i] = min(gr.dominio[i], key=lambda x: len(conflictos(gr, a, i, x)))
+        confl_i = conflictos(gr, a, i, a[i])
+        if confl_i:
+            b.insert(0, i)
+            for j in confl_i:
+                if j not in b:
+                    b.append(j)
+        #print "a'[i]", a[i]
+        #print "b: ", b
+        #print "conflictos", i, ":", conflictos((i, a[i]))
+    return None
+
+def conflictos(gr, a, xi, vi):
+        acc = []
+        for xj in gr.vecinos[xi]:
+            if not gr.restriccion((xi, vi), (xj, a[xj])):
+                acc.append(xj)
+        return acc

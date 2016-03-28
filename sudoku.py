@@ -61,17 +61,36 @@ class Sudoku(csp.GrafoRestriccion):
         """
         csp.GrafoRestriccion.__init__(self)
 
-        self.dominio = {i: [val] if val > 0 else range(1, 10) for (i, val) in enumerate(pos_ini)}
+        self.dominio = {i: {val} if val > 0 else set(range(1, 10)) for (i, val) in enumerate(pos_ini)}
 
-        vecinos = {}
+        self.vecinos = {}
         #=================================================================
         # 25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         #=================================================================
 
-        if not vecinos:
+
+        #    0   1   2 |  3   4   5 |  6   7   8
+        #    9  10  11 | 12  13  14 | 15  16  17
+        #   18  19  20 | 21  22  23 | 24  25  26
+        #   -----------+------------+------------
+        #   27  28  29 | 30  31  32 | 33  34  35
+        #   36  37  38 | 39  40  41 | 42  43  44
+        #   45  46  47 | 48  49  50 | 51  52  53
+        #   -----------+------------+------------
+        #   54  55  56 | 57  58  59 | 60  61  62
+        #   63  64  65 | 66  67  68 | 69  70  71
+        #   72  73  74 | 75  76  77 | 78  79  80 
+
+        for k in self.dominio.keys():
+            self.vecinos[k] = ({k/9*9+i for i in range(0,9)} | 
+                         {(k%9)+9*i for i in range(0,9)} |
+                         {k/27*27 + 9*i + (k%9)/3*3 + j for i in range(0, 3) 
+                                        for j in range(0,3)}) - {k}
+
+        if not self.vecinos:
             raise NotImplementedError("¡Es parte de la tarea completar este método!")
 
-    def restriccion_binaria(self, (xi, vi), (xj, vj)):
+    def restriccion(self, (xi, vi), (xj, vj)):
         """
         El mero chuqui. Por favor comenta tu código correctamente
 
@@ -79,7 +98,7 @@ class Sudoku(csp.GrafoRestriccion):
         #===========================================================================
         # 25 puntos: INSERTAR SU CÓDIGO AQUI (restricciones entre variables vecinas)
         #===========================================================================
-        raise NotImplementedError("¡Es parte de la tarea implementar este método!")
+        return vi != vj
 
     def imprime_sdk(self, asignacion):
         """
@@ -87,6 +106,9 @@ class Sudoku(csp.GrafoRestriccion):
         para la revisión de la tarea. No modificarla por ningun motivo.
 
         """
+        if not asignacion:
+            print "No se encontró solución"
+            return
         s = [asignacion[i] for i in range(81)]
         c = ''
         for i in range(9):
@@ -115,7 +137,8 @@ if __name__ == "__main__":
     print "Solucionando un Sudoku dificil"
     sudoku1 = Sudoku(s1)
     sudoku1.imprime_sdk(s1)
-    sol1 = csp.solucion_CSP_bin(sudoku1)
+    # sol1 = csp.solucion_CSP_bin(sudoku1)
+    sol1 = csp.asignacion_grafo_restriccion(sudoku1, consist = 2)
     sudoku1.imprime_sdk(sol1)
 
 
@@ -133,5 +156,6 @@ if __name__ == "__main__":
     print "Y otro tambien dificil"
     sudoku2 = Sudoku(s2)
     sudoku2.imprime_sdk(s2)
-    sol2 = csp.solucion_CSP_bin(sudoku2)
+    #sol2 = csp.solucion_CSP_bin(sudoku2)
+    sol2 = csp.asignacion_grafo_restriccion(sudoku2, consist = 2)
     sudoku2.imprime_sdk(sol2)
