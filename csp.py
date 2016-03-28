@@ -139,6 +139,44 @@ def consistencia(gr, ap, xi, vi, tipo):
         #   Implementar el algoritmo de AC3
         #   y probarlo con las n-reinas
         #================================================
+        
+"""# Constraint Propagation with AC-3
+def AC3(csp, queue=None, removals=None):
+    if queue is None:
+        queue = [(Xi, Xk) for Xi in csp.vars for Xk in csp.neighbors[Xi]]
+    csp.support_pruning()
+    while queue:
+        (Xi, Xj) = queue.pop()
+        if revise(csp, Xi, Xj, removals):
+            if not csp.curr_domains[Xi]:
+                return False
+            for Xk in csp.neighbors[Xi]:
+                if Xk != Xi:
+                    queue.append((Xk, Xi))
+    return True
+    
+def revise(csp, Xi, Xj, removals):
+    "Return true if we remove a value."
+    revised = False
+    for x in csp.curr_domains[Xi][:]:
+        # If Xi=x conflicts with Xj=y for every possible y, eliminate Xi=x
+        if every(lambda y: not csp.constraints(Xi, x, Xj, y),
+                 csp.curr_domains[Xj]):
+            csp.prune(Xi, x, removals)
+            revised = True
+    return revised
+"""
+def revise(csp, Xi, Xj, removals):
+    "Return true if we remove a value."
+    revised = False
+    for x in csp.curr_domains[Xi][:]:
+        # If Xi=x conflicts with Xj=y for every possible y, eliminate Xi=x
+        if every(lambda y: not csp.constraints(Xi, x, Xj, y),
+                 csp.curr_domains[Xj]):
+            csp.prune(Xi, x, removals)
+            revised = True
+    return revised
+
 
 def min_conflictos(gr, rep=100, maxit=100):
     for _ in xrange(maxit):
@@ -152,4 +190,25 @@ def minimos_conflictos(gr, rep=100):
     #   Implementar el algoritmo de minimos conflictos
     #   y probarlo con las n-reinas
     #================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+
+    asignacion = {var: random.choice(gr.dominio[var]) for var in gr.dominio.keys()}
+
+    suma_conflictos = lambda xi, vi: sum([1 for xj in gr.vecinos[xi]
+                                          if not gr.restriccion_binaria((xi, vi), (xj, asignacion[xj]))])
+
+    for _ in range(rep):
+        gr.backtracking += 1
+        conflictos = {xi: suma_conflictos(xi, vi) for (xi, vi) in asignacion.iteritems()}
+
+        if sum(conflictos.values()) == 0:
+            return asignacion
+
+        xi = random.choice([var for var in conflictos if conflictos[var] > 0])
+        for vi in gr.dominio[xi]:
+            c_acc = suma_conflictos(xi, vi)
+            if c_acc < conflictos[xi] or (c_acc == conflictos[xi] and random.random() > 0.5):
+                asignacion[xi] = vi
+                conflictos[xi] = c_acc
+    return None
+
+    #raise NotImplementedError("Minimos conflictos  a implementar")
