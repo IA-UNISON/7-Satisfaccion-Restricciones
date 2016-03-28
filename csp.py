@@ -14,7 +14,7 @@ el de arco consistencia. Así como el algoritmo de min-conflics.
 
 En este modulo no es necesario modificar nada.
 """
-
+import random 
 __author__ = 'juliowaissman'
 
 
@@ -153,3 +153,20 @@ def minimos_conflictos(gr, rep=100):
     #   y probarlo con las n-reinas
     #================================================
     raise NotImplementedError("Minimos conflictos  a implementar")
+    """
+    a = {var random.choice(gr.dominio[var]) for var in variables}
+    for _ in xrange(rep):
+        random.shuffle(variables)
+        conflito = False
+        for var in variables:
+            for var2 in gr.vecinos[var]:
+                if gr.restriccion(var,a[var]) , (var2, a[var2]):
+                    conflicto =  True
+                    break
+                if conflicto:
+                    break
+        if not conflicto:
+        return a
+        a[sel] = min(gr.dominio[var]),key = lambda val: nconflictos(gr,a,var,val)
+    return None
+    """ 
