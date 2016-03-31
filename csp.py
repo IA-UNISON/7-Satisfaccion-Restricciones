@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import random
+from collections import deque
+import copy
 """
 csp.py
 ------------
@@ -17,7 +19,7 @@ el de arco consistencia. Así como el algoritmo de min-conflics.
 En este modulo no es necesario modificar nada.
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Jorge_Carvajal'
 
 
 class GrafoRestriccion(object):
@@ -136,20 +138,42 @@ def consistencia(gr, ap, xi, vi, tipo):
                     return None
         return dominio
     if tipo == 2:
-        for xj in gr.vecinos[xi]:
-            if xj not in ap:
-                dominio[xj] = []
-                for vj in gr.dominio[xj]:
-                    if not gr.restriccion((xi, vi), (xj, vj)):
-                        dominio[xj].append(vj)
-                if len(dominio[xj]) == len(gr.dominio[xj]):
+        maxIterations = 100000
+        arcDeque = deque((xj,xi) for xj in gr.vecinos[xi])
+       
+        dominio = copy.copy(gr.dominio)
+        for i in xrange(maxIterations):
+            print arcDeque
+            if not arcDeque:
+                break
+            x1,x2 = arcDeque.popleft()
+            if arcConsistent(gr,x1,x2,dominio):
+                if len(dominio[x1]) == 0:
                     return None
+                else:
+                    for xk in gr.vecinos[x1]:
+                        if xk != x1 and xk != x2:
+                            arcDeque.add((xk,x1))
         return dominio
+        
         raise NotImplementedError("AC-3  a implementar")
         #================================================
         #   Implementar el algoritmo de AC3
         #   y probarlo con las n-reinas
         #================================================
+
+def arcConsistent(gr,xi,xj,dominio):
+    changed = False
+    for vi in dominio[xi]:
+        flag = True
+        for vj in dominio[xj]:
+            if not gr.restriccion((xi, vi), (xj, vj)):
+                flag = False
+                break
+        if(flag == True):
+            changed = True
+            dominio[xi].remove(vi)
+    return changed
 
 def min_conflictos(gr, rep=100, maxit=100):
     for _ in xrange(maxit):
