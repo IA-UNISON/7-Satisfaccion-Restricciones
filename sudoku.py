@@ -44,6 +44,7 @@ __author__ = 'juliowaissman'
 
 
 import csp
+import time
 
 
 class Sudoku(csp.GrafoRestriccion):
@@ -62,23 +63,56 @@ class Sudoku(csp.GrafoRestriccion):
         csp.GrafoRestriccion.__init__(self)
 
         self.dominio = {i: [val] if val > 0 else range(1, 10) for (i, val) in enumerate(pos_ini)}
-
-        vecinos = {}
+        self.vecinos = {}
         #=================================================================
         # 25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         #=================================================================
+        a = 0
+        for var in xrange(81):
+          vecinos = []
+          x = var%9
+          y = var//9
+          #Agregamos los vecinos en el cuadro actual
+          areaX,areaY = x//3, y//3
+          for i in xrange(3):
+            for j in xrange(3):
+              if(areaY*3+i != y or areaX*3+j != x):
+               vecinos.append( 3*(i*3 + areaY*9 + areaX) + j )
+          #Despues agregamos los vecinos en horizontal..
+          for i in range(0,areaX*3):
+            vecinos.append(y*9+i)
+          for i in range((areaX+1)*3,9):
+            vecinos.append(y*9 + i)
 
+          #Y finalmente, los vecinos en vertical
+          for i in range(0,areaY*3):
+            vecinos.append(x+i*9)
+          for i in range((areaY+1)*3,9):
+            vecinos.append(x+i*9)
+          self.vecinos[a] = vecinos
+          a = a+1
+          if(var == 30):
+            print x
+            print y
+            print areaX
+            print areaY
+            print vecinos
+            time.sleep(5)
         if not vecinos:
             raise NotImplementedError("¡Es parte de la tarea completar este método!")
 
-    def restriccion_binaria(self, (xi, vi), (xj, vj)):
+    def restriccion(self, (xi, vi), (xj, vj)):
         """
         El mero chuqui. Por favor comenta tu código correctamente
 
         """
+        """
+        restriccion_binaria
+        """
         #===========================================================================
         # 25 puntos: INSERTAR SU CÓDIGO AQUI (restricciones entre variables vecinas)
         #===========================================================================
+        return vi != vj
         raise NotImplementedError("¡Es parte de la tarea implementar este método!")
 
     def imprime_sdk(self, asignacion):
@@ -115,7 +149,9 @@ if __name__ == "__main__":
     print "Solucionando un Sudoku dificil"
     sudoku1 = Sudoku(s1)
     sudoku1.imprime_sdk(s1)
-    sol1 = csp.solucion_CSP_bin(sudoku1)
+
+    sol1= csp.asignacion_grafo_restriccion(sudoku1)
+    #sol1 = csp.solucion_CSP_bin(sudoku1)
     sudoku1.imprime_sdk(sol1)
 
 
@@ -133,5 +169,6 @@ if __name__ == "__main__":
     print "Y otro tambien dificil"
     sudoku2 = Sudoku(s2)
     sudoku2.imprime_sdk(s2)
-    sol2 = csp.solucion_CSP_bin(sudoku2)
+    sol2= csp.asignacion_grafo_restriccion(sudoku2)
+    #sol2 = csp.solucion_CSP_bin(sudoku2)
     sudoku2.imprime_sdk(sol2)

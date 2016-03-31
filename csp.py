@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+import random
+from collections import deque
+import copy
 """
 csp.py
 ------------
@@ -15,7 +19,7 @@ el de arco consistencia. Así como el algoritmo de min-conflics.
 En este modulo no es necesario modificar nada.
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Jorge_Carvajal'
 
 
 class GrafoRestriccion(object):
@@ -134,11 +138,42 @@ def consistencia(gr, ap, xi, vi, tipo):
                     return None
         return dominio
     if tipo == 2:
+        maxIterations = 100000
+        arcDeque = deque((xj,xi) for xj in gr.vecinos[xi])
+       
+        dominio = copy.copy(gr.dominio)
+        for i in xrange(maxIterations):
+            print arcDeque
+            if not arcDeque:
+                break
+            x1,x2 = arcDeque.popleft()
+            if arcConsistent(gr,x1,x2,dominio):
+                if len(dominio[x1]) == 0:
+                    return None
+                else:
+                    for xk in gr.vecinos[x1]:
+                        if xk != x1 and xk != x2:
+                            arcDeque.add((xk,x1))
+        return dominio
+        
         raise NotImplementedError("AC-3  a implementar")
         #================================================
         #   Implementar el algoritmo de AC3
         #   y probarlo con las n-reinas
         #================================================
+
+def arcConsistent(gr,xi,xj,dominio):
+    changed = False
+    for vi in dominio[xi]:
+        flag = True
+        for vj in dominio[xj]:
+            if not gr.restriccion((xi, vi), (xj, vj)):
+                flag = False
+                break
+        if(flag == True):
+            changed = True
+            dominio[xi].remove(vi)
+    return changed
 
 def min_conflictos(gr, rep=100, maxit=100):
     for _ in xrange(maxit):
@@ -152,4 +187,42 @@ def minimos_conflictos(gr, rep=100):
     #   Implementar el algoritmo de minimos conflictos
     #   y probarlo con las n-reinas
     #================================================
+    #variables = gr.vecinos[0] + gr.vecinos[1][0:1]
+    asignacion = { var : var for var in gr.dominio[0] }
+    print asignacion
+    for i in xrange(rep):
+
+        #Iteramos sobre las variables en la asignacion
+        
+        for variable in asignacion:
+
+            #Definimos variables para determinar cuales son los valores con los menores conflictos
+
+            conflicto_menor = -1
+            dict_valores = {}
+
+            #Iteramos sobre todos los valores posibles en el dominio de la variable actual
+
+            for valor in gr.dominio[variable]:
+                conflictos = 0
+                #Verificamos las restricciones que tienen las variables con sus vecinos
+
+                for vecino in gr.vecinos[variable]:
+                    if not gr.restriccion((variable, valor), (vecino, asignacion[vecino])):
+                        conflictos+=1
+                #Actualizamos cual es el menor conflicto actual hasta ahora
+
+                if(conflicto_menor == -1 or conflictos < conflicto_menor):
+                    conflicto_menor = conflictos
+                #Metemos los conflictos generados por cada vecino en un diccionario
+
+                dict_valores[valor] =conflictos
+            #selecciones los valores minimos de la lista de conflictos
+
+            lista_valores = [y for y in dict_valores if dict_valores[y]==conflicto_menor]
+            #asignamos un valor al azar entre las opciones disponibles
+
+            asignacion[variable] = random.choice(lista_valores)
+
+    return asignacion
     raise NotImplementedError("Minimos conflictos  a implementar")
