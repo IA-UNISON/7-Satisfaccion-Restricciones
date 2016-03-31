@@ -61,9 +61,22 @@ class Sudoku(csp.GrafoRestriccion):
         """
         csp.GrafoRestriccion.__init__(self)
 
+
         self.dominio = {i: [val] if val > 0 else range(1, 10) for (i, val) in enumerate(pos_ini)}
 
-        vecinos = {}
+        self.vecinos = {}
+        for i in range(len(pos_ini)):
+            r = range((i/9)*9, (i/9 + 1)*9) 
+            c = range(i%9, 73+i%9, 9) 
+            x = (i%9)/3 
+            y = (i/9)/3 
+            esquina = x*3 + 27*y 
+            b = range(esquina, esquina + 3) 
+            b += range(esquina + 9, esquina + 12)
+            b += range(esquina + 18, esquina + 21)
+            todos = set(b + r + c)
+            todos.remove(i)
+            self.vecinos[i] = list(todos)
         #=================================================================
         # 25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         #=================================================================
@@ -79,7 +92,10 @@ class Sudoku(csp.GrafoRestriccion):
         #===========================================================================
         # 25 puntos: INSERTAR SU CÓDIGO AQUI (restricciones entre variables vecinas)
         #===========================================================================
-        raise NotImplementedError("¡Es parte de la tarea implementar este método!")
+        #raise NotImplementedError("¡Es parte de la tarea implementar este método!")
+        if vi == vj:
+          return False
+        return True
 
     def imprime_sdk(self, asignacion):
         """
