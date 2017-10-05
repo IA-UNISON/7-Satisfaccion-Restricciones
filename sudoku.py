@@ -72,15 +72,13 @@ class Sudoku(csp.GrafoRestriccion):
         self.dominio = {i: [val] if val > 0 else range(1, 10)
                         for (i, val) in enumerate(pos_ini)}
 
-
-
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
         self.vecinos = {i: self.generar_vecinos(i)
-                   for (i, _) in enumerate(pos_ini)}
+                        for (i, _) in enumerate(pos_ini)}
 
-
+        print(self.vecinos)
 
     def restricción(self, xi_vi, xj_vj):
         """
@@ -113,6 +111,7 @@ class Sudoku(csp.GrafoRestriccion):
                            for a in range(3))
 
         return list((indices_renglon | indices_columna | indices_caja) - {i})
+
 
 def imprime_sdk(asignación):
     """

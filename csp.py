@@ -21,6 +21,7 @@ __author__ = 'juliowaissman'
 from collections import deque
 import random
 
+
 class GrafoRestriccion(object):
     """
     Clase abstracta para hacer un grafo de restricción
@@ -36,7 +37,7 @@ class GrafoRestriccion(object):
         self.vecinos = {}
         self.backtracking = 0  # Solo para efectos de comparación
 
-    def restricción(self, xi_vi, xj_vj):
+    def restriccion(self, xi_vi, xj_vj):
         """
         Verifica si se cumple la restriccion binaria entre las variables xi
         y xj cuando a estas se le asignan los valores vi y vj respectivamente.
@@ -54,7 +55,7 @@ class GrafoRestriccion(object):
         raise NotImplementedError("Método a implementar")
 
 
-def asignacion_grafo_restriccion(gr, ap={}, consist=1, traza=False):
+def asignacion_grafo_restriccion(gr, ap=None, consist=1, traza=False):
     """
     Asigación de una solución al grafo de restriccion si existe
     por búsqueda primero en profundidad.
@@ -73,6 +74,9 @@ def asignacion_grafo_restriccion(gr, ap={}, consist=1, traza=False):
 
     """
 
+    if ap is None:
+        ap = {}
+
     if set(ap.keys()) == set(gr.dominio.keys()):
         #  Asignación completa
         return ap.copy()
@@ -80,7 +84,6 @@ def asignacion_grafo_restriccion(gr, ap={}, consist=1, traza=False):
     var = selecciona_variable(gr, ap)
 
     for val in ordena_valores(gr, ap, var):
-
         dominio = consistencia(gr, ap, var, val, consist)
 
         if dominio is not None:
@@ -117,7 +120,7 @@ def ordena_valores(gr, ap, xi):
         for xj in gr.vecinos[xi]:
             if xi not in ap:
                 for vj in gr.dominio[xj]:
-                    if not gr.restricción((xi, vi), (xj, vj)):
+                    if not gr.restriccion((xi, vi), (xj, vj)):
                         acc += 1
         return acc
     return sorted(gr.dominio[xi], key=conflictos, reverse=True)
@@ -126,7 +129,7 @@ def ordena_valores(gr, ap, xi):
 def consistencia(gr, ap, xi, vi, tipo):
     if tipo == 0:
         for (xj, vj) in ap.iteritems():
-            if xj in gr.vecinos[xi] and not gr.restricción((xi, vi), (xj, vj)):
+            if xj in gr.vecinos[xi] and not gr.restriccion((xi, vi), (xj, vj)):
                 return None
         return {}
 
@@ -136,7 +139,7 @@ def consistencia(gr, ap, xi, vi, tipo):
             if xj not in ap:
                 dominio[xj] = []
                 for vj in gr.dominio[xj]:
-                    if not gr.restricción((xi, vi), (xj, vj)):
+                    if not gr.restriccion((xi, vi), (xj, vj)):
                         dominio[xj].append(vj)
                 if len(dominio[xj]) == len(gr.dominio[xj]):
                     return None
@@ -146,14 +149,37 @@ def consistencia(gr, ap, xi, vi, tipo):
         #    Implementar el algoritmo de AC3
         #    y probarlo con las n-reinas
         # ================================================
-        pass
+        dominio = {k: set([ap[k]]) if k in ap else set(v) for (k, v) in gr.dominio.items()}
+        a_reducir = {k: [] for k in gr.dominio}
+        restricciones = deque((xi, xj) for xi in dominio for xj in gr.vecinos[xi])
+        while restricciones:
+            xi, xj = restricciones.popleft()
+            reducidos = revise(gr, dominio, xi, xj)
+            if reducidos:
+                if not dominio[xi]:
+                    return None
+                restricciones.extend((xk, xi) for xk in gr.vecinos[xi] if xk != xj)
+            a_reducir[xi].extend(reducidos)
+
+        return a_reducir
+
+
+def revise(gr, d, xi, xj):
+    reducidos = []
+    for vi in list(d[xi]):
+        # for vj in d[xj]:
+            # print(vj, gr.restriccion((xi, vi), (xj, vj)))
+        if all(not gr.restriccion((xi, vi), (xj, vj)) for vj in d[xj]):
+            d[xi].remove(vi)
+            reducidos.append(vi)
+
+    return reducidos
 
 
 def min_conflictos(gr, rep=1000, maxit=10):
     for i in range(maxit):
         a = minimos_conflictos(gr, rep)
         if a is not None:
-            print(i)
             return a
     return None
 
@@ -162,11 +188,10 @@ def calcular_conflictos(gr, asignacion, x, v):
     return [xi for xi in gr.vecinos[x]
             if not gr.restricción((x, v), (xi, asignacion[xi]))]
 
-from nreinasCSP import Nreinas
-
 
 def calcular_n_conflictos(gr, asignacion, x, v):
     return sum(1 for xi in gr.vecinos[x] if not gr.restricción((x, v), (xi, asignacion[xi])))
+
 
 def minimos_conflictos(gr, rep=100):
     # ================================================
@@ -185,6 +210,4 @@ def minimos_conflictos(gr, rep=100):
         x_c = {v: calcular_n_conflictos(gr, a, x, v) for v in gr.dominio[x]}
         c_min = min(x_c.values())
         a[x] = random.choice([v for v in x_c if x_c[v] == c_min])
-        #Nreinas.muestra_asignación(a)
-
     return None

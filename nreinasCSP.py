@@ -11,7 +11,7 @@ __author__ = 'juliowaissman'
 
 
 import csp
-from functools import lru_cache
+
 
 class Nreinas(csp.GrafoRestriccion):
     """
@@ -38,7 +38,7 @@ class Nreinas(csp.GrafoRestriccion):
             self.dominio[var] = list(range(n))
             self.vecinos[var] = [i for i in range(n) if i != var]
 
-    def restricción(self, xi_vi, xj_vj):
+    def restriccion(self, xi_vi, xj_vj):
         """
         Verifica si se cumple la restriccion binaria entre las variables xi
         y xj cuando a estas se le asignan los valores vi y vj respectivamente.
@@ -81,7 +81,7 @@ class Nreinas(csp.GrafoRestriccion):
 def prueba_reinas(n, metodo, tipo=1, traza=False):
     print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
     g_r = Nreinas(n)
-    asignación = metodo(g_r )
+    asignación = metodo(g_r)
     if n < 20:
         Nreinas.muestra_asignación(asignación)
     else:
@@ -101,21 +101,21 @@ if __name__ == "__main__":
     """
 
     # Utilizando consistencia
-    #=============================================================================
+    # =============================================================================
     # 25 puntos: Probar y comentar los resultados del métdo de arco consistencia
-    #=============================================================================
-    # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    # =============================================================================
+    prueba_reinas(4, lambda gr: csp.asignacion_grafo_restriccion(gr, consist=2, traza=True))
+    prueba_reinas(8, lambda gr: csp.asignacion_grafo_restriccion(gr, consist=2, traza=True))
+    prueba_reinas(16, lambda gr: csp.asignacion_grafo_restriccion(gr, consist=2, traza=True))
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, tipo=2)
     # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
     # prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
 
-
     # Utilizando minimos conflictos
-    #=============================================================================
+    # =============================================================================
     # 25 puntos: Probar y comentar los resultados del métdo de mínios conflictos
-    #=============================================================================
-    #prueba_reinas(4, csp.min_conflictos)
+    # =============================================================================
+    # prueba_reinas(4, csp.min_conflictos)
     prueba_reinas(8, csp.min_conflictos)
     prueba_reinas(16, csp.min_conflictos)
     prueba_reinas(51, csp.min_conflictos)
