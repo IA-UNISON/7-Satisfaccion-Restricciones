@@ -181,8 +181,3 @@ def minimos_conflictos(gr, rep=100):
         conflictos_x = calcular_conflictos(gr, a, x, a[x])
 
     return None
-
-
-
-
-    raise NotImplementedError("Minimos conflictos  a implementar")

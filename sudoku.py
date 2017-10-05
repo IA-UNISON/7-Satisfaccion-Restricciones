@@ -72,15 +72,17 @@ class Sudoku(csp.GrafoRestriccion):
         self.dominio = {i: [val] if val > 0 else range(1, 10)
                         for (i, val) in enumerate(pos_ini)}
 
+
+
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
-        vecinos = {i: self.generar_vecinos(i)
+        self.vecinos = {i: self.generar_vecinos(i)
                    for (i, _) in enumerate(pos_ini)}
 
 
 
-    def restriccion_binaria(self, xi_vi, xj_vj):
+    def restricción(self, xi_vi, xj_vj):
         """
         El mero chuqui. Por favor comenta tu código correctamente
 
@@ -110,7 +112,7 @@ class Sudoku(csp.GrafoRestriccion):
                                           9)
                            for a in range(3))
 
-        return list((indices_renglon + indices_columna + indices_caja) - {i})
+        return list((indices_renglon | indices_columna | indices_caja) - {i})
 
 def imprime_sdk(asignación):
     """
@@ -150,7 +152,7 @@ if __name__ == "__main__":
     imprime_sdk(s1)
     print("Solucionando un Sudoku dificil")
     sudoku1 = Sudoku(s1)
-    sol1 = csp.solucion_CSP_bin(sudoku1)
+    sol1 = csp.min_conflictos(sudoku1, 10000, 10000)
     imprime_sdk(sol1)
 
     s2 = [4, 0, 0, 0, 0, 0, 8, 0, 5,
@@ -166,5 +168,5 @@ if __name__ == "__main__":
     imprime_sdk(s2)
     sudoku2 = Sudoku(s2)
     print("Y otro tambien dificil")
-    sol2 = csp.solucion_CSP_bin(sudoku2)
+    sol2 = csp.min_conflictos(sudoku2, 100, 100)
     imprime_sdk(sol2)
