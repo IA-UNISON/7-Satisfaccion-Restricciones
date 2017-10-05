@@ -152,7 +152,7 @@ if __name__ == "__main__":
     imprime_sdk(s1)
     print("Solucionando un Sudoku dificil")
     sudoku1 = Sudoku(s1)
-    sol1 = csp.min_conflictos(sudoku1, 10000, 10000)
+    sol1 = csp.min_conflictos(sudoku1, 1000, 1000)
     imprime_sdk(sol1)
 
     s2 = [4, 0, 0, 0, 0, 0, 8, 0, 5,

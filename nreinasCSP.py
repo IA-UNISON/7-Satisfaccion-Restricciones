@@ -82,7 +82,6 @@ def prueba_reinas(n, metodo, tipo=1, traza=False):
     print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
     g_r = Nreinas(n)
     asignación = metodo(g_r )
-    print(asignación)
     if n < 20:
         Nreinas.muestra_asignación(asignación)
     else:
@@ -116,9 +115,9 @@ if __name__ == "__main__":
     #=============================================================================
     # 25 puntos: Probar y comentar los resultados del métdo de mínios conflictos
     #=============================================================================
-    prueba_reinas(4, csp.min_conflictos)
+    #prueba_reinas(4, csp.min_conflictos)
     prueba_reinas(8, csp.min_conflictos)
     prueba_reinas(16, csp.min_conflictos)
     prueba_reinas(51, csp.min_conflictos)
-    #prueba_reinas(101, csp.min_conflictos)
-    #prueba_reinas(1000, csp.min_conflictos)
+    prueba_reinas(101, csp.min_conflictos)
+    prueba_reinas(1000, csp.min_conflictos)

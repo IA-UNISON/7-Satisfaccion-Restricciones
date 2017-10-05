@@ -20,6 +20,7 @@ __author__ = 'juliowaissman'
 
 from collections import deque
 import random
+import heapq
 
 class GrafoRestriccion(object):
     """
@@ -149,10 +150,11 @@ def consistencia(gr, ap, xi, vi, tipo):
         pass
 
 
-def min_conflictos(gr, rep=1000, maxit=1000):
-    for _ in range(maxit):
+def min_conflictos(gr, rep=100, maxit=100):
+    for i in range(maxit):
         a = minimos_conflictos(gr, rep)
         if a is not None:
+            print(i)
             return a
     return None
 
@@ -161,8 +163,9 @@ def calcular_conflictos(gr, asignacion, x, v):
     return [xi for xi in gr.vecinos[x]
             if not gr.restricción((x, v), (xi, asignacion[xi]))]
 
-from nreinasCSP import Nreinas
 
+def calcular_n_conflictos(gr, asignacion, x, v):
+    return sum(1 for xi in gr.vecinos[x] if not gr.restricción((x, v), (xi, asignacion[xi])))
 
 def minimos_conflictos(gr, rep=100):
     # ================================================
@@ -170,14 +173,27 @@ def minimos_conflictos(gr, rep=100):
     #    y probarlo con las n-reinas
     # ================================================
     a = {x: random.choice(v) for (x, v) in gr.dominio.items()}
-    vs = list(a.keys())
     for _ in range(rep):
-        if all(len(calcular_conflictos(gr, a, x, a[x])) == 0 for x in gr.dominio):
-            return a
-        x = random.choice(vs)
+        conflictos = {x: calcular_n_conflictos(gr, a, x, a[x]) for x in a}
 
-        a[x] = min(gr.dominio[x],
-                   key=lambda v: len(calcular_conflictos(gr, a, x, v)))
-        conflictos_x = calcular_conflictos(gr, a, x, a[x])
+        if not sum(conflictos.values()):
+            return a
+
+        x = random.choice([i for i in conflictos if conflictos[i]])
+
+        x_c = []
+        for v in gr.dominio[x]:
+            c = calcular_n_conflictos(gr, a, x, v)
+            heapq.heappush(x_c, (c, v))
+
+        min_c, min_x = x_c[0]
+        candidates = []
+        next_c, next_v = heapq.heappop(x_c)
+        while next_c == min_c:
+            candidates.append(next_v)
+            next_c, next_v = heapq.heappop(x_c)
+
+
+        a[x] = random.choice(candidates)
 
     return None
