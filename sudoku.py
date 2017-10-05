@@ -13,7 +13,7 @@ las casillas no asignadas anteriormente si se considera que:
 
     a) Las casillas horizontales deben tener números diferentes entre si
     b) Las casillas verticales deben tener números diferentes entre si
-    c) Las casillas que pertenecen al mismo grupo deben tener números 
+    c) Las casillas que pertenecen al mismo grupo deben tener números
        diferentes entre si.
 
 Sea (r1, c1) el renglon y la columna de una casilla y (r2, c2) el
@@ -38,7 +38,18 @@ se encuentran de la manera siguiente:
    18  19  20 | 21  22  23 | 24  25  26
    -----------+------------+------------
    27  28  29 | 30  31  32 | 33  34  35
-   36  37  38 | 39  ...
+   36  37  38 | 39  40  41 | 42  43  44
+   45  46  47 | 48  49  50 | 51  52  53
+   -----------+------------+------------
+   54  55  56 | 57  58  59 | 60  61  62
+   63  64  65 | 66  67  68 | 69  70  71
+   72  73  74 | 75  76  77 | 78  79  80
+
+    k//9 #da las y
+    k%9  #da las x
+    [[y*9 + i for i in range(9) if i != x]+
+     [i*9 + x for i in range(9) if i != y]+
+     [i+(x//3)*3 + j*9+(y//3)*27 for i in range(3) for j in range(3)]]
 
 hasta llegar a la posición 81.
 
@@ -76,25 +87,33 @@ class Sudoku(csp.GrafoRestriccion):
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
-
+        for k in self.dominio.keys():
+            x=k%9  #da las x
+            y=k//9 #da las y
+            a=[[y*9 + i for i in range(9) if i != x]+
+            [i*9 + x for i in range(9) if i != y]+
+            [i+(x//3)*3 + j*9+(y//3)*27 for i in range(3)for j in range(3)]]
+            vecinos[k] = list(set(a[0])-set([k]))
+        self.vecinos = vecinos
+        print(vecinos)
         if not vecinos:
             raise NotImplementedError("Faltan los vecinos")
 
-    def restriccion_binaria(self, xi_vi, xj_vj):
+    def restricción(self, xi_vi, xj_vj):
         """
         El mero chuqui. Por favor comenta tu código correctamente
 
         """
         xi, vi = xi_vi
         xj, vj = xj_vj
-
+        return vi != vj
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
         # =================================================================
         raise NotImplementedError("Implementa la restricción binaria")
 
-    
+
 def imprime_sdk(asignación):
     """
     Imprime un sudoku en pantalla en forma más o menos graciosa. Esta
@@ -133,7 +152,7 @@ if __name__ == "__main__":
     imprime_sdk(s1)
     print("Solucionando un Sudoku dificil")
     sudoku1 = Sudoku(s1)
-    sol1 = csp.solucion_CSP_bin(sudoku1)
+    sol1 = csp.asignacion_grafo_restriccion(sudoku1)
     imprime_sdk(sol1)
 
     s2 = [4, 0, 0, 0, 0, 0, 8, 0, 5,
@@ -149,5 +168,5 @@ if __name__ == "__main__":
     imprime_sdk(s2)
     sudoku2 = Sudoku(s2)
     print("Y otro tambien dificil")
-    sol2 = csp.solucion_CSP_bin(sudoku2)
+    sol2 = csp.asignacion_grafo_restriccion(sudoku2)
     imprime_sdk(sol2)

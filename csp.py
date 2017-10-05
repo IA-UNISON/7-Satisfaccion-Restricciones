@@ -21,7 +21,7 @@ __author__ = 'juliowaissman'
 
 class GrafoRestriccion(object):
     """
-    Clase abstracta para hacer un grafo de restricción 
+    Clase abstracta para hacer un grafo de restricción
 
     """
 
