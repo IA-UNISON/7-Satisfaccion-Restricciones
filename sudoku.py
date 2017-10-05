@@ -13,7 +13,7 @@ las casillas no asignadas anteriormente si se considera que:
 
     a) Las casillas horizontales deben tener números diferentes entre si
     b) Las casillas verticales deben tener números diferentes entre si
-    c) Las casillas que pertenecen al mismo grupo deben tener números 
+    c) Las casillas que pertenecen al mismo grupo deben tener números
        diferentes entre si.
 
 Sea (r1, c1) el renglon y la columna de una casilla y (r2, c2) el
@@ -72,13 +72,13 @@ class Sudoku(csp.GrafoRestriccion):
         self.dominio = {i: [val] if val > 0 else range(1, 10)
                         for (i, val) in enumerate(pos_ini)}
 
-        vecinos = {}
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
+        vecinos = {i: self.generar_vecinos(i)
+                   for (i, _) in enumerate(pos_ini)}
 
-        if not vecinos:
-            raise NotImplementedError("Faltan los vecinos")
+
 
     def restriccion_binaria(self, xi_vi, xj_vj):
         """
@@ -92,9 +92,26 @@ class Sudoku(csp.GrafoRestriccion):
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
         # =================================================================
-        raise NotImplementedError("Implementa la restricción binaria")
+        return vi != vj
 
-    
+    @staticmethod
+    def generar_vecinos(i):
+        renglon = i // 9
+        columna = i % 9
+        indices_renglon = set(range(9 * renglon, 9 * renglon + 9))
+        indices_columna = set(range(columna, columna + 81, 9))
+
+        x_caja = columna // 3
+        y_caja = renglon // 3
+        # La madre de todas las comprensiones
+        indices_caja = set(a + i
+                           for i in range(3 * x_caja + 27 * y_caja,
+                                          3 * x_caja + 27 * (y_caja + 1),
+                                          9)
+                           for a in range(3))
+
+        return list((indices_renglon + indices_columna + indices_caja) - {i})
+
 def imprime_sdk(asignación):
     """
     Imprime un sudoku en pantalla en forma más o menos graciosa. Esta

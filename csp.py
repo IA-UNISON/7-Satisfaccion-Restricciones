@@ -18,10 +18,12 @@ En este modulo no es necesario modificar nada.
 
 __author__ = 'juliowaissman'
 
+from collections import deque
+import random
 
 class GrafoRestriccion(object):
     """
-    Clase abstracta para hacer un grafo de restricción 
+    Clase abstracta para hacer un grafo de restricción
 
     """
 
@@ -140,14 +142,14 @@ def consistencia(gr, ap, xi, vi, tipo):
                     return None
         return dominio
     if tipo == 2:
-        raise NotImplementedError("AC-3  a implementar")
         # ================================================
         #    Implementar el algoritmo de AC3
         #    y probarlo con las n-reinas
         # ================================================
+        pass
 
 
-def min_conflictos(gr, rep=100, maxit=100):
+def min_conflictos(gr, rep=1000, maxit=1000):
     for _ in range(maxit):
         a = minimos_conflictos(gr, rep)
         if a is not None:
@@ -155,9 +157,32 @@ def min_conflictos(gr, rep=100, maxit=100):
     return None
 
 
+def calcular_conflictos(gr, asignacion, x, v):
+    return [xi for xi in gr.vecinos[x]
+            if not gr.restricción((x, v), (xi, asignacion[xi]))]
+
+from nreinasCSP import Nreinas
+
+
 def minimos_conflictos(gr, rep=100):
     # ================================================
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
+    a = {x: random.choice(v) for (x, v) in gr.dominio.items()}
+    vs = list(a.keys())
+    for _ in range(rep):
+        if all(len(calcular_conflictos(gr, a, x, a[x])) == 0 for x in gr.dominio):
+            return a
+        x = random.choice(vs)
+
+        a[x] = min(gr.dominio[x],
+                   key=lambda v: len(calcular_conflictos(gr, a, x, v)))
+        conflictos_x = calcular_conflictos(gr, a, x, a[x])
+
+    return None
+
+
+
+
     raise NotImplementedError("Minimos conflictos  a implementar")
