@@ -11,7 +11,7 @@ __author__ = 'juliowaissman'
 
 
 import csp
-
+from functools import lru_cache
 
 class Nreinas(csp.GrafoRestriccion):
     """
@@ -120,4 +120,4 @@ if __name__ == "__main__":
     prueba_reinas(16, csp.min_conflictos)
     prueba_reinas(51, csp.min_conflictos)
     prueba_reinas(101, csp.min_conflictos)
-    prueba_reinas(1000, csp.min_conflictos)
+    # prueba_reinas(1000, csp.min_conflictos)

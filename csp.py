@@ -20,7 +20,6 @@ __author__ = 'juliowaissman'
 
 from collections import deque
 import random
-import heapq
 
 class GrafoRestriccion(object):
     """
@@ -150,7 +149,7 @@ def consistencia(gr, ap, xi, vi, tipo):
         pass
 
 
-def min_conflictos(gr, rep=100, maxit=100):
+def min_conflictos(gr, rep=1000, maxit=10):
     for i in range(maxit):
         a = minimos_conflictos(gr, rep)
         if a is not None:
@@ -162,6 +161,8 @@ def min_conflictos(gr, rep=100, maxit=100):
 def calcular_conflictos(gr, asignacion, x, v):
     return [xi for xi in gr.vecinos[x]
             if not gr.restricción((x, v), (xi, asignacion[xi]))]
+
+from nreinasCSP import Nreinas
 
 
 def calcular_n_conflictos(gr, asignacion, x, v):
@@ -181,19 +182,9 @@ def minimos_conflictos(gr, rep=100):
 
         x = random.choice([i for i in conflictos if conflictos[i]])
 
-        x_c = []
-        for v in gr.dominio[x]:
-            c = calcular_n_conflictos(gr, a, x, v)
-            heapq.heappush(x_c, (c, v))
-
-        min_c, min_x = x_c[0]
-        candidates = []
-        next_c, next_v = heapq.heappop(x_c)
-        while next_c == min_c:
-            candidates.append(next_v)
-            next_c, next_v = heapq.heappop(x_c)
-
-
-        a[x] = random.choice(candidates)
+        x_c = {v: calcular_n_conflictos(gr, a, x, v) for v in gr.dominio[x]}
+        c_min = min(x_c.values())
+        a[x] = random.choice([v for v in x_c if x_c[v] == c_min])
+        #Nreinas.muestra_asignación(a)
 
     return None
