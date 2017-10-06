@@ -186,11 +186,11 @@ def min_conflictos(gr, rep=1000, maxit=10):
 
 def calcular_conflictos(gr, asignacion, x, v):
     return [xi for xi in gr.vecinos[x]
-            if not gr.restricción((x, v), (xi, asignacion[xi]))]
+            if not gr.restriccion((x, v), (xi, asignacion[xi]))]
 
 
 def calcular_n_conflictos(gr, asignacion, x, v):
-    return sum(1 for xi in gr.vecinos[x] if not gr.restricción((x, v), (xi, asignacion[xi])))
+    return sum(1 for xi in gr.vecinos[x] if not gr.restriccion((x, v), (xi, asignacion[xi])))
 
 
 def minimos_conflictos(gr, rep=100):

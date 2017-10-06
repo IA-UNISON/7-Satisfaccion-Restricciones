@@ -107,6 +107,8 @@ if __name__ == "__main__":
     prueba_reinas(4, lambda gr: csp.asignacion_grafo_restriccion(gr, consist=2, traza=True))
     prueba_reinas(8, lambda gr: csp.asignacion_grafo_restriccion(gr, consist=2, traza=True))
     prueba_reinas(16, lambda gr: csp.asignacion_grafo_restriccion(gr, consist=2, traza=True))
+    # prueba_reinas(100, lambda gr: csp.asignacion_grafo_restriccion(gr, consist=2, traza=False))
+
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, tipo=2)
     # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
     # prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
@@ -115,7 +117,7 @@ if __name__ == "__main__":
     # =============================================================================
     # 25 puntos: Probar y comentar los resultados del métdo de mínios conflictos
     # =============================================================================
-    # prueba_reinas(4, csp.min_conflictos)
+    prueba_reinas(4, csp.min_conflictos)
     prueba_reinas(8, csp.min_conflictos)
     prueba_reinas(16, csp.min_conflictos)
     prueba_reinas(51, csp.min_conflictos)

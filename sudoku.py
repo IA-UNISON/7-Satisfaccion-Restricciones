@@ -69,7 +69,7 @@ class Sudoku(csp.GrafoRestriccion):
         """
         super().__init__()
 
-        self.dominio = {i: [val] if val > 0 else range(1, 10)
+        self.dominio = {i: [val] if val > 0 else list(range(1, 10))
                         for (i, val) in enumerate(pos_ini)}
 
         # =================================================================
@@ -78,9 +78,8 @@ class Sudoku(csp.GrafoRestriccion):
         self.vecinos = {i: self.generar_vecinos(i)
                         for (i, _) in enumerate(pos_ini)}
 
-        print(self.vecinos)
 
-    def restricción(self, xi_vi, xj_vj):
+    def restriccion(self, xi_vi, xj_vj):
         """
         El mero chuqui. Por favor comenta tu código correctamente
 
@@ -151,7 +150,7 @@ if __name__ == "__main__":
     imprime_sdk(s1)
     print("Solucionando un Sudoku dificil")
     sudoku1 = Sudoku(s1)
-    sol1 = csp.min_conflictos(sudoku1, 1000, 1000)
+    sol1 = csp.asignacion_grafo_restriccion(sudoku1, consist=2)
     imprime_sdk(sol1)
 
     s2 = [4, 0, 0, 0, 0, 0, 8, 0, 5,
@@ -167,5 +166,5 @@ if __name__ == "__main__":
     imprime_sdk(s2)
     sudoku2 = Sudoku(s2)
     print("Y otro tambien dificil")
-    sol2 = csp.min_conflictos(sudoku2, 100, 100)
+    sol2 = csp.asignacion_grafo_restriccion(sudoku2, consist=2)
     imprime_sdk(sol2)
