@@ -80,7 +80,7 @@ class Sudoku(csp.GrafoRestriccion):
         """
         super().__init__()
 
-        self.dominio = {i: [val] if val > 0 else range(1, 10)
+        self.dominio = {i: [val] if val > 0 else list(range(1, 10))
                         for (i, val) in enumerate(pos_ini)}
 
         vecinos = {}
@@ -95,7 +95,6 @@ class Sudoku(csp.GrafoRestriccion):
             [i+(x//3)*3 + j*9+(y//3)*27 for i in range(3)for j in range(3)]]
             vecinos[k] = list(set(a[0])-set([k]))
         self.vecinos = vecinos
-        print(vecinos)
         if not vecinos:
             raise NotImplementedError("Faltan los vecinos")
 
