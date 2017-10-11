@@ -59,13 +59,11 @@ class Sudoku(csp.GrafoRestriccion):
     variables están dadas desde 0 hasta 81 (un vector) tal como dice
     arriba. No modificar nada de lo escrito solamente agregar su
     código.
-
     """
 
     def __init__(self, pos_ini):
         """
         Inicializa el sudoku
-
         """
         super().__init__()
 
@@ -83,7 +81,6 @@ class Sudoku(csp.GrafoRestriccion):
     def restriccion_binaria(self, xi_vi, xj_vj):
         """
         El mero chuqui. Por favor comenta tu código correctamente
-
         """
         xi, vi = xi_vi
         xj, vj = xj_vj
@@ -94,13 +91,12 @@ class Sudoku(csp.GrafoRestriccion):
         # =================================================================
         raise NotImplementedError("Implementa la restricción binaria")
 
-    
+
 def imprime_sdk(asignación):
     """
     Imprime un sudoku en pantalla en forma más o menos graciosa. Esta
     función solo sirve para la tarea y para la revisión de la
     tarea. No modificarla por ningun motivo.
-
     """
     s = [asignación[i] for i in range(81)]
     rayita = '\n-------------+----------------+---------------\n'
@@ -133,7 +129,7 @@ if __name__ == "__main__":
     imprime_sdk(s1)
     print("Solucionando un Sudoku dificil")
     sudoku1 = Sudoku(s1)
-    sol1 = csp.solucion_CSP_bin(sudoku1)
+    sol1 = csp.asignacion_grafo_restriccion(sudoku1)
     imprime_sdk(sol1)
 
     s2 = [4, 0, 0, 0, 0, 0, 8, 0, 5,
@@ -149,5 +145,5 @@ if __name__ == "__main__":
     imprime_sdk(s2)
     sudoku2 = Sudoku(s2)
     print("Y otro tambien dificil")
-    sol2 = csp.solucion_CSP_bin(sudoku2)
+    sol2 = csp.asignacion_grafo_restriccion(sudoku2)
     imprime_sdk(sol2)
