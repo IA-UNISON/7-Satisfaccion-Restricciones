@@ -225,11 +225,23 @@ def consistencia(gr, ap, xi, vi, tipo):
     # Por ejemplo, para las 4 reinas deben de ser 0 backtrackings y para las
     # 101 reina, al rededor de 4
     if tipo == 2:
-        # ================================================
-        #    Implementar el algoritmo de AC3
-        #    y print()robarlo con las n-reinas
-        # ================================================
-        raise NotImplementedError("AC-3  a implementar")
+        # Initial domains are made consistent with unary constraints.
+        for each x in X
+            D(x): = {vx in D(x) | R1(x)}
+        # 'worklist' contains all arcs we wish to prove consistent or not.
+        worklist: = {(x, y) | there exists a relation R2(x, y) or a relation R2(y, x)}
+        #worklist=deque()
+        worklist=deque([(xj, xi) for xj in gr.vecinos[xi] if xj not in ap])
+
+
+        while(worklist):
+            xa,xb = worklist.popleft()
+            #worklist = worklist - (x,y)
+            if reduceAC3(xa,xb,gr):
+                if not gr.dominio[xa]:
+                    return None
+                else:
+                    #worklist := worklist + { (z, x) | z != y and there exists a relation R2(x, z) or a relation R2(z, x) }
 
     return dom_red
 
