@@ -69,7 +69,7 @@ class Sudoku(csp.GrafoRestriccion):
         """
         super().__init__()
 
-        self.dominio = {i: [val] if val > 0 else list(range(1, 10))
+        self.dominio = {i: set([val]) if val > 0 else set(range(1, 10))
                         for (i, val) in enumerate(pos_ini)}
 
         # =================================================================
@@ -109,7 +109,7 @@ class Sudoku(csp.GrafoRestriccion):
                                           9)
                            for a in range(3))
 
-        return list((indices_renglon | indices_columna | indices_caja) - {i})
+        return (indices_renglon | indices_columna | indices_caja) - {i}
 
 
 def imprime_sdk(asignación):

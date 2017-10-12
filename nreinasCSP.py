@@ -12,7 +12,6 @@ __author__ = 'juliowaissman'
 
 import csp
 
-
 class Nreinas(csp.GrafoRestriccion):
     """
     El problema de las n-reinas.
@@ -34,9 +33,10 @@ class Nreinas(csp.GrafoRestriccion):
 
         """
         super().__init__()
+        self.a = 0
         for var in range(n):
-            self.dominio[var] = list(range(n))
-            self.vecinos[var] = [i for i in range(n) if i != var]
+            self.dominio[var] = set(range(n))
+            self.vecinos[var] = set(i for i in range(n) if i != var)
 
     def restriccion(self, xi_vi, xj_vj):
         """
@@ -56,6 +56,7 @@ class Nreinas(csp.GrafoRestriccion):
         @return: True si se cumple la restricción
 
         """
+        # self.a += 1
         xi, vi = xi_vi
         xj, vj = xj_vj
         return vi != vj and abs(vi - vj) != abs(xi - xj)
@@ -78,7 +79,7 @@ class Nreinas(csp.GrafoRestriccion):
             print(interlinea)
 
 
-def prueba_reinas(n, metodo, tipo=1, traza=False):
+def prueba_reinas(n, metodo):
     print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
     g_r = Nreinas(n)
     asignación = metodo(g_r)
@@ -90,16 +91,12 @@ def prueba_reinas(n, metodo, tipo=1, traza=False):
 
 
 if __name__ == "__main__":
-
     # Utilizando 1 consistencia
-    """
-    prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    prueba_reinas(16, csp.asignacion_grafo_restriccion, tipo=1)
-    prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
-    """
-
+    prueba_reinas(4, lambda gr: csp.asignacion_grafo_restriccion(gr, consist=1, traza=True))
+    prueba_reinas(8, lambda gr: csp.asignacion_grafo_restriccion(gr, consist=1, traza=True))
+    prueba_reinas(16, lambda gr: csp.asignacion_grafo_restriccion(gr, consist=1, traza=True))
+    prueba_reinas(50, lambda gr: csp.asignacion_grafo_restriccion(gr, consist=1, traza=False))
+    prueba_reinas(101, lambda gr: csp.asignacion_grafo_restriccion(gr, consist=1, traza=False))
     # Utilizando consistencia
     # =============================================================================
     # 25 puntos: Probar y comentar los resultados del métdo de arco consistencia
@@ -107,11 +104,17 @@ if __name__ == "__main__":
     prueba_reinas(4, lambda gr: csp.asignacion_grafo_restriccion(gr, consist=2, traza=True))
     prueba_reinas(8, lambda gr: csp.asignacion_grafo_restriccion(gr, consist=2, traza=True))
     prueba_reinas(16, lambda gr: csp.asignacion_grafo_restriccion(gr, consist=2, traza=True))
-    # prueba_reinas(100, lambda gr: csp.asignacion_grafo_restriccion(gr, consist=2, traza=False))
+    prueba_reinas(50, lambda gr: csp.asignacion_grafo_restriccion(gr, consist=2, traza=False))
+    prueba_reinas(101, lambda gr: csp.asignacion_grafo_restriccion(gr, consist=2, traza=False))
 
-    # prueba_reinas(16, csp.asignacion_grafo_restriccion, tipo=2)
-    # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
-    # prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+    '''
+    El algoritmo de consistencia 2 efectivamente hace que se tengan que revisar
+    menos nodos solo realizando 4 backtracks para el problema de tamaño 101 (vs
+    los 25 de la consistencia 1). Sin embargo, el AC-3 tiene una complejidad
+    mas alta que la consistencia 1 (O(nd^3) donde d es el dominio mas grande
+    segun wikipedia), asi que al menos en este problema la consistencia 1 igual
+    sale ganando.
+    '''
 
     # Utilizando minimos conflictos
     # =============================================================================
@@ -122,4 +125,10 @@ if __name__ == "__main__":
     prueba_reinas(16, csp.min_conflictos)
     prueba_reinas(51, csp.min_conflictos)
     prueba_reinas(101, csp.min_conflictos)
-    # prueba_reinas(1000, csp.min_conflictos)
+
+    '''
+    Los minimos conflictos en general fueron mas rapidos para el problema de
+    las n reinas (lo opuesto se encontro para el sudoku), y se encontro que 10
+    repeticiones de minimos conflictos con 1000 repeticiones fue el parametro
+    adecuado para resolver hasta el problema de 101 reinas en un buen tiempo.
+    '''
