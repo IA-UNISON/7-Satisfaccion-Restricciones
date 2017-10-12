@@ -86,8 +86,6 @@ def asignacion_grafo_restriccion(gr, ap=None, consist=1, traza=False):
     if ap is None:
         ap = {}
 
-    # print('a profundidad', len(ap))
-
     if len(ap) == len(gr.dominio):
         return ap.copy()
 
@@ -102,6 +100,7 @@ def asignacion_grafo_restriccion(gr, ap=None, consist=1, traza=False):
             if result:
                 return result
             del ap[var]
+        # Restaurar valores reducidos
         for x, d in reducciones.items():
             gr.dominio[x] |= d
     gr.backtracking += 1
@@ -124,6 +123,14 @@ def ordena_valores(gr, ap, xi):
 
 
 def consistencia(gr, ap, xi, vi, tipo):
+    '''
+    Realiza reducciones en los dominios de los nodos de un grafo de busqueda
+
+    Regresa una tupla (consistente, reducciones), donde:
+        - consistente es un booleano que indica si los dominios son consistentes
+        - reducciones es un diccionario donde las llaves son nodos y los
+          valores son los valores que se eliminaron del dominio correspondiente
+    '''
     reducciones = defaultdict(set)
 
     for x, v in ap.items():
