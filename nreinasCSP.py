@@ -102,11 +102,63 @@ if __name__ == "__main__":
     # ==========================================================================
     # Probar y comentar los resultados del métdo de arco consistencia
     # ==========================================================================
-     prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-     prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-     prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-     prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
-     prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+    #prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    """ 
+     Para 4 reinas
+____________________
+0 = 1
+	1 = 3
+		2 = 0
+			3 = 2
++-+-+-+-+
+| |X| | |
++-+-+-+-+
+| | | |X|
++-+-+-+-+
+|X| | | |
++-+-+-+-+
+| | |X| |
++-+-+-+-+
+Y se realizaron 0 backtrackings
+    
+    """
+    #prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    """
+     Para 8 reinas
+____________________
+0 = 0
+	1 = 3
+0 = 1
+0 = 3
+	1 = 1
+		2 = 4
+			3 = 7
+				4 = 5
+					5 = 0
+						6 = 2
+							7 = 6
++-+-+-+-+-+-+-+-+
+| | | |X| | | | |
++-+-+-+-+-+-+-+-+
+| |X| | | | | | |
++-+-+-+-+-+-+-+-+
+| | | | |X| | | |
++-+-+-+-+-+-+-+-+
+| | | | | | | |X|
++-+-+-+-+-+-+-+-+
+| | | | | |X| | |
++-+-+-+-+-+-+-+-+
+|X| | | | | | | |
++-+-+-+-+-+-+-+-+
+| | |X| | | | | |
++-+-+-+-+-+-+-+-+
+| | | | | | |X| |
++-+-+-+-+-+-+-+-+
+Y se realizaron 3 backtrackings
+    """
+    prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    #prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
+    #prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
 
     # Utilizando minimos conflictos
     # ==========================================================================

@@ -215,7 +215,8 @@ def consistencia(gr, ap, xi, vi, tipo):
                     return None
                 if xa not in dom_red:
                     dom_red[xa] = set({})
-                dom_red[xa] = dom_red[xa].union(temp)
+                    dom_red[xa] = dom_red[xa].union(temp)
+
 
     # Tipo 2: lo ya no tan claramente sensato
     # Al no estar muy bien codificado desde el punto de vista de eficiencia
@@ -226,25 +227,26 @@ def consistencia(gr, ap, xi, vi, tipo):
     # 101 reina, al rededor de 4
     if tipo == 2:
         # Initial domains are made consistent with unary constraints.
-        for each x in X
-            D(x): = {vx in D(x) | R1(x)}
         # 'worklist' contains all arcs we wish to prove consistent or not.
-        worklist: = {(x, y) | there exists a relation R2(x, y) or a relation R2(y, x)}
-        #worklist=deque()
-        worklist=deque([(xj, xi) for xj in gr.vecinos[xi] if xj not in ap])
 
-
-        while(worklist):
-            xa,xb = worklist.popleft()
-            #worklist = worklist - (x,y)
-            if reduceAC3(xa,xb,gr):
+        pendientes = deque([(xj, xi) for xi in gr.vecinos for xj in gr.vecinos[xi] if xj not in ap])
+        while pendientes:
+            xa, xb = pendientes.popleft()
+            temp = reduceAC3(xa, xb, gr)
+            if temp:
                 if not gr.dominio[xa]:
+                    gr.dominio[xa] = temp
+                    for v in dom_red.keys():
+                        gr.dominio[v] = gr.dominio[v].union(dom_red[v])
                     return None
-                else:
-                    #worklist := worklist + { (z, x) | z != y and there exists a relation R2(x, z) or a relation R2(z, x) }
-
+                if xa not in dom_red:
+                    dom_red[xa] = set({})
+                    dom_red[xa] = dom_red[xa].union(temp)
+                    for i in gr.vecinos:
+                        for j in gr.vecinos[i]:
+                            if j != xb:
+                                pendientes.append([j, i])
     return dom_red
-
 
 def reduceAC3(xa, xb, gr):
     reduccion = set([])
@@ -272,4 +274,18 @@ def minimos_conflictos(gr, rep=100):
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
+    """
+    csp, a constraint satisfaction problem
+    max_steps,the number of steps allowed before giving up
+    current_state, an initial assignment of values for the variables in the csp
+    :param gr:
+    :param rep:
+    :return:a solution set of values for the variable or failure
+    for i=1 to max_steps do
+       if current_state is a solution of csp then return current_state
+       var <-- a randomly chosen variable from the set of conflicted variables CONFLICTED[csp]
+       value <-- the value v for var that minimizes CONFLICTS(var,v,current_state,csp)
+       set var = value in current_state
+   return failure
+    """
     raise NotImplementedError("Minimos conflictos  a implementar")
