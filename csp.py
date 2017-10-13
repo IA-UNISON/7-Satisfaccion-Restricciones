@@ -273,9 +273,23 @@ def minimos_conflictos(gr, rep=100):
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
+
     """
-   if current_state is a solution of csp then return current_state
-   var <-- a randomly chosen variable from the set of conflicted variables CONFLICTED[csp]
-   value <-- the value v for var that minimizes CONFLICTS(var,v,current_state,csp)
-   set var = value in current_state"""
+    The M IN -C ONFLICTS algorithm for solving CSPs by local search. The initial
+    state may be chosen randomly or by a greedy assignment process that chooses a minimal-
+    conflict value for each variable in turn. The C ONFLICTS function counts the number of
+    constraints violated by a particular value, given the rest of the current assignment.
+
+    function M IN -C ONFLICTS (csp, max steps) returns a solution or failure
+    inputs: csp, a constraint satisfaction problem
+    max steps, the number of steps allowed before giving up
+    current ← an initial complete assignment for csp
+    for i = 1 to max steps do
+    if current is a solution for csp then return current
+    var ← a randomly chosen conflicted variable from csp.V ARIABLES
+    value ← the value v for var that minimizes C ONFLICTS (var , v , current, csp)
+    set var = value in current
+    return failure"""
+
+
 

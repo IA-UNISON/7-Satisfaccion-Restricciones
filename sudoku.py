@@ -73,12 +73,17 @@ class Sudoku(csp.GrafoRestriccion):
                         for (i, val) in enumerate(pos_ini)}
 
         self.vecinos = {}
-        #x:[x + i for i in range(9) if x != i] +
-        #[x + j * 9 for j in range(9) if x != j] +
-        #[x + i * 9 + y + j * 9 for i in range(3) for j in range(3) if x != i and y != j]for x in enumerate(pos_ini)}
 
-        if not self.vecinos:
-            raise NotImplementedError("Faltan los vecinos")
+        for pos in range(81):
+          i=pos//9
+          j=pos%9
+          print(i, j)
+          lista= [(i*9)+x for x in range(9) if x!=j]
+          lista2=[j+x*9 for x in range(9) if x!=j]
+          lista3=[((i*9)+y)+(j+x*9) for x in range(3) for y in range(3) if x!=i and y!=j]
+          print(lista,lista2,lista3)
+          #self.vecinos[pos]=lista
+          #print(self.vecinos)
 
     def restriccion_binaria(self, xi_vi, xj_vj):
         """
