@@ -19,7 +19,8 @@ En este modulo no es necesario modificar nada.
 __author__ = 'juliowaissman'
 
 from collections import deque
-
+import random
+import time
 
 class GrafoRestriccion(object):
     """
@@ -259,39 +260,45 @@ def min_conflictos(gr, rep=100, maxit=100):
 
 
 def minimos_conflictos(gr, rep=100):
-    # ================================================
-    #    Implementar el algoritmo de minimos conflictos
-    #    y probarlo con las n-reinas
-    # ================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
-"""
-def min_conflictos(gr, rep=100):
-    
     asignación = { x : random.randint(0,len(gr.dominio)-1) for x in gr.dominio }
-    print (asignación)
-    variables_en_conflicto = {}
-    #for i in range(rep):    
-    for x in asignación:
-        num_conf=0
-        for xj in gr.vecinos[x]:
-            for vj in gr.dominio[xj]:
-                #muestra todas las restricciones
-                if not gr.restricción((x, asignación[x]), (xj, vj)) and asignación[xj]==vj:
-                    print("restricción de: ",x,asignación[x]," con: ",xj,vj)
-                    num_conf += 1
-        variables_en_conflicto[x]=num_conf
-        print(variables_en_conflicto)        
-        #print(x -> llave)
-        #print(asignación[x] -> valor)
-        #if xj not in variables_en_conflicto:
-        #    for xj in gr.vecinos[x]:
-        #        print("restricción de: ",x,)
-        #        print(gr.restricción((x, vi), (xj, vj)):)
-  
+    for _ in range(rep):
+        conflictos = False
+        checar = [asignación[x] for x in asignación]
+        random.shuffle(checar)
+        #print(asignación)
+        #checamos si tenemos una asignacion completa
+        for x in checar:
+            modificado = False
+            for a in asignación:
+                if x != a:
+                    if not gr.restriccion((x,asignación[x]),(a,asignación[a])):
+                        num_conflictos(gr,x,asignación)
+                        #seleccionar el menor de los conflictos
+                        conflictos = True
+                        modificado = True
+                        break
+            if modificado:#ya no es completa
+                break
+        #print(conflictos)
+        if not conflictos:
+            return asignación
+    return asignación
+            
+    return None
     # ================================================
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
-    return asignación
     raise NotImplementedError("Minimos conflictos  a implementar")
-"""
+
+def num_conflictos(gr,xa,asignación):
+    lista=[]
+    for d in gr.dominio[xa]:
+        cont=0
+        for xi in gr.vecinos[xa]:
+            for vi in gr.dominio[xi]:
+                #asignación[xi]==vi es donde esta posicionada la x que nos interesa
+                if not gr.restriccion((xa, d), (xi, vi)) and asignación[xi]==vi:
+                    cont+=1
+        lista.append(cont)#agregamos el numero de conflictos
+    asignación[xa]=lista.index(min(lista))#elejimos el minimo de los conflictos
