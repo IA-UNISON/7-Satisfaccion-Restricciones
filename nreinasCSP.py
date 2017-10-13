@@ -71,7 +71,11 @@ class Nreinas(csp.GrafoRestriccion):
 def prueba_reinas(n, metodo, tipo=1, traza=False):
     print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
     g_r = Nreinas(n)
-    asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
+    
+    #if tipo > 0:
+    #    asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
+    #else:
+    asignacion = metodo(g_r)
     if n < 20:
         Nreinas.muestra_asignacion(asignacion)
     else:
@@ -85,7 +89,7 @@ if __name__ == "__main__":
     #prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     #prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     #prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
+    #prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
     #prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
 
     # Utilizando consistencia
@@ -107,7 +111,7 @@ if __name__ == "__main__":
     Se realizaron 47 backtrackings y para consistencia 1 223 en esta tardo
     un poquito mas la consistencia 1.
     """
-    prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
+    #prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
     """
     Se realizaron 92 backtrakings y para consistencia 1 611
     tardaron similar.
@@ -121,9 +125,28 @@ if __name__ == "__main__":
     # ==========================================================================
     # Probar y comentar los resultados del métdo de mínios conflictos
     # ==========================================================================
-    # prueba_reinas(4, csp.min_conflictos)
-    # prueba_reinas(8, csp.min_conflictos)
-    # prueba_reinas(16, csp.min_conflictos)
-    # prueba_reinas(51, csp.min_conflictos)
-    # prueba_reinas(101, csp.min_conflictos)
-    # prueba_reinas(1000, csp.min_conflictos)
+    #prueba_reinas(4, csp.min_conflictos)
+    """
+    Para 4 reinas lo hace bastante rápido
+    """
+    #prueba_reinas(8, csp.min_conflictos)
+    """
+    Para 8 reinas tambien fue muy rápido
+    """
+    #prueba_reinas(16, csp.min_conflictos)
+    """
+    Para 16 ya tardo un poco más
+    """
+    #
+    prueba_reinas(51, csp.min_conflictos)
+    """
+    Tardo muchoooo mas que el AC3 y el tipo 1
+    """
+    #prueba_reinas(101, csp.min_conflictos)
+    """
+    Tardo un buen pero por lo menos ya da solución
+    """
+    #prueba_reinas(1000, csp.min_conflictos)
+    """
+    necesita mas reps para alcanzar a acomodar todas las reinas, tarda un chin...
+    """
