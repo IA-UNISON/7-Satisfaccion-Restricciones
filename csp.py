@@ -279,7 +279,7 @@ def minimos_conflictos(gr, rep=100):
         current_state[var] = random.choice(list(gr.dominio[var]))
 
     conflicted_variables = deque([var for var in current_state.keys() if conflictos(gr, current_state, var,
-                                  current_state[var])])
+                                  current_state[var])is not 0])
 
     for _ in range(rep):
 
@@ -289,26 +289,18 @@ def minimos_conflictos(gr, rep=100):
         var = random.choice(list(conflicted_variables))
         conflicted_variables.remove(var)
 
-        current_state[var] = min(gr.dominio[var], key=lambda val: len(conflictos(gr, current_state, var,
-                                val)))
+        current_state[var] = min(gr.dominio[var], key=lambda val: conflictos(gr, current_state, var,
+                                val))
         
         conflicted_variables = deque([var for var in current_state.keys() if conflictos(gr, current_state, var,
                                   current_state[var])])
-        
-        
-        """new_conflicts = conflictos(gr, current_state, var, current_state[var])
-        if new_conflicts:
-            conflicted_variables.append(var)
-            for x in new_conflicts:
-                if x not in conflicted_variables:
-                    conflicted_variables.append(x)"""
 
     return None
 
 
 def conflictos(gr, cs, var, value):
-    var_conf = []
+    var_conf = 0
     for x in gr.vecinos[var]:
         if not gr.restriccion((var, value), (x, cs[x])):
-            var_conf.append(x)
+            var_conf+=1
     return var_conf    
