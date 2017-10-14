@@ -47,7 +47,7 @@ entonces es que el valor es desconocido.
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Erick López Fimbres'
 
 
 import csp
@@ -66,19 +66,26 @@ class Sudoku(csp.GrafoRestriccion):
         Inicializa el sudoku
         """
         super().__init__()
-
-        self.dominio = {i: [val] if val > 0 else range(1, 10)
+        self.dominio = {i: set([val]) if val > 0 else set(range(1, 10))
                         for (i, val) in enumerate(pos_ini)}
 
-        vecinos = {}
+        self.vecinos = {}
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
-
-        if not vecinos:
+        
+        for z in range(81):
+            i=z//9
+            j=z%9
+     
+            self.vecinos[z] = ({x+(i*9) for x in range (9) if x!=z} |#renglon 
+                    {j+x*9 for x in range(9) if x!=j} |#columna
+                    {3*(r*3 + (i//3)*9 + j//3) + c for r in range(3) for c in range(3)})- {z}#cuadro
+            #quitamos el valor actual ya que no es su vecino con {z}
+        if not self.vecinos:
             raise NotImplementedError("Faltan los vecinos")
 
-    def restriccion_binaria(self, xi_vi, xj_vj):
+    def restriccion(self, xi_vi, xj_vj):
         """
         El mero chuqui. Por favor comenta tu código correctamente
         """
@@ -89,7 +96,9 @@ class Sudoku(csp.GrafoRestriccion):
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
         # =================================================================
-        raise NotImplementedError("Implementa la restricción binaria")
+        return vi != vj
+    
+        #raise NotImplementedError("Implementa la restricción binaria")
 
 
 def imprime_sdk(asignación):

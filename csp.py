@@ -16,11 +16,10 @@ En este modulo no es necesario modificar nada.
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Erick López Fimbres'
 
 from collections import deque
 import random
-import time
 
 class GrafoRestriccion(object):
     """
@@ -83,7 +82,6 @@ def asignacion_grafo_restriccion(gr, ap={}, consist=1, traza=False):
 
     # Selección de variables, el código viene más adelante
     var = selecciona_variable(gr, ap)
-    
     # Los valores se ordenan antes de probarlos
     for val in ordena_valores(gr, ap, var):
 
@@ -265,8 +263,6 @@ def minimos_conflictos(gr, rep=100):
         conflictos = False
         checar = [asignación[x] for x in asignación]
         random.shuffle(checar)
-        #print(asignación)
-        #checamos si tenemos una asignacion completa
         for x in checar:
             modificado = False
             for a in asignación:

@@ -7,7 +7,7 @@ nreinasCSP.py
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Erick López Fimbres'
 
 
 import csp
@@ -68,14 +68,15 @@ class Nreinas(csp.GrafoRestriccion):
             print(interlinea)
 
 
-def prueba_reinas(n, metodo, tipo=1, traza=False):
+def prueba_reinas(n, metodo, tipo=0, traza=False):
     print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
     g_r = Nreinas(n)
     
-    #if tipo > 0:
-    #    asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
-    #else:
-    asignacion = metodo(g_r)
+    if tipo < 1:
+        asignacion = metodo(g_r)
+    else:
+        asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
+        
     if n < 20:
         Nreinas.muestra_asignacion(asignacion)
     else:
@@ -86,7 +87,7 @@ def prueba_reinas(n, metodo, tipo=1, traza=False):
 if __name__ == "__main__":
 
     # Utilizando 1 consistencia
-    #prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+    prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     #prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     #prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     #prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
@@ -98,7 +99,7 @@ if __name__ == "__main__":
     # Probar y comentar los resultados del métdo de arco consistencia
     # ==========================================================================
     
-    #prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     """
     Se realizan 0 backtrackings y con consistencia 1 se realizaron 2 
     """
@@ -125,7 +126,7 @@ if __name__ == "__main__":
     # ==========================================================================
     # Probar y comentar los resultados del métdo de mínios conflictos
     # ==========================================================================
-    #prueba_reinas(4, csp.min_conflictos)
+    prueba_reinas(4, csp.min_conflictos)
     """
     Para 4 reinas lo hace bastante rápido
     """
@@ -138,7 +139,7 @@ if __name__ == "__main__":
     Para 16 ya tardo un poco más
     """
     #
-    prueba_reinas(51, csp.min_conflictos)
+    #prueba_reinas(51, csp.min_conflictos)
     """
     Tardo muchoooo mas que el AC3 y el tipo 1
     """
