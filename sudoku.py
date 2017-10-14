@@ -153,5 +153,5 @@ if __name__ == "__main__":
     imprime_sdk(s2)
     sudoku2 = Sudoku(s2)
     print("Y otro tambien dificil")
-    sol2 = csp.asignacion_grafo_restriccion(sudoku2, consist=2)
+    sol2 = csp.asignacion_grafo_restriccion(sudoku2)
     imprime_sdk(sol2)
