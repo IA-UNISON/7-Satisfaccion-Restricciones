@@ -81,7 +81,8 @@ class Nreinas(csp.GrafoRestriccion):
 def prueba_reinas(n, metodo, tipo=1, traza=False):
     print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
     g_r = Nreinas(n)
-    asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
+    #asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
+    asignacion = metodo(g_r) #minimos conflictos
     if n < 20:
         Nreinas.muestra_asignacion(asignacion)
     else:
@@ -265,7 +266,7 @@ Y se realizaron 3 backtrackings
     [0, 3, 6, 17, 24, 45, 34, 49, 46, 25, 21, 19, 48, 9, 47, 20, 26, 15, 40, 43, 1, 27, 2, 13, 42, 44, 29, 10, 5, 22, 14, 7, 11, 8, 12, 4, 23, 31, 39, 36, 32, 30, 41, 38, 35, 18, 28, 33, 16, 37]
     Y se realizaron 92 backtrackings
     """
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+    #prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
     """
      Para 101 reinas
 ____________________
@@ -276,7 +277,7 @@ Y se realizaron 4 backtrackings
     # ==========================================================================
     # Probar y comentar los resultados del métdo de mínios conflictos
     # ==========================================================================
-    # prueba_reinas(4, csp.min_conflictos)
+    prueba_reinas(4, csp.min_conflictos)
     # prueba_reinas(8, csp.min_conflictos)
     # prueba_reinas(16, csp.min_conflictos)
     # prueba_reinas(51, csp.min_conflictos)

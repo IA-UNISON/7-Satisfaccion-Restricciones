@@ -19,7 +19,7 @@ En este modulo no es necesario modificar nada.
 __author__ = 'juliowaissman'
 
 from collections import deque
-
+import random
 
 class GrafoRestriccion(object):
     """
@@ -260,7 +260,7 @@ def reduceAC3(xa, xb, gr):
     return reduccion
 
 
-def min_conflictos(gr, rep=100, maxit=100):
+def min_conflictos(gr, rep=1, maxit=1):
     for _ in range(maxit):
         a = minimos_conflictos(gr, rep)
         if a is not None:
@@ -268,46 +268,66 @@ def min_conflictos(gr, rep=100, maxit=100):
     return None
 
 
-def minimos_conflictos(gr, rep=100):
+def minimos_conflictos(gr, rep=1):
     """
     The M IN -C ONFLICTS algorithm for solving CSPs by local search. The initial
     state may be chosen randomly or by a greedy assignment process that chooses a minimal-
     conflict value for each variable in turn. The C ONFLICTS function counts the number of
     constraints violated by a particular value, given the rest of the current assignment."""
 
-    asignacion={}
+    current={}
     for i in gr.dominio:
         #se elije una posicion aleatoria en el tablero de las n-reinas
-        aux=random.randit(0,len(gr.dominio[0]))
-        asignacion[i]=aux
+        aux=random.randint(0,len(gr.dominio[0])-1)
+        current[i]=aux
 
-    for j in rep:
+    for j in range(rep):
         #elijo una llave al azar del diccionario current
-        var=random.randit(gr.dominio)
+        print("current inicial: ",current)
+        var=random.randint(0,len(gr.dominio)-1)
+
         #shouffle entre las llaves de asignacion
         #si ___ es solucion entonces se devuelve
-        if isSolucion(asignacion[var],gr):
-            return asignacion[var]
+        if isSolucion(var,current,gr):
+            return current
         #si tiene conflictos entonces se va a minimizar la asignacion a traves de minimizar los conflictos de las reinas en los renglones
-        min=minCon(var,asignacion,gr)
+        min=minCon(var,current,gr)
         #despues solo se le da como nueva solucion para la asignacion actual
-        asignacion[var]=min
+        current[var]=min
+        print("current final: ", current)
+    return None
 
-    return  none
-
-def isSolucion(var,asignacion,gr):
-    for i in asignacion:
+def isSolucion(var,current,gr):
+    #print("entre a isSolucion")
+    for i in current:
         #se checa si la llave actual tiene conflictos con todas las remas reinas en el tablero
-        if(gr.restriccion(asignacion[var],i)):
-            return true
-    return false
+        #if(i!=current[var]):
+            if(gr.restriccion((current[var],i),(var,current[i]))):
+                return False
+    return True
 
-def minCon(var,asignacion,gr):
-    for i in asignacion:
-        #se checa si la llave actual tiene conflictos con todas las remas reinas en el tablero
-        if(gr.restriccion(asignacion[var],i)):
-            aux=random.randit(gr.dominio
-            gr.restriccion(aux if aux!=var))
-    return
+def minCon(var,current,gr):
+    l=[]
+    for i in current:
+            num_restriccion = 0
+            #inicializo un contador para checar el numero de conflictos de la reina actual
+            #j=[i for i in range(len(gr.dominio))]
+            for k in range(len(gr.dominio)):
+                print("k:",k)
+                print((current[var],i),(k,current[i]))
+                if gr.restriccion((current[var],i),(k,current[i])):
+                #si existe conflicto se aumenta el contador
+                    num_restriccion+=1
+            print(num_restriccion)
+            l.append(num_restriccion)
+            print(l)
+            #se guarda el numero de restricciones de la la posicion de la reina
+    print(l)
+    menor = l[0]
+    for i in range(0,len(l)):
+      if l[i]<menor:
+        menor=i
+
+    return menor
 
 
