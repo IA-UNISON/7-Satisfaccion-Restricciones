@@ -19,7 +19,7 @@ En este modulo no es necesario modificar nada.
 __author__ = 'juliowaissman'
 
 from collections import deque
-
+import random
 
 class GrafoRestriccion(object):
     """
@@ -66,7 +66,8 @@ class GrafoRestriccion(object):
         """
         xi, vi = xi_vi
         xj, vj = xj_vj
-        raise NotImplementedError("Método a implementar")
+        #FALTAESTO
+        #raise NotImplementedError("Método a implementar")
 
 
 def asignacion_grafo_restriccion(gr, ap={}, consist=1, traza=False):
@@ -215,7 +216,8 @@ def consistencia(gr, ap, xi, vi, tipo):
                     return None
                 if xa not in dom_red:
                     dom_red[xa] = set({})
-                dom_red[xa] = dom_red[xa].union(temp)
+                    dom_red[xa] = dom_red[xa].union(temp)
+
 
     # Tipo 2: lo ya no tan claramente sensato
     # Al no estar muy bien codificado desde el punto de vista de eficiencia
@@ -225,14 +227,25 @@ def consistencia(gr, ap, xi, vi, tipo):
     # Por ejemplo, para las 4 reinas deben de ser 0 backtrackings y para las
     # 101 reina, al rededor de 4
     if tipo == 2:
-        # ================================================
-        #    Implementar el algoritmo de AC3
-        #    y print()robarlo con las n-reinas
-        # ================================================
-        raise NotImplementedError("AC-3  a implementar")
-
+        # Initial domains are made consistent with unary constraints.
+        # 'worklist' contains all arcs we wish to prove consistent or not.
+        pendientes = deque([(xj, xi) for xj in gr.vecinos[xi] if xj not in ap])
+        while pendientes:
+            x, y = pendientes.popleft()
+            temp = reduceAC3(x, y, gr)
+            if temp:
+                if not gr.dominio[x]:
+                    gr.dominio[x] = temp
+                    for v in dom_red.keys():
+                        gr.dominio[v] = gr.dominio[v].union(dom_red[v])
+                    return None
+                if x not in dom_red:
+                    dom_red[x] = set({}) #se esta agregando la llave x en el diccionario
+                dom_red[x] = dom_red[x].union(temp)
+                for z in gr.vecinos[x]:
+                   if z != y:
+                     pendientes.append([z, x])
     return dom_red
-
 
 def reduceAC3(xa, xb, gr):
     reduccion = set([])
@@ -247,7 +260,7 @@ def reduceAC3(xa, xb, gr):
     return reduccion
 
 
-def min_conflictos(gr, rep=100, maxit=100):
+def min_conflictos(gr, rep=1, maxit=1):
     for _ in range(maxit):
         a = minimos_conflictos(gr, rep)
         if a is not None:
@@ -255,9 +268,59 @@ def min_conflictos(gr, rep=100, maxit=100):
     return None
 
 
-def minimos_conflictos(gr, rep=100):
-    # ================================================
-    #    Implementar el algoritmo de minimos conflictos
-    #    y probarlo con las n-reinas
-    # ================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+def minimos_conflictos(gr, rep=1):
+    """
+    The M IN -C ONFLICTS algorithm for solving CSPs by local search. The initial
+    state may be chosen randomly or by a greedy assignment process that chooses a minimal-
+    conflict value for each variable in turn. The C ONFLICTS function counts the number of
+    constraints violated by a particular value, given the rest of the current assignment."""
+
+    current={}
+    for i in gr.dominio:
+        #se elije una posicion aleatoria en el tablero de las n-reinas
+        aux=random.randint(0,len(gr.dominio[0])-1)
+        current[i]=aux
+
+    for j in range(rep):
+        #elijo una llave al azar del diccionario current
+        #print("current inicial: ",current)
+        var=random.randint(0,len(gr.dominio)-1)
+        print(current)
+        #si es solucion entonces se devuelve el current diccionario
+        if isSolucion(var,current,gr):
+            return current
+        #si tiene conflictos entonces se va a minimizar la asignacion a traves de minimizar los conflictos de las reinas en los renglones
+        min=conflictos(var,current,gr)
+        #despues solo se le da como nueva solucion para la asignacion actual
+        current[var]=min
+    return None
+
+def isSolucion(var,current,gr):
+    aux = 0
+    for i in range(0,len(gr.dominio)):
+        #se checa si la llave actual tiene conflictos con todas las remas reinas en el tablero
+        print(var)
+        if not gr.restriccion((current[var],var),(current[i],i)):
+            aux+=1
+                #return False
+    if(aux!=0):
+        return False
+    else:
+        return True
+
+def conflictos(var,current,gr):
+    l=[]
+    for i in range(len(gr.dominio)):
+            #inicializo un contador para checar el numero de conflictos de la reina actual
+            num_restriccion = 0
+            for k in range(len(gr.dominio)):
+                if not gr.restriccion((current[var],k),(current[i],i)) and i!=k:
+                    num_restriccion+=1
+            l.append(num_restriccion)
+    #se guarda el numero de restricciones de cada posicion de la reina
+    menor = l[0]
+    for i in range(0,len(l)):
+      if l[i]<menor:
+        menor=i
+
+    return menor

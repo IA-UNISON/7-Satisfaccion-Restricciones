@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 sudoku.py
-------------
+---------
 
 Los Sudokus son unos juegos de origen Japones. El juego tiene un
 tablero de 9 x 9 casillas.  En cada casilla se debe asignar un número
@@ -72,13 +72,18 @@ class Sudoku(csp.GrafoRestriccion):
         self.dominio = {i: [val] if val > 0 else range(1, 10)
                         for (i, val) in enumerate(pos_ini)}
 
-        vecinos = {}
-        # =================================================================
-        #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
-        # =================================================================
+        self.vecinos = {}
 
-        if not vecinos:
-            raise NotImplementedError("Faltan los vecinos")
+        for pos in range(81):
+          i=pos//9
+          j=pos%9
+          print(i, j)
+          lista= [(i*9)+x for x in range(9) if x!=j]
+          lista2=[j+x*9 for x in range(9) if x!=j]
+          lista3=[((i*9)+y)+(j+x*9) for x in range(3) for y in range(3) if x!=i and y!=j]
+          print(lista,lista2,lista3)
+          #self.vecinos[pos]=lista
+          #print(self.vecinos)
 
     def restriccion_binaria(self, xi_vi, xj_vj):
         """
@@ -87,12 +92,12 @@ class Sudoku(csp.GrafoRestriccion):
         """
         xi, vi = xi_vi
         xj, vj = xj_vj
-
+        return (vi != vj)
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
         # =================================================================
-        raise NotImplementedError("Implementa la restricción binaria")
+        #raise NotImplementedError("Implementa la restricción binaria")
 
 
 def imprime_sdk(asignación):
