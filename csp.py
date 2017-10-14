@@ -286,15 +286,13 @@ def minimos_conflictos(gr, rep=1):
         #print("current inicial: ",current)
         var=random.randint(0,len(gr.dominio)-1)
         print(current)
-        #shouffle entre las llaves de asignacion
-        #si es solucion entonces se devuelve esta
+        #si es solucion entonces se devuelve el current diccionario
         if isSolucion(var,current,gr):
             return current
         #si tiene conflictos entonces se va a minimizar la asignacion a traves de minimizar los conflictos de las reinas en los renglones
         min=conflictos(var,current,gr)
         #despues solo se le da como nueva solucion para la asignacion actual
         current[var]=min
-        #print("current final: ", current)
     return None
 
 def isSolucion(var,current,gr):
@@ -305,11 +303,9 @@ def isSolucion(var,current,gr):
         if not gr.restriccion((current[var],var),(current[i],i)):
             aux+=1
                 #return False
-    print("aux",aux)
     if(aux!=0):
         return False
     else:
-        print("es solucion")
         return True
 
 def conflictos(var,current,gr):
@@ -318,12 +314,10 @@ def conflictos(var,current,gr):
             #inicializo un contador para checar el numero de conflictos de la reina actual
             num_restriccion = 0
             for k in range(len(gr.dominio)):
-                #print((current[var],var),(current[i],i))
                 if not gr.restriccion((current[var],k),(current[i],i)) and i!=k:
                     num_restriccion+=1
             l.append(num_restriccion)
-    print(l)
-            #se guarda el numero de restricciones de la la posicion de la reina
+    #se guarda el numero de restricciones de cada posicion de la reina
     menor = l[0]
     for i in range(0,len(l)):
       if l[i]<menor:
