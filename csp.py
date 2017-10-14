@@ -19,6 +19,7 @@ En este modulo no es necesario modificar nada.
 __author__ = 'juliowaissman'
 
 from collections import deque
+from random import choice, randint, shuffle
 
 
 class GrafoRestriccion(object):
@@ -210,7 +211,7 @@ def consistencia(gr, ap, xi, vi, tipo):
     # Tipo 1: lo claramente sensato
     # Se ve raro la forma en que lo hice pero es para dejar mas fácil
     # el desarrollo del algoritmo de AC-3,  y dejar claras las diferencias.
-    if tipo == 1:
+    if tipo > 0:
         pendientes = deque( [ (xj, xi) for xj in gr.vecinos[xi] if xj not in ap ] )
         
         while pendientes:
@@ -225,7 +226,8 @@ def consistencia(gr, ap, xi, vi, tipo):
                 if xa not in dom_red:
                     dom_red[xa] = set({})
                 dom_red[xa] = dom_red[xa].union(temp)
-
+                if tipo == 2:
+                    pendientes += deque( [ ( aux, xa) for aux in gr.vecinos[xa] if xa != aux ] )
 
     # Tipo 2: lo ya no tan claramente sensato
     # Al no estar muy bien codificado desde el punto de vista de eficiencia
@@ -234,38 +236,14 @@ def consistencia(gr, ap, xi, vi, tipo):
     #
     # Por ejemplo, para las 4 reinas deben de ser 0 backtrackings y para las
     # 101 reina, al rededor de 4
-    if tipo == 2:
-        # ================================================  
-        #    Implementar el algoritmo de AC3
-        #    y print()robarlo con las n-reinas
-        # ================================================            
-        #param ap: Un diccionario con una asignación parcial
-        #param vi: Un valor que puede tomar xi
-        
-        pendientes = deque( [ (xj, xi) for xj in gr.vecinos[xi] if xj not in ap ] )
-        
-        while pendientes:
-            
-            xa, xb = pendientes.popleft()
-            
-            temp = reduceAC3(xa, xb, gr)
-            
-            if temp:
-                if not gr.dominio[xa]:
-                    
-                    gr.dominio[xa] = temp
-                    
-                    for v in dom_red.keys():
-                        gr.dominio[v] = gr.dominio[v].union(dom_red[v])
-                    
-                    return None
-
-                if xa not in dom_red:
-                    dom_red[xa] = set({})
-                
-                dom_red[xa] = dom_red[xa].union(temp)
-
-                pendientes += deque( [ ( aux, xa) for aux in gr.vecinos[xa] if xa != aux ] )
+    
+    # ================================================  
+    #    Implementar el algoritmo de AC3
+    #    y print()robarlo con las n-reinas
+    # ================================================            
+    #param ap: Un diccionario con una asignación parcial
+    #param vi: Un valor que puede tomar xi
+    
 
 
     return dom_red
@@ -286,6 +264,7 @@ def reduceAC3(xa, xb, gr):
 
 
 def min_conflictos(gr, rep=100, maxit=100 ):
+    
     for _ in range(maxit):
         a = minimos_conflictos( gr, rep )
         if a is not None:
@@ -294,10 +273,37 @@ def min_conflictos(gr, rep=100, maxit=100 ):
     return None
 
 
-def minimos_conflictos(gr, rep=100):
+def minimos_conflictos( gr, rep=100):
     # ================================================
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
-    #raise NotImplementedError("Minimos conflictos  a implementar")
     
+    #---internet-reciclado
+    def ataques(gr, asignacion, x, v ):
+        return sum( 1 for xi in gr.vecinos[x] if not gr.restriccion( (x, v), ( xi, asignacion[xi] ) ) )
+    #-----------
+
+    #ayuda rafa  castillo 
+
+    aux = { x: choice( list( v ) )  for (x, v) in gr.dominio.items() } 
+    
+    for j in range( 0, rep ): 
+        
+        numAtaques = {}
+        for x in aux:
+            numAtaques[x] = ataques(gr, aux, x, aux[x])
+        
+        if not sum( numAtaques.values() ):
+            return aux
+
+        x = choice( [ i for i in numAtaques if numAtaques[i] ] )
+
+        wawa = { v: ataques( gr, aux, x, v ) for v in gr.dominio[x] }
+        
+        mini = min( wawa.values() )
+        
+        aux[x] = choice( [ v for v in wawa if wawa[v] == mini ] )
+
+
+    return None

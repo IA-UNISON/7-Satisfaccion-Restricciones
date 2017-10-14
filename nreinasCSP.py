@@ -78,10 +78,11 @@ class Nreinas(csp.GrafoRestriccion):
             print(interlinea)
 
 
-def prueba_reinas(n, metodo, tipo=1, traza=False):
+def prueba_reinas( n, metodo, tipo=1, traza=False):
     print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
     g_r = Nreinas(n)
-    asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
+    #asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
+    asignacion = metodo( g_r )
     if n < 20:
         Nreinas.muestra_asignacion(asignacion)
     else:
@@ -93,8 +94,8 @@ if __name__ == "__main__":
 
     # Utilizando 1 consistencia
     #prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    #prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+    # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+    # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
     #prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
 
@@ -106,14 +107,14 @@ if __name__ == "__main__":
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
-    #prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+    # prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
 
     # Utilizando minimos conflictos
     # ==========================================================================
     # Probar y comentar los resultados del métdo de mínios conflictos
     # ==========================================================================
     # prueba_reinas(4, csp.min_conflictos)
-    # prueba_reinas(8, csp.min_conflictos)
+    prueba_reinas(8, csp.min_conflictos)
     # prueba_reinas(16, csp.min_conflictos)
     # prueba_reinas(51, csp.min_conflictos)
     # prueba_reinas(101, csp.min_conflictos)
