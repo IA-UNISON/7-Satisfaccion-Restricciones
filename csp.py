@@ -283,51 +283,50 @@ def minimos_conflictos(gr, rep=1):
 
     for j in range(rep):
         #elijo una llave al azar del diccionario current
-        print("current inicial: ",current)
+        #print("current inicial: ",current)
         var=random.randint(0,len(gr.dominio)-1)
-
+        print(current)
         #shouffle entre las llaves de asignacion
         #si ___ es solucion entonces se devuelve
         if isSolucion(var,current,gr):
             return current
         #si tiene conflictos entonces se va a minimizar la asignacion a traves de minimizar los conflictos de las reinas en los renglones
-        min=minCon(var,current,gr)
+        min=conflictos(var,current,gr)
         #despues solo se le da como nueva solucion para la asignacion actual
         current[var]=min
-        print("current final: ", current)
+        #print("current final: ", current)
     return None
 
 def isSolucion(var,current,gr):
-    #print("entre a isSolucion")
-    for i in current:
+    aux = 0
+    for i in range(0,len(gr.dominio)):
         #se checa si la llave actual tiene conflictos con todas las remas reinas en el tablero
-        #if(i!=current[var]):
-            if(gr.restriccion((current[var],i),(var,current[i]))):
-                return False
-    return True
+        #print(var)
+        if not gr.restriccion((current[var],var),(current[i],i)):
+            aux+=1
+                #return False
+    print("aux",aux)
+    if(aux!=0):
+        return False
+    else:
+        print("es solucion")
+        return True
 
-def minCon(var,current,gr):
+def conflictos(var,current,gr):
     l=[]
-    for i in current:
-            num_restriccion = 0
+    for i in range(len(gr.dominio)):
             #inicializo un contador para checar el numero de conflictos de la reina actual
-            #j=[i for i in range(len(gr.dominio))]
+            num_restriccion = 0
             for k in range(len(gr.dominio)):
-                print("k:",k)
-                print((current[var],i),(k,current[i]))
-                if gr.restriccion((current[var],i),(k,current[i])):
-                #si existe conflicto se aumenta el contador
+                #print((current[var],var),(current[i],i))
+                if not gr.restriccion((current[var],k),(current[i],i)):
                     num_restriccion+=1
-            print(num_restriccion)
             l.append(num_restriccion)
-            print(l)
-            #se guarda el numero de restricciones de la la posicion de la reina
     print(l)
+            #se guarda el numero de restricciones de la la posicion de la reina
     menor = l[0]
     for i in range(0,len(l)):
       if l[i]<menor:
         menor=i
 
     return menor
-
-
