@@ -16,10 +16,11 @@ En este modulo no es necesario modificar nada.
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Yocu'
 
 from collections import deque
-
+import random
+import time
 
 class GrafoRestriccion(object):
     """
@@ -69,7 +70,7 @@ class GrafoRestriccion(object):
         raise NotImplementedError("Método a implementar")
 
 
-def asignacion_grafo_restriccion(gr, ap={}, consist=1, traza=False):
+def asignacion_grafo_restriccion(gr, ap=None, consist=1, traza=False):
     """
     Asigación de una solución al grafo de restriccion si existe
     por búsqueda primero en profundidad.
@@ -87,7 +88,8 @@ def asignacion_grafo_restriccion(gr, ap={}, consist=1, traza=False):
              o None si la asignación no es posible.
 
     """
-
+    if ap == None:
+        ap = {}
     #  Checa si la asignación completa y devuelve el resultado de ser el caso
     if set(ap.keys()) == set(gr.dominio.keys()):
         return ap.copy()
@@ -229,8 +231,20 @@ def consistencia(gr, ap, xi, vi, tipo):
         #    Implementar el algoritmo de AC3
         #    y print()robarlo con las n-reinas
         # ================================================
-        raise NotImplementedError("AC-3  a implementar")
-
+        pendientes = deque([(xj, xi) for xj in gr.vecinos[xi] if xj not in ap])
+        while pendientes:
+            xa, xb = pendientes.popleft()
+            temp = reduceAC3(xa, xb, gr)
+            if temp:
+                if not gr.dominio[xa]:
+                    gr.dominio[xa] = temp
+                    for v in dom_red.keys():
+                        gr.dominio[v] = gr.dominio[v].union(dom_red[v])
+                    return None
+                if xa not in dom_red:
+                    dom_red[xa] = set({})
+                dom_red[xa] = dom_red[xa].union(temp)
+                pendientes += deque([(z, xa) for z in gr.vecinos[xa] if xa !=z])
     return dom_red
 
 
@@ -261,3 +275,36 @@ def minimos_conflictos(gr, rep=100):
     #    y probarlo con las n-reinas
     # ================================================
     raise NotImplementedError("Minimos conflictos  a implementar")
+    asignacion = { x : random.randint(0,len(gr.dominio)-1) for x in gr.dominio }
+    for _ in range(rep):
+        conflictos = False
+        check = [asignacion[x] for x in asignacion]
+        random.shuffle(check)
+        for x in check:
+            modificado = False
+            for a in asignacion:
+                if x != a:
+                    if not gr.restriccion((x,asignacion[x]),(a,asignacion[a])):
+                        num_conflic(gr,x,asignacion)
+                        conflictos = True
+                        modificado = True
+                        break
+            if modificado:
+                break
+        if not conflictos:
+            return asignacion
+    return asignacion
+            
+    return None
+
+def num_conflic(gr,xa,asignación):
+    lista=[]
+    for d in gr.dominio[xa]:
+        cont=0
+        for xi in gr.vecinos[xa]:
+            for vi in gr.dominio[xi]:
+                #asignación[xi]==vi es donde esta posicionada la x que nos interesa
+                if not gr.restriccion((xa, d), (xi, vi)) and asignación[xi]==vi:
+                    cont+=1
+        lista.append(cont)#agregamos el numero de conflictos
+    asignación[xa]=lista.index(min(lista))

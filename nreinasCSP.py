@@ -7,7 +7,7 @@ nreinasCSP.py
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Yocu'
 
 
 import csp
@@ -96,6 +96,7 @@ if __name__ == "__main__":
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
+    # no tarda nada pero realiza mucho backtracking
     prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
 
     # Utilizando consistencia
@@ -105,7 +106,7 @@ if __name__ == "__main__":
     # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
+    # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2) 
     prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
 
     # Utilizando minimos conflictos
@@ -118,3 +119,4 @@ if __name__ == "__main__":
     # prueba_reinas(51, csp.min_conflictos)
     # prueba_reinas(101, csp.min_conflictos)
     # prueba_reinas(1000, csp.min_conflictos)
+    # tarda mucho mas con el tipo 2 pero se realizan mucho menos backtrackings

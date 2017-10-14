@@ -47,7 +47,7 @@ entonces es que el valor es desconocido.
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Yocu'
 
 
 import csp
@@ -69,15 +69,17 @@ class Sudoku(csp.GrafoRestriccion):
         """
         super().__init__()
 
-        self.dominio = {i: [val] if val > 0 else range(1, 10)
-                        for (i, val) in enumerate(pos_ini)}
+        self.dominio = {i: {val} if val > 0 else set(range(1, 10)) for (i, val) in enumerate(pos_ini)}
 
-        vecinos = {}
+        self.vecinos = {}
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
-
-        if not vecinos:
+        for k in self.dominio.keys():
+            self.vecinos[k] = ({k/9*9+i for i in range(0,9)} | 
+                           {(k%9)+9*i for i in range(0,9)} | {k/27*27 + 9*i + (k%9)/3*3 + j for i in range(0, 3) 
+                                        for j in range(0,3)}) - {k}
+        if not self.vecinos:
             raise NotImplementedError("Faltan los vecinos")
 
     def restriccion_binaria(self, xi_vi, xj_vj):
@@ -91,9 +93,8 @@ class Sudoku(csp.GrafoRestriccion):
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
-        # =================================================================
-        raise NotImplementedError("Implementa la restricción binaria")
-
+        # =================================================================    
+        return vi != vj
 
 def imprime_sdk(asignación):
     """
