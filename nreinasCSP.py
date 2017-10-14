@@ -77,45 +77,116 @@ class Nreinas(csp.GrafoRestriccion):
             print(linea)
             print(interlinea)
 
-            
-def prueba_reinas(n, metodo, tipo=1, traza=False):
+
+def prueba_reinas(n, metodo, tipo=1, traza=False, dibujar = True):
     print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
     g_r = Nreinas(n)
     asignación = metodo(g_r, ap={}, consist=tipo, traza=traza)
-    if n < 20:
+    if dibujar:
         Nreinas.muestra_asignación(asignación)
     else:
         print([asignación[i] for i in range(n)])
-    print("Y se realizaron {} backtrackings".format(g_r.backtracking))
 
+    print("Y se realizaron {} backtrackings".format(g_r.backtracking))
+def prueba_reinas2(n, metodo, dibujar=True):
+    print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
+    g_r = Nreinas(n)
+    asignación = metodo(g_r)
+    if dibujar:
+        Nreinas.muestra_asignación(asignación)
+    else:
+        print([asignación[i] for i in range(n)])
 
 if __name__ == "__main__":
 
     # Utilizando 1 consistencia
-    prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    prueba_reinas(16, csp.asignacion_grafo_restriccion, tipo=1)
-    prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
+    import time
 
+    '''
+    start = time.time()
+    prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+    end = time.time()
+    print(end - start, " segundos 1 cons 4 reinas")
+    prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+    start = time.time()
+    print(start - end, " segundos 1 cons 8 reinas")
+    prueba_reinas(16, csp.asignacion_grafo_restriccion, tipo=1)
+    end = time.time()
+    print(end-start , " segudno 1 cons 16 reinas")
+    prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
+    start = time.time()
+    print(start-end, " segundos 1 cons 50 reinas")
+    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
+    4  0.00111s y 2  backtracking
+    8  0.00300s y 19 backtracking
+    16 0.02501s y 55 backtracking
+    50 1.17935s y 16 backtracking
+    101 NO RESULTADOS TIEMPO ACEPTABLE
+    '''
     # Utilizando consistencia
     #=============================================================================
     # 25 puntos: Probar y comentar los resultados del métdo de arco consistencia
     #=============================================================================
-    # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    #prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    #
+    prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, tipo=2)
     # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
     # prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+    '''
+    start = time.time()
+    prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    end = time.time()
+    print(end - start, " segundos 2 cons 4 reinas")
+    prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    start = time.time()
+    print(start - end, " segundos 2 cons 8 reinas")
+    prueba_reinas(16, csp.asignacion_grafo_restriccion, tipo=2)
+    end = time.time()
+    print(end-start , " segudno 2 cons 16 reinas")
+    prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
+    start = time.time()
+    print(start-end, " segundos 2 cons 50 reinas")
+    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+    4  0.00132s y 0  backtracking
+    8  0.01000s y 8  backtracking
+    16 0.05503s y 6  backtracking
+    50  NO RESULTADOS TIEMPO ACEPTABLE
+    101 NO RESULTADOS TIEMPO ACEPTABLE
 
-
+    Generamos menos backtracking pero al costo de que el tiempo de computo
+    es mucho mas lento que con consistencia sencilla
+    '''
     # Utilizando minimos conflictos
     #=============================================================================
     # 25 puntos: Probar y comentar los resultados del métdo de mínios conflictos
     #=============================================================================
-    #prueba_reinas(4, csp.min_conflictos)
-    #prueba_reinas(8, csp.min_conflictos)
-    #prueba_reinas(16, csp.min_conflictos)
-    #prueba_reinas(51, csp.min_conflictos)
-    #prueba_reinas(101, csp.min_conflictos)
-    #prueba_reinas(1000, csp.min_conflictos)
+    '''
+    start = time.time()
+    prueba_reinas2(4, csp.min_conflictos)
+    end = time.time()
+    print(end-start, "s 4 reinas")
+    prueba_reinas2(8, csp.minimos_conflictos)
+    start = time.time()
+    print(start-end,"s 8 reinas")
+    prueba_reinas2(16, csp.min_conflictos)
+    end = time.time()
+    print(end-start, "s 16 reinas")
+    prueba_reinas2(51, csp.min_conflictos)
+    start = time.time()
+    print(start-end,"s 8 reinas")
+    prueba_reinas2(101, csp.min_conflictos)
+    end = time.time()
+    print(end-start, "s 101 reinas")
+    prueba_reinas2(1000, csp.min_conflictos)
+    start = time.time()
+    print(start-end,"s 1000 reinas")
+    4       0.02001s
+    8       0.00800s
+    16      0.02953s
+    51      0.26118s
+    101     1.02535s
+    1000    NO RESULTADOS TIEMPO ACEPTABLE
+
+    Este metodo para este problema es mucho mas veloz
+    '''

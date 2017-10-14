@@ -139,12 +139,80 @@ def consistencia(gr, ap, xi, vi, tipo):
                 if len(dominio[xj]) == len(gr.dominio[xj]):
                     return None
         return dominio
+    '''
+    ESTE CODIGO DE WIKIPEDIA ES PERFECTO FACIL DE ENTENDERE Y MUY INTITUIVO
+    APARTE DE ESTO EL PSEUDOCODIGO QUE SE MANEJA ES PRACTICAMENTE POCOS CAMBIOS
+    A LA SINTAXIS DE PYTHON 2
+    DEJO EL CODIGO Y LA REFERENCIA PARA FUTURAS GENERACIONES
+    https://en.wikipedia.org/wiki/AC-3_algorithm
+   Input:
+   A set of variables X
+   A set of domains D(x) for each variable x in X. D(x) contains vx0, vx1... vxn, the possible values of x
+   A set of unary constraints R1(x) on variable x that must be satisfied
+   A set of binary constraints R2(x, y) on variables x and y that must be satisfied
+
+ Output:
+   Arc consistent domains for each variable.
+
+ function ac3 (X, D, R1, R2)
+ // Initial domains are made consistent with unary constraints.
+     for each x in X
+         D(x) := { vx in D(x) | R1(x) }
+     // 'worklist' contains all arcs we wish to prove consistent or not.
+     worklist := { (x, y) | there exists a relation R2(x, y) or a relation R2(y, x) }
+
+     do
+         select any arc (x, y) from worklist
+         worklist := worklist - (x, y)
+         if arc-reduce (x, y)
+             if D(x) is empty
+                 return failure
+             else
+                 worklist := worklist + { (z, x) | z != y and there exists a relation R2(x, z) or a relation R2(z, x) }
+     while worklist not empty
+
+ function arc-reduce (x, y)
+     bool change = false
+     for each vx in D(x)
+         find a value vy in D(y) such that vx and vy satisfy the constraint R2(x, y)
+         if there is no such vy {
+             D(x) := D(x) - vx
+             change := true
+         }
+     return change'''
     if tipo == 2:
-        raise NotImplementedError("AC-3  a implementar")
-        # ================================================
-        #    Implementar el algoritmo de AC3
-        #    y probarlo con las n-reinas
-        # ================================================
+        worklist = {(j, xi) for j in gr.vecinos[xi]}
+        dominio[xi] = set(gr.dominio[xi]) - {vi}
+        while worklist:
+            i, j = worklist.pop()
+            #si no se puede reducir el arco continuamos con el siguiente
+            if arc_reduce(gr, dominio, i, j):
+                if dominio[i] and not set(gr.dominio[i]) - dominio[i]:
+                    return None
+                else:
+                    worklist |= {(i, k) for k in gr.vecinos[i] if k != j }
+        return dominio
+
+def arc_reduce(gr, dominio, x, y):
+    change = False
+    remove = set()
+    dominio_x = set(gr.dominio[x]) - (dominio[x] if x in dominio else remove)
+    #produce todo el dominio de x y aqui abajo se procesa la reduccion
+    for vx in dominio_x:
+        flag = False
+        dominio_y = set(gr.dominio[y]) - (dominio[y] if y in dominio else set())
+        #produce todo el dominio de y y aqui abajo se procesa la reduccion
+        for vy in dominio_y:
+            if gr.restricción((x, vx), (y, vy)):
+                flag = True
+                break
+        if not flag:
+            remove.add(vx)
+            change = True
+    if change:
+        dominio[x] = dominio[x] | remove if x in dominio else remove
+        #aqui remuevo todo lo necesario del dominio
+    return change
 
 
 def min_conflictos(gr, rep=100, maxit=100):
@@ -160,4 +228,39 @@ def minimos_conflictos(gr, rep=100):
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
+    import random
+    a = {i: random.choice(list(gr.dominio[i])) for i in gr.dominio}
+    b = []
+    for i in a.keys():
+        for x in gr.vecinos[i]:#yo se que esto es muy poco elegante
+            if not gr.restricción((i,a[i]), (x, a[x])):
+                b.append(i)
+                break
+    for _ in range(rep):
+        if not b:
+            return a
+        i = b.pop()
+        #print(i)
+        def contar_conflictos(gr, ap, xi, vi):
+            #se imaginan que esta funcion la hubiera puesto antes y que generara
+            #me diera listas de conflictos en lugar del numero de conflictos?
+            #me hubiera ahorrado lineas de codigo y dolores de cabez
+            acc = 0
+            for xj in gr.vecinos[xi]:
+                if not gr.restricción((xi, vi), (xj, ap[xj])):
+                    acc += 1
+            #print(acc)
+            return acc
+        a[i] = min(gr.dominio[i],key=lambda x:contar_conflictos(gr, a, i, x))
+        #print(a[i])
+        conflictos_de_i = []
+        for x in gr.vecinos[i]:#esto tampoco es elegante porque es practicamente lo mismo de arriba
+            if not gr.restricción((i, a[i]), (x,a[x])):
+                conflictos_de_i.append(x)
+        if conflictos_de_i:
+            b.insert(0, i)
+            for j in conflictos_de_i:
+                if j not in b:
+                    b.append(j)
+    return a
     raise NotImplementedError("Minimos conflictos  a implementar")
