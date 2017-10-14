@@ -19,6 +19,7 @@ En este modulo no es necesario modificar nada.
 __author__ = 'juliowaissman'
 
 from collections import deque
+from random import shuffle , choice
 
 
 class GrafoRestriccion(object):
@@ -228,8 +229,21 @@ def consistencia(gr, ap, xi, vi, tipo):
         # ================================================
         #    Implementar el algoritmo de AC3
         #    y print()robarlo con las n-reinas
+        pendientes = deque([(xj, xi) for xj in gr.vecinos[xi] if xj not in ap])
+        while pendientes:
+            xa, xb = pendientes.popleft()
+            temp = reduceAC3(xa, xb, gr)
+            if temp:
+                if not gr.dominio[xa]:
+                    gr.dominio[xa] = temp
+                    for v in dom_red.keys():
+                        gr.dominio[v] = gr.dominio[v].union(dom_red[v])
+                    return None
+                if xa not in dom_red:
+                    dom_red[xa] = set({})
+                dom_red[xa] = dom_red[xa].union(temp)
+                pendientes.extend((j, xa) for j in gr.vecinos[xa] if j not in ap and j is not xa)
         # ================================================
-        raise NotImplementedError("AC-3  a implementar")
 
     return dom_red
 
@@ -259,5 +273,37 @@ def minimos_conflictos(gr, rep=100):
     # ================================================
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
+    estado_actual = {}
+    lista = list(gr.dominio[0])
+    shuffle(lista)
+    for var in gr.dominio.keys():
+        estado_actual[var] = lista.pop()
+    
+    conflicto_variables = deque([var for var in estado_actual.keys() if conflictos(gr, estado_actual, var, 
+                                  estado_actual[var])])
+    
+    for _ in range(rep):
+        
+        if not conflicto_variables:
+            return estado_actual
+        
+        var = choice(conflicto_variables)
+   
+        estado_actual[var] = min(gr.dominio[var], key=lambda val: len(conflictos(gr, estado_actual, var,
+                                val)))
+      
+        conflicto_variables = deque([var for var in estado_actual.keys() if conflictos(gr, estado_actual, var, 
+                                  estado_actual[var])])
+      
+        
+    return None
+        
     # ================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+
+
+def conflictos(gr, cs, var, value):
+    var_conf = []
+    for x in gr.vecinos[var]:
+        if not gr.restriccion((var, value), (x, cs[x])):
+            var_conf.append(x)
+    return var_conf
