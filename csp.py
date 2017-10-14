@@ -53,7 +53,8 @@ class GrafoRestriccion(object):
         """
         xi, vi = xi_vi
         xj, vj = xj_vj
-        raise NotImplementedError("Método a implementar")
+        return vj!=vi
+        #raise NotImplementedError("Método a implementar")
 
 
 def asignacion_grafo_restriccion(gr, ap={}, consist=1, traza=False):

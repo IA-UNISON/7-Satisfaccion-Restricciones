@@ -89,6 +89,8 @@ class Sudoku(csp.GrafoRestriccion):
           self.vecinos.append(set(vecino))
         #print(self.vecinos)
 
+        """Para hacer los vecinos primero agregue a la lista sus vecinos horizontales, despues los verticales y despues los que estan en su mismo cuadrado"""
+
 
     def restriccion_binaria(self, xi_vi, xj_vj):
         """
