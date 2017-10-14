@@ -76,11 +76,21 @@ class Sudoku(csp.GrafoRestriccion):
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
+        for i in range(0, 81):
+            c = int(i / 9)
+            r = int(i % 9)
+            a = int(c / 3)
+            b = int(r / 3)
+            vecinos[i] = ([int(r + x * 9) for x in range(9) if x != c] +
+                              [int(9 * c + x) for x in range(9) if x != r] +
+                              [(3*(x*3 + a*9 + b) + y) for x in range(0,3) for y in range(0,3) if a*3+x != c or b*3+y != r])
+            vecinos[i] = set(vecinos[i])
 
-        if not vecinos:
-            raise NotImplementedError("Faltan los vecinos")
+        self.vecinos = vecinos
+        # if not vecinos:
+        #    raise NotImplementedError("Faltan los vecinos")
 
-    def restriccion_binaria(self, xi_vi, xj_vj):
+    def restriccion(self, xi_vi, xj_vj):
         """
         El mero chuqui. Por favor comenta tu código correctamente
 
@@ -92,7 +102,8 @@ class Sudoku(csp.GrafoRestriccion):
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
         # =================================================================
-        raise NotImplementedError("Implementa la restricción binaria")
+        return xi != xj
+        # raise NotImplementedError("Implementa la restricción binaria")
 
 
 def imprime_sdk(asignación):

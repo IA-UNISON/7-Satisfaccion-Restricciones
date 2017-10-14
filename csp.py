@@ -225,11 +225,28 @@ def consistencia(gr, ap, xi, vi, tipo):
     # Por ejemplo, para las 4 reinas deben de ser 0 backtrackings y para las
     # 101 reina, al rededor de 4
     if tipo == 2:
+        if tipo == 2:
+            worklist = deque([])
+            for nodo in gr.vecinos:
+                worklist.extend(([(xj, nodo) for xj in gr.vecinos[nodo] if xj not in ap]))
+            while worklist:
+                xa, xb = worklist.popleft()
+                red = reduceAC3(xa, xb, gr)
+                if xa not in dom_red:
+                    dom_red[xa] = set({})
+                dom_red[xa] = dom_red[xa].union(red)
+                if red:
+                    if not gr.dominio[xa]:
+                        for a in dom_red:
+                            gr.dominio[a] = gr.dominio[a].union(dom_red[a])
+                        return None
+                    else:
+                        worklist.extend([(xj, xa) for xj in gr.vecinos[xa] if xj != xb])
         # ================================================
         #    Implementar el algoritmo de AC3
         #    y print()robarlo con las n-reinas
         # ================================================
-        raise NotImplementedError("AC-3  a implementar")
+        # raise NotImplementedError("AC-3  a implementar")
 
     return dom_red
 
@@ -260,4 +277,24 @@ def minimos_conflictos(gr, rep=100):
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+    qt = {}
+    qtAux = {}
+
+    for x in gr.dominio:
+        qt[x] = choice(list(gr.dominio[x]))
+    for i in range(1, rep):
+        qtFails = {}
+        for nodo in qt:
+            qtAux[nodo] = [gr.restriccion((xj, qt[xj]), (nodo, qt[nodo])) for xj in gr.vecinos[nodo]]
+            if not all(qtAux[nodo]):
+                qtFails[nodo] = True
+        if qtFails:
+            nya = choice(list(qtFails.keys()))
+            shuffleado = list(gr.dominio[nya])
+            shuffle(shuffleado)
+            nyamenor = min(shuffleado,
+                           key=lambda x: len([v for v in gr.vecinos[nya] if not gr.restriccion((nya, x), (v, qt[v]))]))
+            qt[nya] = nyamenor
+        else:
+            return qt
+    # raise NotImplementedError("Minimos conflictos  a implementar")
