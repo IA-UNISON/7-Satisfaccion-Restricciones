@@ -97,8 +97,7 @@ class Sudoku(csp.GrafoRestriccion):
         # (restricciones entre variables vecinas)
         # =================================================================
         return vi != vj
-    
-        #raise NotImplementedError("Implementa la restricción binaria")
+        raise NotImplementedError("Implementa la restricción binaria")
 
 
 def imprime_sdk(asignación):
