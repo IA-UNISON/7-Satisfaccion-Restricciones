@@ -287,7 +287,7 @@ def minimos_conflictos(gr, rep=1):
         var=random.randint(0,len(gr.dominio)-1)
         print(current)
         #shouffle entre las llaves de asignacion
-        #si ___ es solucion entonces se devuelve
+        #si es solucion entonces se devuelve esta
         if isSolucion(var,current,gr):
             return current
         #si tiene conflictos entonces se va a minimizar la asignacion a traves de minimizar los conflictos de las reinas en los renglones
@@ -301,7 +301,7 @@ def isSolucion(var,current,gr):
     aux = 0
     for i in range(0,len(gr.dominio)):
         #se checa si la llave actual tiene conflictos con todas las remas reinas en el tablero
-        #print(var)
+        print(var)
         if not gr.restriccion((current[var],var),(current[i],i)):
             aux+=1
                 #return False
@@ -319,7 +319,7 @@ def conflictos(var,current,gr):
             num_restriccion = 0
             for k in range(len(gr.dominio)):
                 #print((current[var],var),(current[i],i))
-                if not gr.restriccion((current[var],k),(current[i],i)):
+                if not gr.restriccion((current[var],k),(current[i],i)) and i!=k:
                     num_restriccion+=1
             l.append(num_restriccion)
     print(l)
