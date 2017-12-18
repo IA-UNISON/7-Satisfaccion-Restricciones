@@ -13,7 +13,7 @@ las casillas no asignadas anteriormente si se considera que:
 
     a) Las casillas horizontales deben tener números diferentes entre si
     b) Las casillas verticales deben tener números diferentes entre si
-    c) Las casillas que pertenecen al mismo grupo deben tener números
+    c) Las casillas que pertenecen al mismo grupo deben tener números 
        diferentes entre si.
 
 Sea (r1, c1) el renglon y la columna de una casilla y (r2, c2) el
@@ -47,7 +47,7 @@ entonces es que el valor es desconocido.
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Temoc'
 
 
 import csp
@@ -59,31 +59,34 @@ class Sudoku(csp.GrafoRestriccion):
     variables están dadas desde 0 hasta 81 (un vector) tal como dice
     arriba. No modificar nada de lo escrito solamente agregar su
     código.
-
     """
 
     def __init__(self, pos_ini):
         """
         Inicializa el sudoku
-
         """
         super().__init__()
-
-        self.dominio = {i: [val] if val > 0 else range(1, 10)
+        self.dominio = {i: set([val]) if val > 0 else set(range(1, 10))
                         for (i, val) in enumerate(pos_ini)}
 
-        vecinos = {}
+        self.vecinos = {}
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
-
-        if not vecinos:
+        
+        for valor in range(81):
+            columna=valor%9
+            renglon=valor//9
+            
+            self.vecinos[valor] = ({z for z in range(81) if ((z%9==columna) or (z//9==renglon) and (z!=valor))}|#renglones y columnas
+                    {3*(r*3 + (renglon//3)*9 + columna//3) + c for r in range(3) for c in range(3)})- {valor}#esto verifica los cuadrados
+            #quitamos el valor actual ya que no es su vecino con {valor}
+        if not self.vecinos:
             raise NotImplementedError("Faltan los vecinos")
 
-    def restriccion_binaria(self, xi_vi, xj_vj):
+    def restriccion(self, xi_vi, xj_vj):
         """
         El mero chuqui. Por favor comenta tu código correctamente
-
         """
         xi, vi = xi_vi
         xj, vj = xj_vj
@@ -92,6 +95,7 @@ class Sudoku(csp.GrafoRestriccion):
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
         # =================================================================
+        return vi != vj#:O
         raise NotImplementedError("Implementa la restricción binaria")
 
 
@@ -100,7 +104,6 @@ def imprime_sdk(asignación):
     Imprime un sudoku en pantalla en forma más o menos graciosa. Esta
     función solo sirve para la tarea y para la revisión de la
     tarea. No modificarla por ningun motivo.
-
     """
     s = [asignación[i] for i in range(81)]
     rayita = '\n-------------+----------------+---------------\n'
