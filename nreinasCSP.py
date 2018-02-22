@@ -7,7 +7,7 @@ nreinasCSP.py
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Adrian Emilio Vazquez Icedo'
 
 
 import csp
