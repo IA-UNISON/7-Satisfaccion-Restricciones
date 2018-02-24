@@ -19,7 +19,8 @@ En este modulo no es necesario modificar nada.
 __author__ = 'juliowaissman'
 
 from collections import deque
-
+from random import sample, shuffle
+from math import inf
 
 class GrafoRestriccion(object):
     """
@@ -262,7 +263,7 @@ def reduceAC3(xa, xb, gr):
     return reduccion
 
 
-def min_conflictos(gr, rep=100, maxit=100):
+def min_conflictos(gr, rep=100, maxit=1000):
     for _ in range(maxit):
         a = minimos_conflictos(gr, rep)
         if a is not None:
@@ -275,4 +276,56 @@ def minimos_conflictos(gr, rep=100):
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+    asignacion = asignacion_aleatoria(gr)
+    variables = list(gr.dominio.keys())
+
+    for _ in range(rep):
+        shuffle(variables)
+        for v in variables:
+            if hay_conflictos(v, asignacion[v], gr, asignacion):
+                asignacion[v] = calcular_valor_min_conf(v, gr, asignacion)
+                break
+        else:
+            return asignacion
+    return None
+
+def asignacion_aleatoria(gr):
+    """
+    Regresa un diccionario con una asignación aleatoria de las
+    variables de gr.
+
+    @param gr: Gráfica de restricciones.
+    """
+    return {var:sample(gr.dominio[var], 1)[0] for var in gr.dominio.keys()}
+
+def hay_conflictos(var, valor, gr, asignacion):
+    """
+    Regresa True si existe al menos un conflicto entre el valor de var
+    y las restricciones que debe cumplir.
+
+    @param var: Variable a revisar.
+    @param valor: Valor asignado de var.
+    @param gr: Gráfica de restricciones de var.
+    @param asignacion: Asignación del resto de las variables.
+    """
+    for vecino in gr.vecinos[var]:
+        if not gr.restriccion((var, valor), (vecino, asignacion[vecino])):
+            return True
+    return False
+
+def calcular_valor_min_conf(var, gr, asignacion):
+    """
+    Revisa cada valor del dominio de una variable y regresa el que causa
+    mínimos conflictos.
+
+    @param var: Variable que ocupa un valor.
+    @param gr: Gráfica de restricciones de var.
+    @asignacion: Asignación actual de las variables de gr.
+    """
+    min_conflictos = inf
+
+    for elemento in gr.dominio[var]:
+        # Cuenta todos los conflictos si var = elemento.
+        if sum([1 for vecino in gr.vecinos[var] if not gr.restriccion((var, elemento), (vecino, asignacion[vecino]))]) < min_conflictos:
+            valor = elemento
+    return valor
