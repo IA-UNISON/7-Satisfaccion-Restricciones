@@ -69,21 +69,33 @@ class Sudoku(csp.GrafoRestriccion):
         """
         super().__init__()
 
+        # El dominio tuvo que ser reprogramado para que se asignaran dominios
+        # en vez de generadores.
         self.dominio = {i: {val} if val > 0 else {i for i in range(1, 10)}
                         for (i, val) in enumerate(pos_ini)}
 
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
-        
+
         def calcular_vecino_grupo(pos, r, c):
+            """
+            Calcula los vecinos del mismo grupo de una celda del sudoku. Solo calcula
+            los cuatro vecinos que no están en las líneas horizontal ni vertical.
+
+            @param pos: Celda del sudoku de la cual se quieren calcular sus vecinos.
+            @param r: Renglón de la celda.
+            @param c: Columna de la celda.
+            """
+            # Cuando la celda está en el primer renglón de su grupo.
             if r % 3 == 0:
-                if c % 3 == 0:
+                if c % 3 == 0: # Primera columna.
                     return {pos+10, pos+11, pos+19, pos+20}
-                elif c % 3 == 1:
+                elif c % 3 == 1: # Segunda columna.
                     return {pos+8, pos+10, pos+17, pos+19}
-                else:
+                else: # Tercera columna.
                     return {pos+7, pos+8, pos+16, pos+17}
+            # Cuando la celda está en el segundo renglón de su grupo.
             elif r % 3 == 1:
                 if c % 3 == 0:
                     return {pos-8, pos-7, pos+10, pos+11}
@@ -91,6 +103,7 @@ class Sudoku(csp.GrafoRestriccion):
                     return {pos-10, pos-8, pos+8, pos+10}
                 else:
                     return {pos-10, pos-11, pos+7, pos+8}
+            # Cuando la celda está en el tercer renglón de su grupo.
             else:
                 if c % 3 == 0:
                     return {pos-17, pos-16, pos-8, pos-7}
@@ -104,10 +117,12 @@ class Sudoku(csp.GrafoRestriccion):
         self.vecinos = {}
 
         for i in range(81):
+            # Se recorren las columnas y renglones del sudoku.
             if i % 9 == 0:
                 c = 0
                 if i > 0: r += 1
 
+            # Se generan los vecinos horizontales, luego los verticales y al final los del mismo grupo.
             self.vecinos[i] = {j for j in range(r*9, r*9+9) if j != i}.union({j for j in range(c, 80-7+c, 9) if j != i}.union(calcular_vecino_grupo(i, r, c)))
             c += 1
 
@@ -123,6 +138,8 @@ class Sudoku(csp.GrafoRestriccion):
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
         # =================================================================
+        # Solo se revisa que las dos celdas tengan un valor distinto para que la
+        # solución sea válida.
         return vi != vj
 
 def imprime_sdk(asignación):
