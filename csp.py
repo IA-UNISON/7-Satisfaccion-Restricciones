@@ -95,7 +95,7 @@ def asignacion_grafo_restriccion(gr, ap={}, consist=1, traza=False):
 
     # Selección de variables, el código viene más adelante
     var = selecciona_variable(gr, ap)
-
+    
     # Los valores se ordenan antes de probarlos
     for val in ordena_valores(gr, ap, var):
 
@@ -140,6 +140,7 @@ def selecciona_variable(gr, ap):
 
     """
     # Si no hay variables en la asignación parcial, se usa el grado heurístico
+    #print(gr.vecinos)
     if len(ap) == 0:
         return max(gr.dominio.keys(), key=lambda v: len(gr.vecinos[v]))
     # Si hay variables, entonces se selecciona

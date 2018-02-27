@@ -69,18 +69,49 @@ class Sudoku(csp.GrafoRestriccion):
         """
         super().__init__()
 
-        self.dominio = {i: [val] if val > 0 else range(1, 10)
+        self.dominio = {i: {val} if val > 0 else {i for i in range(1, 10)}
                         for (i, val) in enumerate(pos_ini)}
 
-        vecinos = {}
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
+        
+        def calcular_vecino_grupo(pos, r, c):
+            if r % 3 == 0:
+                if c % 3 == 0:
+                    return {pos+10, pos+11, pos+19, pos+20}
+                elif c % 3 == 1:
+                    return {pos+8, pos+10, pos+17, pos+19}
+                else:
+                    return {pos+7, pos+8, pos+16, pos+17}
+            elif r % 3 == 1:
+                if c % 3 == 0:
+                    return {pos-8, pos-7, pos+10, pos+11}
+                elif c % 3 == 1:
+                    return {pos-10, pos-8, pos+8, pos+10}
+                else:
+                    return {pos-10, pos-11, pos+7, pos+8}
+            else:
+                if c % 3 == 0:
+                    return {pos-17, pos-16, pos-8, pos-7}
+                elif c % 3 == 1:
+                    return {pos-10, pos-8, pos-17, pos-19}
+                else:
+                    return {pos-11, pos-10, pos-19, pos-20}
 
-        if not vecinos:
-            raise NotImplementedError("Faltan los vecinos")
+        r = 0
+        c = 0
+        self.vecinos = {}
 
-    def restriccion_binaria(self, xi_vi, xj_vj):
+        for i in range(81):
+            if i % 9 == 0:
+                c = 0
+                if i > 0: r += 1
+
+            self.vecinos[i] = {j for j in range(r*9, r*9+9) if j != i}.union({j for j in range(c, 80-7+c, 9) if j != i}.union(calcular_vecino_grupo(i, r, c)))
+            c += 1
+
+    def restriccion(self, xi_vi, xj_vj):
         """
         El mero chuqui. Por favor comenta tu código correctamente
 
@@ -92,8 +123,7 @@ class Sudoku(csp.GrafoRestriccion):
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
         # =================================================================
-        raise NotImplementedError("Implementa la restricción binaria")
-
+        return vi != vj
 
 def imprime_sdk(asignación):
     """
@@ -133,7 +163,7 @@ if __name__ == "__main__":
     imprime_sdk(s1)
     print("Solucionando un Sudoku dificil")
     sudoku1 = Sudoku(s1)
-    sol1 = csp.asignacion_grafo_restriccion(sudoku1)
+    sol1 = csp.asignacion_grafo_restriccion(sudoku1, ap={})
     imprime_sdk(sol1)
 
     s2 = [4, 0, 0, 0, 0, 0, 8, 0, 5,
@@ -149,5 +179,5 @@ if __name__ == "__main__":
     imprime_sdk(s2)
     sudoku2 = Sudoku(s2)
     print("Y otro tambien dificil")
-    sol2 = csp.asignacion_grafo_restriccion(sudoku2)
+    sol2 = csp.asignacion_grafo_restriccion(sudoku2, ap={})
     imprime_sdk(sol2)
