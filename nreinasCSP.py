@@ -12,6 +12,7 @@ __author__ = 'juliowaissman'
 
 import csp
 
+import time #para comparar tiempos
 
 class Nreinas(csp.GrafoRestriccion):
     """
@@ -78,11 +79,11 @@ class Nreinas(csp.GrafoRestriccion):
             print(interlinea)
 
 
-def prueba_reinas(n, metodo, tipo=1, traza=False):
+def prueba_reinas(n, metodo, tipo=1, imprimir=False):
     print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
     g_r = Nreinas(n)
-    asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
-    if n < 20:
+    asignacion = metodo(g_r, ap={}, consist=tipo, traza=imprimir)
+    if imprimir:
         Nreinas.muestra_asignacion(asignacion)
     else:
         print([asignacion[i] for i in range(n)])
@@ -91,22 +92,24 @@ def prueba_reinas(n, metodo, tipo=1, traza=False):
 
 if __name__ == "__main__":
 
+    reinas = [4, 6, 16, 50, 60, 100, 101]
+    def prueba_cons(tipo):
+        for reina in reinas:
+            t_inicial = time.time()
+            prueba_reinas(reina, csp.asignacion_grafo_restriccion, imprimir=False, tipo=tipo)
+            t_final = time.time()
+            print("Tiempo: {}\n".format(t_final - t_inicial))
+
     # Utilizando 1 consistencia
-    # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
+    print("Utilizando 1 consistencia\n")
+    prueba_cons(1)
 
     # Utilizando consistencia
+    print("\nUtilizando AC-3 (2 consistencia)\n")
+    prueba_cons(2)
     # ==========================================================================
     # Probar y comentar los resultados del métdo de arco consistencia
     # ==========================================================================
-    # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
 
     # Utilizando minimos conflictos
     # ==========================================================================
@@ -118,3 +121,34 @@ if __name__ == "__main__":
     # prueba_reinas(51, csp.min_conflictos)
     # prueba_reinas(101, csp.min_conflictos)
     # prueba_reinas(1000, csp.min_conflictos)
+
+"""
+Diferencias al utilizar 1 consistencia y al utilizar arco consistencia.
+
+Comparando los numeros de backtracking:
+
+N   Tipo 1  Tipo 2
+4   2       0
+8   21      1
+16  223     47
+50  611     92
+60  0       0
+100 58      4
+101 15      4
+
+Comparando el tiempo de ejecucion:
+
+N   Tipo 1  Tipo 2
+4   5e-4    2e-4
+8   3e-3    1e-3
+16  0.02    0.05
+50  0.6     1.7
+60  1.27    2.83
+100 9.35    21.4
+101 9.2     22.4
+
+Tienen un comportamiento interesante que inicialmente no me esperaba. La 1-consistencia solo aumenta en numero de backtrackings hasta que llega a mas de 600 para 50 reinas a comparacion de las menos de 100 para el AC-3 y el tiempo de ambos es practicamente el mismo hasta ese punto. Despues en 60 reinas ambos algoritmos necesitan 0 bacltracings y se va notando que AC-3 empieza a tardar mas que la 1-consistencia. En el caso de 100 reinas el primer caso ocupa 58 backtrackings mientras que en AC-3 solo ocupa 4 pero el tiempo que tarda es mas del doble que la 1-consistencia. Finalmente lo que queda por notar es que la unica diferencia entre 100 y 101 reinas es que 1-consistencia disminuye su numero de backtracking necesario.
+
+Ya que en los dos tipos de consistencia se encuentran las soluciones al problema, el de menor tiempo para todos los casos fue la 1 consistencia y deberia ser la preferida para estas reinas.
+"""
+
