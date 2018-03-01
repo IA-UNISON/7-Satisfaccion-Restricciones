@@ -225,12 +225,20 @@ def consistencia(gr, ap, xi, vi, tipo):
     # Por ejemplo, para las 4 reinas deben de ser 0 backtrackings y para las
     # 101 reina, al rededor de 4
     if tipo == 2:
-        # ================================================
-        #    Implementar el algoritmo de AC3
-        #    y print()robarlo con las n-reinas
-        # ================================================
-        raise NotImplementedError("AC-3  a implementar")
-
+        pendientes = deque([(xj, xi) for xj in gr.vecinos[xi] if xj not in ap])
+        while pendientes:
+            xa, xb = pendientes.popleft()
+            temp = reduceAC3(xa, xb, gr)
+            if temp:
+                if not gr.dominio[xa]:
+                    gr.dominio[xa] = temp
+                    for v in dom_red.keys():
+                        gr.dominio[v] = gr.dominio[v].union(dom_red[v])
+                    return None
+                if xa not in dom_red:
+                    dom_red[xa] = set({})
+                dom_red[xa] = dom_red[xa].union(temp)
+                pendientes.extend((xk, xa) for xk in gr.vecinos[xa] if xk != xb)
     return dom_red
 
 
