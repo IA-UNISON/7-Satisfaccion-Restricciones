@@ -92,20 +92,30 @@ def prueba_reinas(n, metodo, tipo=1, traza=False):
 if __name__ == "__main__":
 
     # Utilizando 1 consistencia
-    # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
+    prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+    prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+    prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+    prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
     prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
 
     # Utilizando consistencia
     # ==========================================================================
-    # Probar y comentar los resultados del métdo de arco consistencia
+    # Probar y comentar los resultados del método de arco consistencia
     # ==========================================================================
-    # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
+    """
+        Se puede observar como es que utilizando el algoritmo AC-3 se hace una
+        reduccion enorme de backtrackings a comparacion si se usa con consistencia 1.
+        Como viene comentado en el archivo csp.py, utilizando AC-3 para las 4 reinas
+        si realiza 0 backtrackings y para 101 reina un total de 4. 
+        Si se nota que es un poco mas lento en el punto de vista de eficiencia pero
+        los backtrackings realizados son mucho menores. Como ejemplo con 50 reinas
+        con consistencia 1 realizo 611 backtrackings, mientras que utilizando AC-3
+        son 92.
+    """
+    prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
     prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
 
     # Utilizando minimos conflictos
