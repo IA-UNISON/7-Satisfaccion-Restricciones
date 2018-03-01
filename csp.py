@@ -20,6 +20,8 @@ __author__ = 'juliowaissman'
 
 from collections import deque
 
+from math import inf
+
 
 class GrafoRestriccion(object):
     """
@@ -275,4 +277,40 @@ def minimos_conflictos(gr, rep=100):
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
+"""
+Algoritmo de minimos conflictos de wikipedia
+ algorithm MIN-CONFLICTS
+     input: csp, a constraint satisfaction problem
+            max_steps,the number of steps allowed before giving up
+            current_state, an initial assignment of values for the variables in the csp
+     output: a solution set of values for the variable or failure
+   for i=1 to max_steps do
+       if current_state is a solution of csp then return current_state
+       var <-- a randomly chosen variable from the set of conflicted variables CONFLICTED[csp]
+       value <-- the value v for var that minimizes CONFLICTS(var,v,current_state,csp)
+       set var = value in current_state
+   return failure
+"""
+
+"""
+Obtiene el minimo conflicto que tiene la variable xa con sus vecinos
+
+@param gr: Grafo de restriccion del problema
+@param xa: Variable del dominio de gr
+
+@return El numero minimo de conflictos que tiene xa con sus vecinos
+"""
+def minimoConflicto(gr, xa):
+    minimo = inf
+
+    for valor in gr.dominio[xa]:
+        nconf = 0
+        for vecino in gr.vecinos[xa]:
+            for vvecino in gr.dominio[vconf]:
+                nconf +=1 if not gr.restriccion((xa, valor), (vecino, vvecino))
+
+        minimo = nconf if nconf < minimo
+
+    return minimo
+
     raise NotImplementedError("Minimos conflictos  a implementar")
