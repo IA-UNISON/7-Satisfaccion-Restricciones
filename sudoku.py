@@ -80,37 +80,18 @@ class Sudoku(csp.GrafoRestriccion):
 
         def calcular_vecino_grupo(pos, r, c):
             """
-            Calcula los vecinos del mismo grupo de una celda del sudoku. Solo calcula
-            los cuatro vecinos que no están en las líneas horizontal ni vertical.
+            Calcula los vecinos del mismo grupo de una celda del sudoku.
 
             @param pos: Celda del sudoku de la cual se quieren calcular sus vecinos.
             @param r: Renglón de la celda.
             @param c: Columna de la celda.
             """
-            # Cuando la celda está en el primer renglón de su grupo.
-            if r % 3 == 0:
-                if c % 3 == 0: # Primera columna.
-                    return {pos+10, pos+11, pos+19, pos+20}
-                elif c % 3 == 1: # Segunda columna.
-                    return {pos+8, pos+10, pos+17, pos+19}
-                else: # Tercera columna.
-                    return {pos+7, pos+8, pos+16, pos+17}
-            # Cuando la celda está en el segundo renglón de su grupo.
-            elif r % 3 == 1:
-                if c % 3 == 0:
-                    return {pos-8, pos-7, pos+10, pos+11}
-                elif c % 3 == 1:
-                    return {pos-10, pos-8, pos+8, pos+10}
-                else:
-                    return {pos-10, pos-11, pos+7, pos+8}
-            # Cuando la celda está en el tercer renglón de su grupo.
-            else:
-                if c % 3 == 0:
-                    return {pos-17, pos-16, pos-8, pos-7}
-                elif c % 3 == 1:
-                    return {pos-10, pos-8, pos-17, pos-19}
-                else:
-                    return {pos-11, pos-10, pos-19, pos-20}
+
+            # Se recorre la posición actual a la esquina superior izquierda del grupo
+            # actual.
+            esquina = pos - (c % 3) - 9*(r % 3)
+            return {i + j for j in range(3)
+                          for i in range(esquina, esquina + 19, 9)}
 
         r = 0
         c = 0
@@ -123,7 +104,7 @@ class Sudoku(csp.GrafoRestriccion):
                 if i > 0: r += 1
 
             # Se generan los vecinos horizontales, luego los verticales y al final los del mismo grupo.
-            self.vecinos[i] = {j for j in range(r*9, r*9+9) if j != i}.union({j for j in range(c, 80-7+c, 9) if j != i}.union(calcular_vecino_grupo(i, r, c)))
+            self.vecinos[i] = {j for j in range(r * 9, r*9 + 9)}.union({j for j in range(c, 73 + c, 9)}.union(calcular_vecino_grupo(i, r, c))) - {i}
             c += 1
 
     def restriccion(self, xi_vi, xj_vj):
