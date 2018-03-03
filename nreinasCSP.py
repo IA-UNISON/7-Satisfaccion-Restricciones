@@ -37,7 +37,9 @@ class Nreinas(csp.GrafoRestriccion):
         for var in range(n):
             self.dominio[var] = set(range(n))
             self.vecinos[var] = {i for i in range(n) if i != var}
-
+            
+        print (self.vecinos)
+        
     def restriccion(self, xi_vi, xj_vj):
         """
         Verifica si se cumple la restriccion binaria entre las variables xi
@@ -95,18 +97,18 @@ if __name__ == "__main__":
     # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
+    #prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
+    #prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
 
     # Utilizando consistencia
     # ==========================================================================
     # Probar y comentar los resultados del métdo de arco consistencia
     # ==========================================================================
-    # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+     prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+    #prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
+    #prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
 
     # Utilizando minimos conflictos
     # ==========================================================================
