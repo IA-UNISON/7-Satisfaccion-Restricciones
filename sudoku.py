@@ -92,17 +92,18 @@ class Sudoku(csp.GrafoRestriccion):
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
         # =================================================================
-        raise NotImplementedError("Implementa la restricción binaria")
+        # Revisar y regresar True en caso de que sean distintas. 
+        return vi != vj
 
 
-def imprime_sdk(asignación):
+def imprime_sdk(asignacion):
     """
     Imprime un sudoku en pantalla en forma más o menos graciosa. Esta
     función solo sirve para la tarea y para la revisión de la
     tarea. No modificarla por ningun motivo.
 
     """
-    s = [asignación[i] for i in range(81)]
+    s = [asignacion[i] for i in range(81)]
     rayita = '\n-------------+----------------+---------------\n'
     c = ''
     for i in range(9):
