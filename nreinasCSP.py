@@ -11,6 +11,7 @@ __author__ = 'juliowaissman'
 
 
 import csp
+import time
 
 
 class Nreinas(csp.GrafoRestriccion):
@@ -83,20 +84,35 @@ class Nreinas(csp.GrafoRestriccion):
 def prueba_reinas(n, metodo, tipo=1, traza=False):
     print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
     g_r = Nreinas(n)
-    asignacion = metodo(g_r)
+    t_inicial = time.time()
+    asignacion = metodo(g_r,ap = {}, consist = tipo)
+    t_final = time.time()
     if n < 20:
         Nreinas.muestra_asignacion(asignacion)
     else:
         print([asignacion[i] for i in range(n)])
     print("Y se realizaron {} backtrackings".format(g_r.backtracking))
+    print("Termino en {} segundos.".format(t_final - t_inicial))
 
+def prueba_reinas_min(n, metodo, traza=False):
+    print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
+    g_r = Nreinas(n)
+    t_inicial =time.time()
+    asignacion = metodo(g_r)
+    t_final = time.time()
+    if n < 20:
+        Nreinas.muestra_asignacion(asignacion)
+    else:
+        print([asignacion[i] for i in range(n)])
+    print("Y se realizaron {} backtrackings".format(g_r.backtracking))
+    print("Termino en {} segundos.".format(t_final - t_inicial))
 
 if __name__ == "__main__":
 
     # Utilizando 1 consistencia
-    # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+    #prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+    #prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+    #prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     #prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
     #prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
 
@@ -105,18 +121,45 @@ if __name__ == "__main__":
     # Probar y comentar los resultados del métdo de arco consistencia
     # ==========================================================================
     #prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    #prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    #prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     #prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
     #prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+    
+    '''
+    **Es facil pensar que el usar el algoritmo AC3 sera menos eficiente puesto
+    que revisa a una profundidad mayor. Lo cual es cierto hasta cierto punto,
+    si comparamos el problema con 50, cuando usamos la cosistencia de tipo 1
+    aunque realizamos una contidad mucho mayor de backtrakings (611 contra 92)
+    el AC3 tarda mas del doble.
+    
+    **El AC3 no es considerado con un buen algoritmo en el sentido de su 
+    eficiencia pero es bastante bueno para entender la idea de las restriciones
+    '''
 
     # Utilizando minimos conflictos
     # ==========================================================================
     # Probar y comentar los resultados del métdo de mínios conflictos
     # ==========================================================================
-     prueba_reinas(8, csp.min_conflictos)
-    # prueba_reinas(8, csp.min_conflictos)
-    # prueba_reinas(16, csp.min_conflictos)
-    # prueba_reinas(51, csp.min_conflictos)
-    # prueba_reinas(101, csp.min_conflictos)
-    # prueba_reinas(1000, csp.min_conflictos)
+    # prueba_reinas_min(4, csp.min_conflictos)
+    # prueba_reinas_min(8, csp.min_conflictos)
+    # prueba_reinas_min(16, csp.min_conflictos)
+    # prueba_reinas_min(51, csp.min_conflictos)
+    # prueba_reinas_min(101, csp.min_conflictos)
+    # prueba_reinas_min(1000, csp.min_conflictos)
+    
+    '''
+    ** Para algunas personas es dificil aceptar que los metodos que involucren
+    aleatoridad funcionen, pero en las corridas se puede ver que el metodo de 
+    minimos conflictos es mejor a partir de las 8 reinas hasta las de 50. En las
+    100 empezamos a ver que minimos conflictos tiende a variar su tiempo (de 2 a 35 s)
+    
+    **En el problemas de las reinas entre mas grande es el espacio de estados
+    el espacio solucion crece, por lo que los algoritmos como minimos conflictos
+    tienen mas facilidad de encontrar la solucion, con los parametros correctos,
+    o en su defecto encontrar un estado que este casi listo, y pasarlo a otro
+    algoritmo para que termine el trabajo.
+        Por otra parte el usarlo en problemas como el sodoku donde el espacio
+    solicon no crece o casi no crece, estos no escalan tan bien.
+    
+    '''

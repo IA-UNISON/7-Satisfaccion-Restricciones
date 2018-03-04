@@ -16,7 +16,7 @@ En este modulo no es necesario modificar nada.
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Jordan Urias'
 
 from collections import deque
 import random
@@ -227,7 +227,7 @@ def consistencia(gr, ap, xi, vi, tipo):
     if tipo == 2:
         # ================================================
         #    Implementar el algoritmo de AC3
-        #    y print()robarlo con las n-reinas
+        #    y probarlo con las n-reinas
         # ================================================
         pendientes = deque([(xj, xi) for xj in gr.vecinos[xi] if xj not in ap])
         while pendientes:
@@ -244,6 +244,7 @@ def consistencia(gr, ap, xi, vi, tipo):
                     if xa not in dom_red:
                         dom_red[xa] = set({})
                     dom_red[xa] = dom_red[xa].union(temp)
+                    #Modificacion, Aumentar la profundidad de busqueda
                     pendientes.extend([(z, xa) for z in gr.vecinos[xa] if z != xb])
 
     return dom_red
@@ -263,14 +264,14 @@ def reduceAC3(xa, xb, gr):
 
 
 def min_conflictos(gr, rep=100, maxit=100):
+    '''
+    Fuente: https://en.wikipedia.org/wiki/Min-conflicts_algorithm
+    '''
     for _ in range(maxit):
         a = minimos_conflictos(gr, rep)
         if a is not None:
             return a
     return None
-'''
-Fuente: https://en.wikipedia.org/wiki/Min-conflicts_algorithm
-'''
 
 
 def conflictos(gr, asignacion, var, val):

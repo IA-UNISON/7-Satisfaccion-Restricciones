@@ -35,7 +35,7 @@ Los valores que puede tener la lista son del 0 al 9. Si tiene un 0
 entonces es que el valor es desconocido.
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Jordan Urias'
 
 
 import csp
@@ -74,7 +74,7 @@ class Sudoku(csp.GrafoRestriccion):
             #columna
             indices_columna = set(range(c, c + 73, 9))
             #grupo
-            indices_grupo = set()
+            indices_grupo = set() ##La compresion no seria muy comprensible
             x = r//3
             y = c//3
             for k in range(3):
@@ -82,7 +82,7 @@ class Sudoku(csp.GrafoRestriccion):
                     if x*3 + k != r or y*3+j!=c:
                         indices_grupo.add(3*(k*3+x*9+y)+j)
             
-            # Se unen los indices y se elimina el indice.
+            # Se unen los indices y se elimina el indice central.
             self.vecinos[i] = (indices_renglon | indices_columna|indices_grupo) - {i}
 
     def restriccion(self, xi_vi, xj_vj):
@@ -96,6 +96,7 @@ class Sudoku(csp.GrafoRestriccion):
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
         # =================================================================
+        
         # Solo se revisa que las dos celdas tengan un valor distinto para que la
         # solución sea válida.
         return vi != vj
