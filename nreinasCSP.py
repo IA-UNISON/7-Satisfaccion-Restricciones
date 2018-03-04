@@ -93,20 +93,36 @@ if __name__ == "__main__":
 
     # Utilizando 1 consistencia
     # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+        # 4 backtracking
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+        # 21 backtracking
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+        # 223 backtracking
     # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
+        #661 backtracking
     prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
+        #15 backtracking
 
     # Utilizando consistencia
     # ==========================================================================
     # Probar y comentar los resultados del métdo de arco consistencia
     # ==========================================================================
     # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+        # 0 backtracking
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+        # 1 backtracking
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+        # 47 backtracking
     # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
+        #92 backtracking
     prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+        #4 backtracking
+
+
+    #Comentario:
+    #   En general utilizando el método de arco consistencia logra una mucho
+    #   menor cantidad de backtracking en comparación al 1 consistencia, haciendo
+    #   la mitad o menos backtracking.
 
     # Utilizando minimos conflictos
     # ==========================================================================
