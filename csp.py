@@ -16,10 +16,10 @@ En este modulo no es necesario modificar nada.
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Jordan Urias'
 
 from collections import deque
-
+import random
 
 class GrafoRestriccion(object):
     """
@@ -227,9 +227,25 @@ def consistencia(gr, ap, xi, vi, tipo):
     if tipo == 2:
         # ================================================
         #    Implementar el algoritmo de AC3
-        #    y print()robarlo con las n-reinas
+        #    y probarlo con las n-reinas
         # ================================================
-        raise NotImplementedError("AC-3  a implementar")
+        pendientes = deque([(xj, xi) for xj in gr.vecinos[xi] if xj not in ap])
+        while pendientes:
+            xa, xb = pendientes.popleft()
+            temp = reduceAC3(xa, xb, gr)
+
+            if temp:
+                if not gr.dominio[xa]:
+                    gr.dominio[xa] = temp
+                    for v in dom_red.keys():
+                        gr.dominio[v] = gr.dominio[v].union(dom_red[v])
+                    return None
+                else:
+                    if xa not in dom_red:
+                        dom_red[xa] = set({})
+                    dom_red[xa] = dom_red[xa].union(temp)
+                    #Modificacion, Aumentar la profundidad de busqueda
+                    pendientes.extend([(z, xa) for z in gr.vecinos[xa] if z != xb])
 
     return dom_red
 
@@ -248,6 +264,9 @@ def reduceAC3(xa, xb, gr):
 
 
 def min_conflictos(gr, rep=100, maxit=100):
+    '''
+    Fuente: https://en.wikipedia.org/wiki/Min-conflicts_algorithm
+    '''
     for _ in range(maxit):
         a = minimos_conflictos(gr, rep)
         if a is not None:
@@ -255,9 +274,35 @@ def min_conflictos(gr, rep=100, maxit=100):
     return None
 
 
+def conflictos(gr, asignacion, var, val):
+    # ================================================
+    #   sacamos la funcion conflictos de la funcion ordena_valores
+    # ================================================
+    return sum(1 for vecino in gr.vecinos[var] if not gr.restriccion((var, val), (vecino , asignacion[vecino ])))
+
 def minimos_conflictos(gr, rep=100):
     # ================================================
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+    #generamos un estado aleatorio
+    a = {var: random.choice(list(val)) for (var, val) in gr.dominio.items()}
+    
+    for _ in range(rep):
+        #calculamos los conflictos de cada variable
+        num_conflictos = {var: conflictos(gr, a, var, a[var]) for var in a}
+        
+        #si no hay conflictos termina
+        if not sum(num_conflictos.values()):
+            return a
+        
+        #Elegimos una variable que tenga conflictos
+        var = random.choice([i for i in num_conflictos if num_conflictos[i]])
+        
+        #Calculamos los conflictos de la variable seleccionada con los
+        #valores que puede tomar del dominio
+        var_con = {val: conflictos(gr, a, var, val) for val in gr.dominio[var]}
+        con_min = min(var_con.values())
+        #Elegimos aleatoriamente uno de los valores que minimizan los conflictos
+        a[var] = random.choice([v for v in var_con if var_con[v] == con_min])
+    return None
