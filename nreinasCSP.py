@@ -38,7 +38,7 @@ class Nreinas(csp.GrafoRestriccion):
             self.dominio[var] = set(range(n))
             self.vecinos[var] = {i for i in range(n) if i != var}
             
-        print (self.vecinos)
+        #print (self.vecinos)
         
     def restriccion(self, xi_vi, xj_vj):
         """
@@ -83,7 +83,7 @@ class Nreinas(csp.GrafoRestriccion):
 def prueba_reinas(n, metodo, tipo=1, traza=False):
     print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
     g_r = Nreinas(n)
-    asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
+    asignacion = metodo(g_r)
     if n < 20:
         Nreinas.muestra_asignacion(asignacion)
     else:
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     # ==========================================================================
     # Probar y comentar los resultados del métdo de arco consistencia
     # ==========================================================================
-     prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    #prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     #prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
@@ -114,7 +114,7 @@ if __name__ == "__main__":
     # ==========================================================================
     # Probar y comentar los resultados del métdo de mínios conflictos
     # ==========================================================================
-    # prueba_reinas(4, csp.min_conflictos)
+     prueba_reinas(8, csp.min_conflictos)
     # prueba_reinas(8, csp.min_conflictos)
     # prueba_reinas(16, csp.min_conflictos)
     # prueba_reinas(51, csp.min_conflictos)

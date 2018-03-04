@@ -19,7 +19,7 @@ En este modulo no es necesario modificar nada.
 __author__ = 'juliowaissman'
 
 from collections import deque
-
+import random
 
 class GrafoRestriccion(object):
     """
@@ -268,11 +268,40 @@ def min_conflictos(gr, rep=100, maxit=100):
         if a is not None:
             return a
     return None
+'''
+Fuente: https://en.wikipedia.org/wiki/Min-conflicts_algorithm
+'''
 
+
+def conflictos(gr, asignacion, var, val):
+    # ================================================
+    #   sacamos la funcion conflictos de la funcion ordena_valores
+    # ================================================
+    return sum(1 for vecino in gr.vecinos[var] if not gr.restriccion((var, val), (vecino , asignacion[vecino ])))
 
 def minimos_conflictos(gr, rep=100):
     # ================================================
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+    #generamos un estado aleatorio
+    a = {var: random.choice(list(val)) for (var, val) in gr.dominio.items()}
+    
+    for _ in range(rep):
+        #calculamos los conflictos de cada variable
+        num_conflictos = {var: conflictos(gr, a, var, a[var]) for var in a}
+        
+        #si no hay conflictos termina
+        if not sum(num_conflictos.values()):
+            return a
+        
+        #Elegimos una variable que tenga conflictos
+        var = random.choice([i for i in num_conflictos if num_conflictos[i]])
+        
+        #Calculamos los conflictos de la variable seleccionada con los
+        #valores que puede tomar del dominio
+        var_con = {val: conflictos(gr, a, var, val) for val in gr.dominio[var]}
+        con_min = min(var_con.values())
+        #Elegimos aleatoriamente uno de los valores que minimizan los conflictos
+        a[var] = random.choice([v for v in var_con if var_con[v] == con_min])
+    return None
