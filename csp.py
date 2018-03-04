@@ -229,7 +229,22 @@ def consistencia(gr, ap, xi, vi, tipo):
         #    Implementar el algoritmo de AC3
         #    y print()robarlo con las n-reinas
         # ================================================
-        raise NotImplementedError("AC-3  a implementar")
+        pendientes = deque([(xj, xi) for xj in gr.vecinos[xi] if xj not in ap])
+        while pendientes:
+            xa, xb = pendientes.popleft()
+            reduccion = reduceAC3(xa, xb, gr)
+            if reduccion:
+                if not gr.dominio[xa]: #si esta vacio
+                    gr.dominio[xa] = reduccion
+                    for v in dom_red.keys():
+                        gr.dominio[v] = gr.dominio[v].union(dom_red[v])
+                    return None
+                else:
+                    if xa not in dom_red:
+                        dom_red[xa] = set({})
+                    dom_red[xa] = dom_red[xa].union(reduccion)
+                    pendientes.extend([(z, xa) for z in gr.vecinos[xa] if z != xb])
+        #raise NotImplementedError("AC-3  a implementar")
 
     return dom_red
 

@@ -80,7 +80,7 @@ class Sudoku(csp.GrafoRestriccion):
         if not vecinos:
             raise NotImplementedError("Faltan los vecinos")
 
-    def restriccion_binaria(self, xi_vi, xj_vj):
+    def restriccion(self, xi_vi, xj_vj):
         """
         El mero chuqui. Por favor comenta tu código correctamente
 
@@ -92,7 +92,13 @@ class Sudoku(csp.GrafoRestriccion):
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
         # =================================================================
-        raise NotImplementedError("Implementa la restricción binaria")
+        """
+        Se regresa False si el valor de dos casillas de una misma vecindad
+        tienen el mismo valor ya que no esta permitido, en caso de que sean
+        diferentes se regresa un True indicando que no se genera un conflicto.
+        """
+        return vi!=vj
+        #raise NotImplementedError("Implementa la restricción binaria")
 
 
 def imprime_sdk(asignación):
