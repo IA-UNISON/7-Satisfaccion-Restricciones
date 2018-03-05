@@ -47,7 +47,7 @@ entonces es que el valor es desconocido.
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Adrian Emilio Vazquez Icedo'
 
 
 import csp
@@ -69,18 +69,44 @@ class Sudoku(csp.GrafoRestriccion):
         """
         super().__init__()
 
-        self.dominio = {i: [val] if val > 0 else range(1, 10)
+        self.dominio = {i: {val} if val > 0 else {i for i in range(1, 10)}
                         for (i, val) in enumerate(pos_ini)}
 
-        vecinos = {}
+        self.vecinos = {}
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
 
-        if not vecinos:
-            raise NotImplementedError("Faltan los vecinos")
-
-    def restriccion_binaria(self, xi_vi, xj_vj):
+        #if not vecinos:
+            #raise NotImplementedError("Faltan los vecinos")
+        c=0
+        r=0
+        for i in range(81):
+            #Se revisa cuando se deba regresar a 0 la columna y aumentar el renglon
+            if i>0:
+                if i%9==0:
+                    c=0
+                    r+=1
+            #Guarda todos los indices del renglon
+            vecinosX=set(range(9*r, 9*r+9))
+            #Guarda todos los indices de la columna
+            vecinosY=set(range(c, c+73, 9))
+            #Establece donde se guardaran los indices de la misma cuadricula
+            vecinos_cuadricula = set()
+            #Posicion de la esquina superior izquierda de la cuadricula en la que se ubica el indice i
+            pos=i-(c%3)-(r%3)*9
+            for y in range(3):
+                for x in range(3):
+                    #El indice donde se ubica en la cuadricula
+                    PosCuadricula=pos+x+y*9
+                    #Añade el nuevo vecino de la cuadricula
+                    vecinos_cuadricula.add(PosCuadricula)
+            #Se guardan los vecinos del indice i
+            self.vecinos[i]=(vecinosX | vecinosY | vecinos_cuadricula)- {i}
+            c+=1
+        
+    
+    def restriccion(self, xi_vi, xj_vj):
         """
         El mero chuqui. Por favor comenta tu código correctamente
 
@@ -92,7 +118,13 @@ class Sudoku(csp.GrafoRestriccion):
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
         # =================================================================
-        raise NotImplementedError("Implementa la restricción binaria")
+        """
+        Se regresa False si el valor de dos casillas de una misma vecindad
+        tienen el mismo valor ya que no esta permitido, en caso de que sean
+        diferentes se regresa un True indicando que no se genera un conflicto.
+        """
+        return vi!=vj
+        #raise NotImplementedError("Implementa la restricción binaria")
 
 
 def imprime_sdk(asignación):

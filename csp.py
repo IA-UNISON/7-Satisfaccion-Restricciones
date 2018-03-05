@@ -16,10 +16,10 @@ En este modulo no es necesario modificar nada.
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Adrian Emilio Vazquez Icedo'
 
 from collections import deque
-
+import random
 
 class GrafoRestriccion(object):
     """
@@ -229,7 +229,22 @@ def consistencia(gr, ap, xi, vi, tipo):
         #    Implementar el algoritmo de AC3
         #    y print()robarlo con las n-reinas
         # ================================================
-        raise NotImplementedError("AC-3  a implementar")
+        pendientes = deque([(xj, xi) for xj in gr.vecinos[xi] if xj not in ap])
+        while pendientes:
+            xa, xb = pendientes.popleft()
+            reduccion = reduceAC3(xa, xb, gr)
+            if reduccion:
+                if not gr.dominio[xa]: 
+                    gr.dominio[xa] = reduccion
+                    for v in dom_red.keys():
+                        gr.dominio[v] = gr.dominio[v].union(dom_red[v])
+                    return None
+                else:
+                    if xa not in dom_red:
+                        dom_red[xa] = set({})
+                    dom_red[xa] = dom_red[xa].union(reduccion)
+                    pendientes.extend([(z, xa) for z in gr.vecinos[xa] if z != xb])
+        #raise NotImplementedError("AC-3  a implementar")
 
     return dom_red
 
@@ -260,4 +275,40 @@ def minimos_conflictos(gr, rep=100):
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+    #raise NotImplementedError("Minimos conflictos  a implementar")
+    
+    estado = {i : random.choice(list(gr.dominio[i])) for i in gr.dominio.keys()}
+    variables = list(gr.dominio.keys())
+    
+    for _ in range(rep):
+        #revuelvo la lista para seleccionarlos de manera aleatoria
+        random.shuffle(variables)
+        for i in variables:
+            #Se revisa si la variable actual genera algun conflicto con uno de sus vecinos
+            if revisarConflictos(gr, estado, i):
+                #Si se encontraron conflictos se revisa el movimiento que genere menos conflictos
+                estado[i] = minimosConflictos(gr, estado, i)
+                break
+        else:
+            #Regresa el estado sin conflictos
+            return estado
+    return None
+
+def revisarConflictos(gr, estado, i):
+    for vecino in gr.vecinos[i]:
+        #Si se recibe un falso entonce se regresa True indicando que existe un conflicto
+        if not gr.restriccion((i, estado[i]),(vecino, estado[vecino])):
+            return True
+    #Si no se encontraron conflictos se regresa un False
+    return False
+
+def minimosConflictos(gr, estado, i):
+    vMenor=1e10
+    iMenor=0
+    for j in gr.dominio[i]:
+        suma=sum([1 for vecino in gr.vecinos[i] if not gr.restriccion((i, j), (vecino, estado[vecino]))])
+        #Si se encontro un valor menor de conflictos se guarda esa cantidad y el indice que la genera
+        if vMenor>suma:
+            iMenor=j
+            vMenor=suma
+    return iMenor
