@@ -136,7 +136,7 @@ if __name__ == "__main__":
             print("Tiempo: {}\n".format(t_final - t_inicial))
 
 
-    reinas = [8]
+    reinas = [4, 8, 16, 51, 101, 1000]
     prueba_min(reinas, csp.min_conflictos)
     # prueba_reinas(8, csp.min_conflictos)
     # prueba_reinas(16, csp.min_conflictos)
@@ -169,8 +169,24 @@ N   Tipo 1  Tipo 2
 100 9.35    21.4
 101 9.2     22.4
 
-Tienen un comportamiento interesante que inicialmente no me esperaba. La 1-consistencia solo aumenta en numero de backtrackings hasta que llega a mas de 600 para 50 reinas a comparacion de las menos de 100 para el AC-3 y el tiempo de ambos es practicamente el mismo hasta ese punto. Despues en 60 reinas ambos algoritmos necesitan 0 bacltracings y se va notando que AC-3 empieza a tardar mas que la 1-consistencia. En el caso de 100 reinas el primer caso ocupa 58 backtrackings mientras que en AC-3 solo ocupa 4 pero el tiempo que tarda es mas del doble que la 1-consistencia. Finalmente lo que queda por notar es que la unica diferencia entre 100 y 101 reinas es que 1-consistencia disminuye su numero de backtracking necesario.
+Tienen un comportamiento interesante que inicialmente no me esperaba. La 1-consistencia solo
+aumenta en numero de backtrackings hasta que llega a mas de 600 para 50 reinas a comparacion de
+las menos de 100 para el AC-3 y el tiempo de ambos es practicamente el mismo hasta ese punto.
+Despues en 60 reinas ambos algoritmos necesitan 0 bacltracings y se va notando que AC-3 empieza a
+tardar mas que la 1-consistencia. En el caso de 100 reinas el primer caso ocupa 58 backtrackings
+mientras que en AC-3 solo ocupa 4 pero el tiempo que tarda es mas del doble que la 1-consistencia.
+Finalmente lo que queda por notar es que la unica diferencia entre 100 y 101 reinas es que
+1-consistencia disminuye su numero de backtracking necesario.
 
-Ya que en los dos tipos de consistencia se encuentran las soluciones al problema, el de menor tiempo para todos los casos fue la 1 consistencia y deberia ser la preferida para estas reinas.
+Ya que en los dos tipos de consistencia se encuentran las soluciones al problema, el de menor
+tiempo para todos los casos fue la 1 consistencia y deberia ser la preferida para estas reinas.
+
+
+Minimos coflictos:
+Hastas ahora minimos conflictos ha sido el peor algoritmo de los de esta tarea para solucionar el
+problema de las reinas. Solo el caso de 4 reinas daba soluciones al problema y tardaba mas que ac-3,
+para los demas casos no pude encotrar soluciones y me gustaria pensar que no es culpa de la
+implementacion de mi algoritmo (no he podido encontrar el error si es que existe). Lo que si es que
+quiza si no inicializara al azar la asignacion es posible que mejorara el algoritmo.
 """
 
