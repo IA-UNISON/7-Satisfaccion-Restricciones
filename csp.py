@@ -19,7 +19,7 @@ En este modulo no es necesario modificar nada.
 __author__ = 'juliowaissman'
 
 from collections import deque
-
+import random
 
 class GrafoRestriccion(object):
     """
@@ -244,7 +244,7 @@ def consistencia(gr, ap, xi, vi, tipo):
                 dom_red[xa] = dom_red[xa].union(temp)
                 # Insertar los nodos adyacentes al nodo adyacente original
                 pendientes.extend([(xj,xa) for xj in gr.vecinos[xa] if xj != xb and xj not in ap])
-                
+
     return dom_red
 
 
@@ -274,4 +274,21 @@ def minimos_conflictos(gr, rep=100):
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+    a = {elemento : random.choice(list(gr.dominio[elemento])) for elemento in gr.dominio.keys()}
+    for _ in range(rep):
+        #variables = random.shuffle([x for x in gr.dominio.keys()])
+        variables = [x for x in gr.dominio.keys()]
+        random.shuffle(variables)
+        for v in variables:
+            if conflicto(gr, v, a[v], a):
+                break
+        else:
+            return a
+    return None
+
+def conflicto(gr, x_n, vx_n, a):
+    #return sum((1 for xj in gr.vecinos[x_n] for vj in gr.dominio[xj] if not gr.restriccion((x_n, vx_n), (xj, vj))))
+    for vecino in gr.vecinos[x_n]:
+        if not gr.restriccion((x_n, vx_n),(vecino,a[vecino])):
+            return False
+    return True
