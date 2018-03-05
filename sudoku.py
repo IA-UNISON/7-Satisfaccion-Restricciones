@@ -78,10 +78,10 @@ class Sudoku(csp.GrafoRestriccion):
         if not self.vecinos:
             raise NotImplementedError("Faltan los vecinos")
 
-    def restriccion_binaria(self, xi_vi, xj_vj):
+    def restriccion(self, xi_vi, xj_vj):
         """
         El mero chuqui. Por favor comenta tu código correctamente
-
+        La restricción es que un elemento no comparta valor con ninguno de sus vecinos
         """
         xi, vi = xi_vi
         xj, vj = xj_vj
@@ -90,7 +90,7 @@ class Sudoku(csp.GrafoRestriccion):
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
         # =================================================================
-        raise NotImplementedError("Implementa la restricción binaria")
+        return vi != vj
 
     def buscar_vecinos(self, elemento, dimensión = 9):
       """
@@ -155,7 +155,7 @@ if __name__ == "__main__":
     imprime_sdk(s1)
     print("Solucionando un Sudoku dificil")
     sudoku1 = Sudoku(s1)
-    sol1 = csp.asignacion_grafo_restriccion(sudoku1)
+    sol1 = csp.asignacion_grafo_restriccion(sudoku1, ap={})
     imprime_sdk(sol1)
 
     s2 = [4, 0, 0, 0, 0, 0, 8, 0, 5,
@@ -171,5 +171,5 @@ if __name__ == "__main__":
     imprime_sdk(s2)
     sudoku2 = Sudoku(s2)
     print("Y otro tambien dificil")
-    sol2 = csp.asignacion_grafo_restriccion(sudoku2)
+    sol2 = csp.asignacion_grafo_restriccion(sudoku2, ap={})
     imprime_sdk(sol2)
