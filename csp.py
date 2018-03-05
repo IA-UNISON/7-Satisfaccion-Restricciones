@@ -308,7 +308,7 @@ def tieneConflictos(var, gr, asignacion):
 
 
 """
-Obtiene el minimo conflicto que tiene la variable var con sus vecinos
+Obtiene la variable con el minimo conflicto con sus vecinos
 
 @param var: Variable del dominio de gr
 @param gr: Grafo de restriccion del problema
@@ -317,10 +317,10 @@ Obtiene el minimo conflicto que tiene la variable var con sus vecinos
 @return El numero minimo de conflictos que tiene var con sus vecinos
 """
 def minimoConflicto(var, gr, asignacion):
-    nconf = [inf]
+    nconf = [(inf, 0)]
     for valor in gr.dominio[var]:
-        nconf.append( sum((1 for vecino in gr.vecinos[var]
-                if not gr.restriccion((var, valor), (vecino, asignacion[vecino])))) )
+        nconf.append( (sum((1 for vecino in gr.vecinos[var]
+                if not gr.restriccion((var, valor), (vecino, asignacion[vecino])))), valor) )
 
-    return min(nconf)
+    return min(nconf)[1]
 

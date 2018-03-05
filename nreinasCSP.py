@@ -184,9 +184,9 @@ tiempo para todos los casos fue la 1 consistencia y deberia ser la preferida par
 
 Minimos coflictos:
 Hastas ahora minimos conflictos ha sido el peor algoritmo de los de esta tarea para solucionar el
-problema de las reinas. Solo el caso de 4 reinas daba soluciones al problema y tardaba mas que ac-3,
-para los demas casos no pude encotrar soluciones y me gustaria pensar que no es culpa de la
-implementacion de mi algoritmo (no he podido encontrar el error si es que existe). Lo que si es que
-quiza si no inicializara al azar la asignacion es posible que mejorara el algoritmo.
+problema de las reinas. Las 4, 8 y 16 reinas dan tiempos aceptables para encontrar la solucion,
+aunque sean ligeramente mas tardados que los metodos de consistencia, pero para mas reinas el
+algoritmo se tarda tiempos exagerados y es posible que ni encuentre solucion por lo que se ve
+eclipsado completamente por los metodos de consistencia.
 """
 
