@@ -117,7 +117,7 @@ if __name__ == "__main__":
     #
     # El 2-consistencia da mejores resultados que el 1-consistencia debido a que
     # realiza menos backtrackings lo que implica que realiza una menor busqueda
-    # por lo cual es un metodo mas efectivo.  
+    # por lo cual puede ser un metodo mas efectivo.  
     #
     #===========================================================================
     #prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)

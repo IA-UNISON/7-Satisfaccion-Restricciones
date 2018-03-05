@@ -234,7 +234,7 @@ def consistencia(gr, ap, xi, vi, tipo):
             xa, xb = pendientes.popleft()
             reduccion = reduceAC3(xa, xb, gr)
             if reduccion:
-                if not gr.dominio[xa]: #si esta vacio
+                if not gr.dominio[xa]: 
                     gr.dominio[xa] = reduccion
                     for v in dom_red.keys():
                         gr.dominio[v] = gr.dominio[v].union(dom_red[v])
@@ -296,8 +296,10 @@ def minimos_conflictos(gr, rep=100):
 
 def revisarConflictos(gr, estado, i):
     for vecino in gr.vecinos[i]:
+        #Si se recibe un falso entonce se regresa True indicando que existe un conflicto
         if not gr.restriccion((i, estado[i]),(vecino, estado[vecino])):
             return True
+    #Si no se encontraron conflictos se regresa un False
     return False
 
 def minimosConflictos(gr, estado, i):
@@ -305,6 +307,7 @@ def minimosConflictos(gr, estado, i):
     iMenor=0
     for j in gr.dominio[i]:
         suma=sum([1 for vecino in gr.vecinos[i] if not gr.restriccion((i, j), (vecino, estado[vecino]))])
+        #Si se encontro un valor menor de conflictos se guarda esa cantidad y el indice que la genera
         if vMenor>suma:
             iMenor=j
             vMenor=suma
