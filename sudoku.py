@@ -94,7 +94,7 @@ class Sudoku(csp.GrafoRestriccion):
             for j in range(inicioGrupoy*9+inicioGrupox, inicioGrupoy*9 + 3*9,9):
                 self.vecinos[i] = self.vecinos[i] | {k for k in range(j,j+3)}
             self.vecinos[i]= self.vecinos[i] - {i}
-            
+
         #if not vecinos:
         #    raise NotImplementedError("Faltan los vecinos")
 
@@ -159,7 +159,6 @@ if __name__ == "__main__":
     sol1 = csp.asignacion_grafo_restriccion(sudoku1, ap={})
 
     imprime_sdk(sol1)
-    """
     s2 = [4, 0, 0, 0, 0, 0, 8, 0, 5,
           0, 3, 0, 0, 0, 0, 0, 0, 0,
           0, 0, 0, 7, 0, 0, 0, 0, 0,
@@ -175,4 +174,3 @@ if __name__ == "__main__":
     print("Y otro tambien dificil")
     sol2 = csp.asignacion_grafo_restriccion(sudoku2)
     imprime_sdk(sol2)
-    """
