@@ -102,6 +102,17 @@ if __name__ == "__main__":
     # ==========================================================================
     # Probar y comentar los resultados del métdo de arco consistencia
     # ==========================================================================
+    # 4: 1-consistencia=2 backtrackings 2-consistencia=0 backtrackings
+    # 8: 1-consistencia=21 backtrackings 2-consistencia=1 backtrackings
+    # 16: 1-consistencia=223 backtrackings 2-consistencia=47 backtrackings
+    # 50: 1-consistencia=611 backtrackings 2-consistencia=92 backtrackings
+    # 101: 1-consistencia=15 backtrackings 2-consistencia=4 backtrackings
+    #
+    # El 2-consistencia da mejores resultados que el 1-consistencia debido a que
+    # realiza menos backtrackings lo que implica que realiza una menor busqueda
+    # por lo cual es un metodo mas efectivo.  
+    #
+    #===========================================================================
     prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
