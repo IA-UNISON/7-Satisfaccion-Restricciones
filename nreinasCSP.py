@@ -77,26 +77,33 @@ class Nreinas(csp.GrafoRestriccion):
             print(linea)
             print(interlinea)
 
-
-def prueba_reinas(n, metodo, tipo=1, traza=False):
+#Cambie unas cosas por que me probocaba errores
+def prueba_reinas(n, metodo, tipo=0, traza=False):
     print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
     g_r = Nreinas(n)
-    asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
-    if n < 20:
-        Nreinas.muestra_asignacion(asignacion)
+    if tipo>0:
+        asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
     else:
-        print([asignacion[i] for i in range(n)])
-    print("Y se realizaron {} backtrackings".format(g_r.backtracking))
+        asignacion = metodo(g_r)
+        
+    if asignacion is not None:   
+        if n < 20:
+            Nreinas.muestra_asignacion(asignacion)
+        else:
+            print([asignacion[i] for i in range(n)])
+        print("Y se realizaron {} backtrackings".format(g_r.backtracking))
+    else: 
+        print('No se pudo :(')
 
 
 if __name__ == "__main__":
 
     #Utilizando 1 consistencia
-    prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+    #prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
+    #prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+    #prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
+    #prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
 
     # Utilizando consistencia
     # ==========================================================================
@@ -113,19 +120,26 @@ if __name__ == "__main__":
     # por lo cual es un metodo mas efectivo.  
     #
     #===========================================================================
-    prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    #prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+    #prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    #prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
+    #prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
 
     # Utilizando minimos conflictos
     # ==========================================================================
     # Probar y comentar los resultados del métdo de mínios conflictos
+    # 
+    # Para 4, 8, 16 y 51 se logra alcanzar la solucion y con un tiempo aceptable 
+    # pero para 101 el tiempo ya se vuelve algo a considerar y para 1000 considero 
+    # que es mucho tiempo. Para intentar conseguir siempre una solucion se debera 
+    # aumentar el numero de iteraciones pero seria un gran impacto al tiempo que
+    # tardara este algoritmo, por lo que es mejor utilizar los algoritmos con 
+    # grafos.
     # ==========================================================================
-    # prueba_reinas(4, csp.min_conflictos)
-    # prueba_reinas(8, csp.min_conflictos)
-    # prueba_reinas(16, csp.min_conflictos)
-    # prueba_reinas(51, csp.min_conflictos)
-    # prueba_reinas(101, csp.min_conflictos)
-    # prueba_reinas(1000, csp.min_conflictos)
+    #prueba_reinas(4, csp.min_conflictos)
+    prueba_reinas(8, csp.min_conflictos)
+    #prueba_reinas(16, csp.min_conflictos)
+    #prueba_reinas(51, csp.min_conflictos)
+    #prueba_reinas(101, csp.min_conflictos)
+    #prueba_reinas(1000, csp.min_conflictos)

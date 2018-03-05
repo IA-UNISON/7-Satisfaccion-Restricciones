@@ -19,7 +19,7 @@ En este modulo no es necesario modificar nada.
 __author__ = 'Adrian Emilio Vazquez Icedo'
 
 from collections import deque
-
+import random
 
 class GrafoRestriccion(object):
     """
@@ -275,4 +275,37 @@ def minimos_conflictos(gr, rep=100):
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+    #raise NotImplementedError("Minimos conflictos  a implementar")
+    
+    estado = {i : random.choice(list(gr.dominio[i])) for i in gr.dominio.keys()}
+    variables = list(gr.dominio.keys())
+    
+    for _ in range(rep):
+        #revuelvo la lista para seleccionarlos de manera aleatoria
+        random.shuffle(variables)
+        for i in variables:
+            #Se revisa si la variable actual genera algun conflicto con uno de sus vecinos
+            if revisarConflictos(gr, estado, i):
+                #Si se encontraron conflictos se revisa el movimiento que genere menos conflictos
+                estado[i] = minimosConflictos(gr, estado, i)
+                break
+        else:
+            #Regresa el estado sin conflictos
+            return estado
+    return None
+
+def revisarConflictos(gr, estado, i):
+    for vecino in gr.vecinos[i]:
+        if not gr.restriccion((i, estado[i]),(vecino, estado[vecino])):
+            return True
+    return False
+
+def minimosConflictos(gr, estado, i):
+    vMenor=1e10
+    iMenor=0
+    for j in gr.dominio[i]:
+        suma=sum([1 for vecino in gr.vecinos[i] if not gr.restriccion((i, j), (vecino, estado[vecino]))])
+        if vMenor>suma:
+            iMenor=j
+            vMenor=suma
+    return iMenor
