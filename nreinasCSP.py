@@ -96,14 +96,11 @@ def prueba_reinas(n, metodo, tipo=1, traza=False):
     asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
     tiempo_final = time.time()
     
-    print("{:*^25.2f}".format(tiempo_final - tiempo_inicial))
-    
-    """
     if n < 2:
         Nreinas.muestra_asignacion(asignacion)
     else:
         print([asignacion[i] for i in range(n)])
-    """
+    
     print("Y se realizaron {} backtrackings".format(g_r.backtracking))
 
 
