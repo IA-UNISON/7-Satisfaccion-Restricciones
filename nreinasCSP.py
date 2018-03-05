@@ -101,12 +101,12 @@ if __name__ == "__main__":
             print("Tiempo: {}\n".format(t_final - t_inicial))
 
     # Utilizando 1 consistencia
-    print("Utilizando 1 consistencia\n")
-    prueba_cons(1)
+    #print("Utilizando 1 consistencia\n")
+    #prueba_cons(1)
 
     # Utilizando consistencia
-    print("\nUtilizando AC-3 (2 consistencia)\n")
-    prueba_cons(2)
+    #print("\nUtilizando AC-3 (2 consistencia)\n")
+    #prueba_cons(2)
     # ==========================================================================
     # Probar y comentar los resultados del métdo de arco consistencia
     # ==========================================================================
@@ -115,7 +115,29 @@ if __name__ == "__main__":
     # ==========================================================================
     # Probar y comentar los resultados del métdo de mínios conflictos
     # ==========================================================================
-    # prueba_reinas(4, csp.min_conflictos)
+
+    def prueba_min(reinas, metodo, imprimir = True):
+        for reina in reinas:
+            g_r = Nreinas(reina)
+
+            t_inicial = time.time()
+            asignacion = metodo(g_r, 1000, 100)
+            t_final = time.time()
+
+            if asignacion is not None:
+                if imprimir:
+                    Nreinas.muestra_asignacion(asignacion)
+                else:
+                    print([asignacion[i] for i in range(n)])
+                print("Y se realizaron {} backtrackings".format(g_r.backtracking))
+            else:
+                print("El algoritmo no encontro asignacion")
+
+            print("Tiempo: {}\n".format(t_final - t_inicial))
+
+
+    reinas = [8]
+    prueba_min(reinas, csp.min_conflictos)
     # prueba_reinas(8, csp.min_conflictos)
     # prueba_reinas(16, csp.min_conflictos)
     # prueba_reinas(51, csp.min_conflictos)
