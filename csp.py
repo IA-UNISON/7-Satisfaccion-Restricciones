@@ -16,9 +16,12 @@ En este modulo no es necesario modificar nada.
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'luis fernando'
 
 from collections import deque
+
+from math import inf
+import random
 
 
 class GrafoRestriccion(object):
@@ -229,7 +232,22 @@ def consistencia(gr, ap, xi, vi, tipo):
         #    Implementar el algoritmo de AC3
         #    y print()robarlo con las n-reinas
         # ================================================
-        raise NotImplementedError("AC-3  a implementar")
+        #copia casi literal del tipo 1?
+        pendientes = deque([(xj, xi) for xj in gr.vecinos[xi] if xj not in ap])
+        while pendientes:
+            xa, xb = pendientes.popleft()
+            reduccion = reduceAC3(xa, xb, gr)
+            if reduccion:
+                if not gr.dominio[xa]: #si esta vacio
+                    gr.dominio[xa] = reduccion
+                    for v in dom_red.keys():
+                        gr.dominio[v] = gr.dominio[v].union(dom_red[v])
+                    return None
+                else:
+                    if xa not in dom_red:
+                        dom_red[xa] = set({})
+                    dom_red[xa] = dom_red[xa].union(reduccion)
+                    pendientes.extend([(z, xa) for z in gr.vecinos[xa] if z != xb])
 
     return dom_red
 
@@ -260,4 +278,49 @@ def minimos_conflictos(gr, rep=100):
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+    #hace una asignacion aleatoria
+    asignacion = {var : random.choice(list(gr.dominio[var])) for var in gr.dominio}
+    variables = list(gr.dominio)        #lista de todas las variables
+
+    for _ in range(rep):
+        #enlista las variables con conflictos
+        conflictos = [var for var in variables if tieneConflictos(var, gr, asignacion)]
+
+        if not conflictos:      #si no hay variables con conflictos, termina
+            return asignacion
+
+        #si hubo conflicto se selecciona una variable al azar y asigna
+        #un valor que minimice sus conflictos
+        varazar = random.choice(conflictos)
+        asignacion[varazar] = minimoConflicto(varazar, gr, asignacion)
+
+    return None             #no se encontro una configuracion adecuada
+
+def tieneConflictos(var, gr, asignacion):
+    #revisa si la variable tiene algun conflicto con todos sus vecinos
+    #si encuentra uno, regresa True, si no encuentra ninguno regresa False
+
+    for vecino in gr.vecinos[var]:
+        if not gr.restriccion((var, asignacion[var]), (vecino, asignacion[vecino])):
+            return True
+
+    return False
+
+
+"""
+Obtiene la variable con el minimo conflicto con sus vecinos
+
+@param var: Variable del dominio de gr
+@param gr: Grafo de restriccion del problema
+@param asignacion: La asignacion de variables hasta el momento
+
+@return El numero minimo de conflictos que tiene var con sus vecinos
+"""
+def minimoConflicto(var, gr, asignacion):
+    nconf = [(inf, 0)]
+    for valor in gr.dominio[var]:
+        nconf.append( (sum((1 for vecino in gr.vecinos[var]
+                if not gr.restriccion((var, valor), (vecino, asignacion[vecino])))), valor) )
+
+    return min(nconf)[1]
+

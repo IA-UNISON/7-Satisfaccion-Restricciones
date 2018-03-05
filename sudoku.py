@@ -47,7 +47,7 @@ entonces es que el valor es desconocido.
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'luis fernando'
 
 
 import csp
@@ -69,16 +69,39 @@ class Sudoku(csp.GrafoRestriccion):
         """
         super().__init__()
 
-        self.dominio = {i: [val] if val > 0 else range(1, 10)
+        self.dominio = {i: {val} if val > 0 else set(range(1, 10))
                         for (i, val) in enumerate(pos_ini)}
 
         vecinos = {}
+        self.generarVecinos()
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
 
-        if not vecinos:
-            raise NotImplementedError("Faltan los vecinos")
+    def generarVecinos(self):
+        for pos in range(81):
+            ren = pos // 9
+            col = pos % 9
+
+            cx0 = ren - ren % 3
+            cy0 = col - col % 3
+            c0 = cx0*9 + cy0
+
+            #Encuentra las casillas en el mismo renglon que la posicion
+            #Barre todas las columnas que comparten el mismo renglon
+            v_ren = [v for v in range(ren * 9, ren * 9 + 9)]
+            #Encuentra la casillas con la misma columna que la posicion
+            #Va desde la primer col hasta la ultima (72 casillas despues)
+            v_col = [v for v in range(col, 72 + col + 1, 9)]
+            #Encuentra las casillas en la misma caja que la posicion
+            #Se va a la casilla inicial del cuadro y va sumando hasta llegar
+            #al final del cuadro
+            v_caja = [c0+x+y for y in range(0, 9*3, 9) for x in range(3)]
+
+            #Finalmente se quitan las repeticiones y la posicion original
+            vecinos = set(v_ren + v_col + v_caja) - {pos}
+            self.vecinos.update({pos:vecinos})
+
 
     def restriccion_binaria(self, xi_vi, xj_vj):
         """
@@ -92,8 +115,13 @@ class Sudoku(csp.GrafoRestriccion):
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
         # =================================================================
-        raise NotImplementedError("Implementa la restricción binaria")
+        return vi != vj
 
+    """
+    La restriccion del problema es solo la restriccion binaria
+    """
+    def restriccion(self, xi_vi, xj_vj):
+        return self.restriccion_binaria(xi_vi, xj_vj)
 
 def imprime_sdk(asignación):
     """
@@ -130,11 +158,12 @@ if __name__ == "__main__":
           8, 0, 0, 2, 0, 3, 0, 0, 9,
           0, 0, 5, 0, 1, 0, 3, 0, 0]
 
-    imprime_sdk(s1)
+    #imprime_sdk(s1)
     print("Solucionando un Sudoku dificil")
     sudoku1 = Sudoku(s1)
-    sol1 = csp.asignacion_grafo_restriccion(sudoku1)
-    imprime_sdk(sol1)
+
+    sol1 = csp.asignacion_grafo_restriccion(sudoku1, ap = {}, consist=2)
+    #imprime_sdk(sol1)
 
     s2 = [4, 0, 0, 0, 0, 0, 8, 0, 5,
           0, 3, 0, 0, 0, 0, 0, 0, 0,
@@ -146,8 +175,43 @@ if __name__ == "__main__":
           5, 0, 0, 2, 0, 0, 0, 0, 0,
           1, 0, 4, 0, 0, 0, 0, 0, 0]
 
-    imprime_sdk(s2)
+    d1 = [6, 0, 0, 0, 0, 8, 9, 4, 0,
+          9, 0, 0, 0, 0, 6, 1, 0, 0,
+          0, 7, 0, 0, 4, 0, 0, 0, 0,
+          2, 0, 0, 6, 1, 0, 0, 0, 0,
+          0, 0, 0, 0, 0, 0, 2, 0, 0,
+          0, 8, 9, 0, 0, 2, 0, 0, 0,
+          0, 0, 0, 0, 6, 0, 0, 0, 5,
+          0, 0, 0, 0, 0, 0, 0, 3, 0,
+          8, 0, 0, 0, 0, 1, 6, 0, 0]
+
+    d2 = [0, 0, 2, 8, 0, 0, 0, 0, 0,
+          0, 3, 0, 0, 6, 0, 0, 0, 7,
+          1, 0, 0, 0, 0, 0, 0, 4, 0,
+          6, 0, 0, 0, 9, 0, 0, 0, 0,
+          0, 5, 0, 6, 0, 0, 0, 0, 9,
+          0, 0, 0, 0, 5, 7, 0, 6, 0,
+          0, 0, 0, 3, 0, 0, 1, 0, 0,
+          0, 7, 0, 0, 0, 6, 0, 0, 8,
+          4, 0, 0, 0, 0, 0, 0, 2, 0]
+
+    #imprime_sdk(s2)
     sudoku2 = Sudoku(s2)
     print("Y otro tambien dificil")
-    sol2 = csp.asignacion_grafo_restriccion(sudoku2)
+    sol2 = csp.asignacion_grafo_restriccion(sudoku2, ap = {}, consist = 2)
     imprime_sdk(sol2)
+
+    print("Sudoku supuestamente dificil 1")
+    imprime_sdk(d1)
+    sudokud1 = Sudoku(d1)
+    sold1 = csp.asignacion_grafo_restriccion(sudokud1, ap = {}, consist = 2)
+    print("Solucion")
+    imprime_sdk(sold1)
+
+    print("Sudoku supuestamente dificil 2")
+    imprime_sdk(d2)
+    sudokud2 = Sudoku(d2)
+    sold2 = csp.asignacion_grafo_restriccion(sudokud2, ap = {}, consist = 2)
+    print("Solucion")
+    imprime_sdk(sold2)
+
