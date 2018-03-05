@@ -19,6 +19,8 @@ En este modulo no es necesario modificar nada.
 __author__ = 'juliowaissman'
 
 from collections import deque
+import random
+from math import inf
 
 
 class GrafoRestriccion(object):
@@ -229,7 +231,21 @@ def consistencia(gr, ap, xi, vi, tipo):
         #    Implementar el algoritmo de AC3
         #    y print()robarlo con las n-reinas
         # ================================================
-        raise NotImplementedError("AC-3  a implementar")
+        pendientes = deque([(xj, xi) for xj in gr.vecinos[xi] if xj not in ap])
+        while pendientes:
+            xa, xb = pendientes.popleft()
+            temp = reduceAC3(xa, xb, gr)
+            if temp:
+                if not gr.dominio[xa]:
+                    gr.dominio[xa] = temp
+                    for v in dom_red.keys():
+                        gr.dominio[v] = gr.dominio[v].union(dom_red[v])
+                    return None
+                if xa not in dom_red:
+                    dom_red[xa] = set({})
+                dom_red[xa] = dom_red[xa].union(temp)
+                pendientes.extend([(z, xa) for z in gr.vecinos[xa] if z != xb and z not in ap])
+        #raise NotImplementedError("AC-3  a implementar")
 
     return dom_red
 
@@ -260,4 +276,36 @@ def minimos_conflictos(gr, rep=100):
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
+    asignacion = {i: random.randint(0,len(gr.dominio)-1) for i in gr.dominio}
+    variables = list(gr.dominio.keys())
+
+    for _ in range(rep):
+        random.shuffle(variables)
+        for i in variables:
+            hayConflicto = False
+            for j in gr.vecinos[i]:
+                # se revisa si i tiene conflictos con todas las demas variables
+                if not gr.restriccion((i,asignacion[i]), (j, asignacion[j])):
+                    hayConflicto = True
+                    break
+            if hayConflicto:
+                asignacion[i]= valMinConflictos(i, asignacion, gr)
+                break
+        # Si se completo la busqueda de todas las variables y se cumplieron las
+        # restricciones entonces se regresa la asignacion
+        else:
+            return asignacion
+
+    return None
+
+def valMinConflictos(var, asignacion, gr):
+    minimo = inf
+
+    for elem in gr.dominio[var]:
+        suma = sum([1 for vecino in gr.vecinos[var] if not gr.restriccion((var,elem), (vecino, asignacion[vecino]))])
+        if suma < minimo:
+            valor = elem
+    return valor
+
+
     raise NotImplementedError("Minimos conflictos  a implementar")

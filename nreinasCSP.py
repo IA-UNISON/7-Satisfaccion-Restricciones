@@ -7,7 +7,7 @@ nreinasCSP.py
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Ricardo Holguin'
 
 
 import csp
@@ -78,10 +78,15 @@ class Nreinas(csp.GrafoRestriccion):
             print(interlinea)
 
 
-def prueba_reinas(n, metodo, tipo=1, traza=False):
+def prueba_reinas(n, metodo, tipo=0, traza=False):
     print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
     g_r = Nreinas(n)
-    asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
+
+    if tipo < 1:
+        asignacion=metodo(g_r, maxit=10000)
+    else:
+        asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
+
     if n < 20:
         Nreinas.muestra_asignacion(asignacion)
     else:
@@ -93,28 +98,52 @@ if __name__ == "__main__":
 
     # Utilizando 1 consistencia
     # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+        # 4 backtracking
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+        # 21 backtracking
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+        # 223 backtracking
     # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
+        #661 backtracking
+    #prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
+        #15 backtracking
 
     # Utilizando consistencia
     # ==========================================================================
     # Probar y comentar los resultados del métdo de arco consistencia
     # ==========================================================================
     # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+        # 0 backtracking
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+        # 1 backtracking
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+        # 47 backtracking
     # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+        #92 backtracking
+    # prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+        #4 backtracking
+
+
+    #Comentario:
+    #   En general utilizando el método de arco consistencia logra una mucho
+    #   menor cantidad de backtracking en comparación al 1 consistencia, haciendo
+    #   la mitad o menos backtracking.
 
     # Utilizando minimos conflictos
     # ==========================================================================
     # Probar y comentar los resultados del métdo de mínios conflictos
     # ==========================================================================
-    # prueba_reinas(4, csp.min_conflictos)
+    prueba_reinas(8, csp.min_conflictos)
     # prueba_reinas(8, csp.min_conflictos)
     # prueba_reinas(16, csp.min_conflictos)
     # prueba_reinas(51, csp.min_conflictos)
     # prueba_reinas(101, csp.min_conflictos)
     # prueba_reinas(1000, csp.min_conflictos)
+
+    #Comentario:
+    #   Busqueda en grafos de restricción al menos encontraba una asignación
+    #   que cumpliera con las restricciones. Con minimos conflictos era común
+    #   que no encontrara un resultado. Esto ultimo también depende del número
+    #   de iteraciones que se le de pero al subir el número de iteraciones a
+    #   tal punto donde casi siempre encuentre un resultado, el tiempo que tarda-
+    #   ba para encontrarlo era mucho mas que usando un grafo de restricciones.
