@@ -275,20 +275,30 @@ def minimos_conflictos(gr, rep=100):
     #    y probarlo con las n-reinas
     # ================================================
     a = {elemento : random.choice(list(gr.dominio[elemento])) for elemento in gr.dominio.keys()}
+    variables = [x for x in gr.dominio.keys()]
     for _ in range(rep):
-        #variables = random.shuffle([x for x in gr.dominio.keys()])
-        variables = [x for x in gr.dominio.keys()]
         random.shuffle(variables)
         for v in variables:
             if conflicto(gr, v, a[v], a):
+                a[v] = buscar_minimos_conflictos(gr, v, a)
                 break
         else:
             return a
     return None
 
 def conflicto(gr, x_n, vx_n, a):
-    #return sum((1 for xj in gr.vecinos[x_n] for vj in gr.dominio[xj] if not gr.restriccion((x_n, vx_n), (xj, vj))))
     for vecino in gr.vecinos[x_n]:
         if not gr.restriccion((x_n, vx_n),(vecino,a[vecino])):
-            return False
-    return True
+            return True
+    return False
+
+def buscar_minimos_conflictos(gr, v, a):
+    minimo = 1e10
+    var = None
+    for valor in gr.dominio[v]:
+        if sum([1 for x in gr.vecinos[v] if not gr.restriccion((v,valor),(x,a[x]))]) < minimo:
+            var = valor
+            minimo = sum([1 for x in gr.vecinos[v] if not gr.restriccion((v,valor),(x,a[x]))])
+
+    if var is not None:
+        return var
