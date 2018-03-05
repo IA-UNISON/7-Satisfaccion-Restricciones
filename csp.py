@@ -16,7 +16,7 @@ En este modulo no es necesario modificar nada.
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'luis fernando'
 
 from collections import deque
 
