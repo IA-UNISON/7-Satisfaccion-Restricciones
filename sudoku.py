@@ -71,13 +71,11 @@ class Sudoku(csp.GrafoRestriccion):
 
         self.dominio = {i: [val] if val > 0 else range(1, 10)
                         for (i, val) in enumerate(pos_ini)}
-
-        vecinos = {}
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
-
-        if not vecinos:
+        self.vecinos = {elem : self.buscar_vecinos(int(elem)) for elem in self.dominio.keys()}
+        if not self.vecinos:
             raise NotImplementedError("Faltan los vecinos")
 
     def restriccion_binaria(self, xi_vi, xj_vj):
@@ -94,6 +92,30 @@ class Sudoku(csp.GrafoRestriccion):
         # =================================================================
         raise NotImplementedError("Implementa la restricción binaria")
 
+    def buscar_vecinos(self, elemento, dimensión = 9):
+      """
+        Busca los vecinos de un elemento en su columna, renglón y bloque
+
+        @param elemento: elemento al que se le calcularán los vecinos
+        @param dimensión: tamaño de uno de los lados del tablero
+
+        @return objeto tipo set() que contiene los vecinos de un elemento 
+      """
+      # Tomar los elementos del renglón y columna correspondiente al elemento en cuestión
+      columna = [dimensión * x + (elemento % dimensión) for x in range(dimensión)]
+      renglon = [elemento + x - (elemento % dimensión) for x in range(dimensión)]
+      
+      # Tomar los elementos del bloque correspondiente en base al primer bloque más un factor de desfase
+      # correspondiente al bloque donde se encuentra el elemento
+      bloque_principal = [x + y * dimensión for y in range(int(math.sqrt(dimensión))) for x in range(int(math.sqrt(dimensión)))]
+      factor = elemento - ((elemento % dimensión) % int(math.sqrt(dimensión)) + (int(elemento / dimensión) % int(math.sqrt(dimensión))) * dimensión)
+      bloque = [x + factor for x in bloque_principal]
+
+      del columna[columna.index(elemento)]
+      del renglon[renglon.index(elemento)]
+      del bloque[bloque.index(elemento)]
+      
+      return set(columna + renglon + bloque)
 
 def imprime_sdk(asignación):
     """
