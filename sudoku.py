@@ -51,6 +51,7 @@ __author__ = 'juliowaissman'
 
 
 import csp
+import math
 
 
 class Sudoku(csp.GrafoRestriccion):
@@ -172,3 +173,33 @@ if __name__ == "__main__":
     print("Y otro tambien dificil")
     sol2 = csp.asignacion_grafo_restriccion(sudoku2, ap={})
     imprime_sdk(sol2)
+
+    s3 = [8, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0, 3, 6, 0, 0, 0, 0, 0,
+          0,7,0,0,9,0,2,0,0,
+          0,5,0,0,0,7,0,0,0,
+          0,0,0,0,4,5,7,0,0,
+          0,0,0,1,0,0,0,3,0,
+          0,0,1,0,0,0,0,6,8,
+          0,0,8,5,0,0,0,1,0,
+          0,9,0,0,0,0,4,0,0]
+    imprime_sdk(s3)
+    sudoku3 = Sudoku(s3)
+    print("Y otro tambien dificil")
+    sol3 = csp.asignacion_grafo_restriccion(sudoku3, ap = {})
+    imprime_sdk(sol3)
+
+    s4 = [1,0,0,0,0,7,0,9,0,
+          0,3,0,0,2,0,0,0,8,
+          0,0,9,6,0,0,5,0,0,
+          0,0,5,3,0,0,9,0,0,
+          0,1,0,0,8,0,0,0,2,
+          6,0,0,0,0,4,0,0,0,
+          3,0,0,0,0,0,0,1,0,
+          0,4,0,0,0,0,0,0,7,
+          0,0,7,0,0,0,3,0,0]
+    imprime_sdk(s4)
+    sudoku4 = Sudoku(s4)
+    print("Y otro tambien dificil")
+    sol4 = csp.asignacion_grafo_restriccion(sudoku4, ap = {})
+    imprime_sdk(sol4)
