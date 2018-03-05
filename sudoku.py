@@ -69,8 +69,7 @@ class Sudoku(csp.GrafoRestriccion):
         """
         super().__init__()
 
-        self.dominio = {i: [val] if val > 0 else range(1, 10)
-                        for (i, val) in enumerate(pos_ini)}
+        self.dominio = {i: {val} if val > 0 else set(range(1, 10)) for (i, val) in enumerate(pos_ini)}
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
