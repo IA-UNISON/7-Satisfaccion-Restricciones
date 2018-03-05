@@ -11,6 +11,7 @@ __author__ = 'juliowaissman'
 
 
 import csp
+import time
 
 
 class Nreinas(csp.GrafoRestriccion):
@@ -79,13 +80,30 @@ class Nreinas(csp.GrafoRestriccion):
 
 
 def prueba_reinas(n, metodo, tipo=1, traza=False):
+    # Reporte resultados 1 y 2 consistencias
+    
+    # Efectivamente se demora más con la 2 consistencia pero genera una cantidad menor de backtrackings.
+    # Para los diferentes casos los resultados son:
+    # 4 Reinas. 1-consistencia: 2 backtrackings, 0 segundos. 2-consistencia: 0 backtrackings, 0 segundos
+    # 8 Reinas. 1-consistencia: 21 backtrackings, 0.01 segundos. 2-consistencia: 1 backtrackings, 0.01 segundos
+    # 16 Reinas. 1-consistencia: 223 backtrackings, 0.06 segundos. 2-consistencia: 47 backtrackings, 0.09 segundos
+    # 50 Reinas. 1-consistencia: 611 backtrackings, 1.30 segundos. 2-consistencia: 92 backtrackings, 2.82 segundos
+    # 100 Reinas. 1-consistencia: 15 backtrackings, 20.26 segundos. 2-consistencia: 4 backtrackings, 44.46 segundos
+
     print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
     g_r = Nreinas(n)
+    tiempo_inicial = time.time()
     asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
-    if n < 20:
+    tiempo_final = time.time()
+    
+    print("{:*^25.2f}".format(tiempo_final - tiempo_inicial))
+    
+    """
+    if n < 2:
         Nreinas.muestra_asignacion(asignacion)
     else:
         print([asignacion[i] for i in range(n)])
+    """
     print("Y se realizaron {} backtrackings".format(g_r.backtracking))
 
 
