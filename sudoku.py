@@ -3,51 +3,39 @@
 """
 sudoku.py
 ------------
-
 Los Sudokus son unos juegos de origen Japones. El juego tiene un
 tablero de 9 x 9 casillas.  En cada casilla se debe asignar un número
 1, 2, 3, 4, 5, 6, 7, 8 o 9.
-
 La idea principal de juego es establecer los valores de los números en
 las casillas no asignadas anteriormente si se considera que:
-
     a) Las casillas horizontales deben tener números diferentes entre si
     b) Las casillas verticales deben tener números diferentes entre si
-    c) Las casillas que pertenecen al mismo grupo deben tener números
+    c) Las casillas que pertenecen al mismo grupo deben tener números 
        diferentes entre si.
-
 Sea (r1, c1) el renglon y la columna de una casilla y (r2, c2) el
 renglon y la columna de otra casilla, se dice que las casillas
 pertenecen al mismo grupo si y solo si r1/3 == r2/3 y c1/3 == c2/3
 donde / es la división entera (por ejemplo 4/3 = 1 o 8/3 = 2).  Esto
 aplica si se considera 0 como la primer posición.
-
 Para más información sobre sudokus, pueden googlearlo, buscarlos en
 wikipedia o comprar un librito de sudokus de 8 pesos (cuidado, se
 puede perder mucho tiempo resolviendo sudokus).
-
-
 Para revisar la tarea es necesario seguir las siguientes
 instrucciones:
-
 Un Sudoku se inicializa como una lista de 81 valores donde los valores
 se encuentran de la manera siguiente:
-
     0   1   2 |  3   4   5 |  6   7   8
     9  10  11 | 12  13  14 | 15  16  17
    18  19  20 | 21  22  23 | 24  25  26
    -----------+------------+------------
    27  28  29 | 30  31  32 | 33  34  35
    36  37  38 | 39  ...
-
 hasta llegar a la posición 81.
-
 Los valores que puede tener la lista son del 0 al 9. Si tiene un 0
 entonces es que el valor es desconocido.
-
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Giovanni Lopez Celaya'
 
 
 import csp
@@ -59,31 +47,35 @@ class Sudoku(csp.GrafoRestriccion):
     variables están dadas desde 0 hasta 81 (un vector) tal como dice
     arriba. No modificar nada de lo escrito solamente agregar su
     código.
-
     """
 
     def __init__(self, pos_ini):
         """
         Inicializa el sudoku
-
         """
         super().__init__()
-
-        self.dominio = {i: [val] if val > 0 else range(1, 10)
+        self.dominio = {i: set([val]) if val > 0 else set(range(1, 10))
                         for (i, val) in enumerate(pos_ini)}
 
-        vecinos = {}
+        self.vecinos = {}
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
-
-        if not vecinos:
+        
+        for z in range(81):
+            i=z//9
+            j=z%9
+     
+            self.vecinos[z] = ({x+(i*9) for x in range (9) if x!=z} |#renglon 
+                    {j+x*9 for x in range(9) if x!=j} |#columna
+                    {3*(r*3 + (i//3)*9 + j//3) + c for r in range(3) for c in range(3)})- {z}#cuadro
+            #quitamos el valor actual ya que no es su vecino con {z}
+        if not self.vecinos:
             raise NotImplementedError("Faltan los vecinos")
 
-    def restriccion_binaria(self, xi_vi, xj_vj):
+    def restriccion(self, xi_vi, xj_vj):
         """
         El mero chuqui. Por favor comenta tu código correctamente
-
         """
         xi, vi = xi_vi
         xj, vj = xj_vj
@@ -92,6 +84,7 @@ class Sudoku(csp.GrafoRestriccion):
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
         # =================================================================
+        return vi != vj
         raise NotImplementedError("Implementa la restricción binaria")
 
 
@@ -100,7 +93,6 @@ def imprime_sdk(asignación):
     Imprime un sudoku en pantalla en forma más o menos graciosa. Esta
     función solo sirve para la tarea y para la revisión de la
     tarea. No modificarla por ningun motivo.
-
     """
     s = [asignación[i] for i in range(81)]
     rayita = '\n-------------+----------------+---------------\n'
