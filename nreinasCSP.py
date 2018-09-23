@@ -98,15 +98,31 @@ if __name__ == "__main__":
     # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
     prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
 
-    # Utilizando consistencia
+    # Utilizando 2 consistencia
     # ==========================================================================
     # Probar y comentar los resultados del métdo de arco consistencia
     # ==========================================================================
-    # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    #prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
     prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+
+    """
+    Mis comentarios:
+    Utilizando 1 consistencia para 101 reinas obtuve 15 backtrackings
+    y tiempos de alrededor 18s, mientras que para 2 consistencia
+    y las mismas reinas obtuve 4 backtrackings y 25s de tiempo.
+    Particularmente podriamos decir que es mejor la 1consistencia, pero
+    estamos hablando tambien de un problema de juguete. Pienso que la
+    1 consistencia puede llegar a ser mas lenta cuando en un grafo
+    mucho mas grande esta tomando un camino que a lo ancho es
+    incorrecto, y termina haciendo muchisimos backtrackings. mientras
+    que el 2 consistencia puede corregirse mucho antes de ir tan
+    a lo profundo. Aunque tambien puede ser por mi pobre
+    implementacion del ac3
+
+    """
 
     # Utilizando minimos conflictos
     # ==========================================================================
