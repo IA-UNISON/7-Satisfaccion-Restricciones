@@ -69,31 +69,85 @@ class Sudoku(csp.GrafoRestriccion):
         """
         super().__init__()
 
-        self.dominio = {i: [val] if val > 0 else range(1, 10)
+        # La siguiente linea me da un error: range object has no attribute
+        # discard, asi que la tuve que modificar de manera que
+        #obtenga un conjunto
+        self.dominio = {i: [val] if val > 0 else set(range(1, 10))
                         for (i, val) in enumerate(pos_ini)}
 
-        vecinos = {}
+        """
+        Creo que para el algoritmo AC3 los mejores vecinos serian todos
+        aquellas variables que pertenecen al mismo renglon, columna y grupo
+        que xi. Ademas, de ser asi, podriamos tener solamente una restriccion
+        binaria y una restriccion global, la primera es que sean distintas
+        y la segunda simplemente que no haya restricciones binarias
+        (por naturaleza la segunda se cumple)
+        """
+
+        list_vec_hor = [[0 for i in range(9)] for j in range(81)]
+        list_vec_ver = [[0 for i in range(9)] for j in range(81)]
+        list_vec_gru = [[0 for i in range(9)] for j in range(81)]
+
+        self.vecinos = {}
+        for (i,_) in enumerate(pos_ini):
+            #Cada variable tiene de manera fija 24 vecinos siempre
+            #ubicamos en qué columna está con i%9
+            #ubicamos en que renglon esta con i//9
+            col = i%9
+            ren = i//9
+            k=0
+            for j in range(9):
+                list_vec_hor[i][j] = 9*(ren) + ((i + j) % 9)
+                list_vec_ver[i][j] = col + j*9
+            for j in range(81):
+                c2 = j%9
+                r2 = j//9
+                # La respuesta de esto esta en los comentarios.
+                # Leer la documentacion es lo maximo
+                if ren//3 == r2//3 and col//3 == c2//3:
+                    list_vec_gru[i][k] = j
+                    k+=1
+            list_vec_gru[i].remove(i)
+            list_vec_hor[i].remove(i)
+            list_vec_ver[i].remove(i)
+
+            self.vecinos[i] = (list(set(list_vec_gru[i])) +
+                                list(set(list_vec_hor[i])) +
+                                 list(set(list_vec_ver[i])))
+            self.vecinos[i] = list(set(self.vecinos[i]))
+
+            """
+
+            FALTA MEJORAR LA FUNCION DE VECINOS, pues 
+            esta bien pendeja; funciona, pero hace cosas de mas, al menos
+            unas 3^3 veces mas de lo que deberia.
+
+            """
+
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
 
-        if not vecinos:
-            raise NotImplementedError("Faltan los vecinos")
 
     def restriccion_binaria(self, xi_vi, xj_vj):
         """
         El mero chuqui. Por favor comenta tu código correctamente
 
+        El chuqui lo meti a los vecinos. Creo que es mas facil asi. Habra que
+        discutirlo luego.
         """
         xi, vi = xi_vi
         xj, vj = xj_vj
 
+        return vi!=vj
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
         # =================================================================
-        raise NotImplementedError("Implementa la restricción binaria")
-
+    def restriccion(self, xi_vi, xj_vj):
+        # Pensandolo bien mi unica restriccion es que se cumplan Las
+        # restricciones binarias.
+        return self.restriccion_binaria(xi_vi, xj_vj)
 
 def imprime_sdk(asignación):
     """
