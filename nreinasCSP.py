@@ -90,24 +90,29 @@ def prueba_reinas(n, metodo, tipo=1, traza=False):
 
 
 if __name__ == "__main__":
-
+    print("Ejercicio 2. Comparando 2-consistencia y 1-consistencia")
     # Utilizando 1 consistencia
     # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
+    print("Arco Consistencia tipo = 1")
+    prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
     prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
-
-    # Utilizando consistencia
+    prueba_reinas(201, csp.asignacion_grafo_restriccion, tipo=1)
+    # Utilizando 2 consistencia
     # ==========================================================================
     # Probar y comentar los resultados del métdo de arco consistencia
+    """
+    Observamos que Arco-Consistencia tipo 2, es por lejos mejor que la tipo 1, en el caso de las 201 AC-3 llega a utilizar menos backtrackings, a una razon de 6:1 con la consistencia tipo 1. Lo cual prueba la efectividad de este algoritmo de los 70's.
+    """
     # ==========================================================================
     # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
+    print("Arco Consistencia tipo = 2")
+    prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
     prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
-
+    prueba_reinas(201, csp.asignacion_grafo_restriccion, tipo=2)
     # Utilizando minimos conflictos
     # ==========================================================================
     # Probar y comentar los resultados del métdo de mínios conflictos
