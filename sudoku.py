@@ -72,12 +72,28 @@ class Sudoku(csp.GrafoRestriccion):
         self.dominio = {i: [val] if val > 0 else range(1, 10)
                         for (i, val) in enumerate(pos_ini)}
 
-        vecinos = {}
+        self.vecinos = {} # set donde keys() son las casillas y los dominios son
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
+        for i in range(81):
+            #vecindad = set() #donde acumulamos los vecinos
+            # ubicamos renglon y columna
+            r = i // 9  # \in {0..8} int
+            c = i % 9   # \in {0..8}
+
+            self.vecinos[i] = (
+                # los renglones empiezan en los multiplos de 9, entonces agregamos todo este conjunto de vecinos al self.vecinos
+                set(range(9 * r, 9 * r + 9) if x != i)      | #renglones
+                # las columnas se acceden llendo al renglon luego avanzando hasta la columna correspondiente
+                set(c + x * 9 for x in range(9) if x != c)  | #columna
+                # recorremos la seccion donde se ubica la casilla evaluada
+                set(3 * (a*3 + (r//3)*9 + c//3) + b for a in range(3) for b in range(3))
+                - {i} # se quita a si mismo de la vencidad
+            )
+
         # =================================================================
 
-        if not vecinos:
+        if not self.vecinos:
             raise NotImplementedError("Faltan los vecinos")
 
     def restriccion_binaria(self, xi_vi, xj_vj):
