@@ -64,6 +64,7 @@ class GrafoRestriccion(object):
         @return: True si se cumple la restricción
 
         """
+        # vi \in dom[xi]
         xi, vi = xi_vi
         xj, vj = xj_vj
         raise NotImplementedError("Método a implementar")
@@ -80,6 +81,7 @@ def asignacion_grafo_restriccion(gr, ap={}, consist=1, traza=False):
     @param gr: Un objeto tipo GrafoRestriccion
     @param ap: Un diccionario con una asignación parcial
     @param consist: Un valor 0, 1 o 2 para máximo grado de consistencia
+    # donde queda dmax?
     @param dmax: Máxima profundidad de recursión, solo por seguridad
     @param traza: Si True muestra el proceso de asignación
 
@@ -229,7 +231,24 @@ def consistencia(gr, ap, xi, vi, tipo):
         #    Implementar el algoritmo de AC3
         #    y print()robarlo con las n-reinas
         # ================================================
-        raise NotImplementedError("AC-3  a implementar")
+        pendientes = deque([(xj, xi) for xj in gr.vecinos[xi] if xj not in ap])
+        while pendientes:
+            x, y = pendientes.popleft()
+            temp = reduceAC3(x, y, gr)
+            if temp:
+                if not gr.dominio[x]:
+                    gr.dominio[x] = temp
+                    for v in dom_red.keys():
+                        gr.dominio[v] = gr.dominio[v].union(dom_red[v])
+                    return None
+                if x not in dom_red:
+                    dom_red[x] = set({})
+                # AC-3 expandimos a los vecinos
+                dom_red[x] = dom_red[x].union(temp)
+                for z in gr.vecinos[x]:
+                    if z != y:
+                        pendientes.append([z, x])
+        # raise NotImplementedError("AC-3  a implementar")
 
     return dom_red
 
