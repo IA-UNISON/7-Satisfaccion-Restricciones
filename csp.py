@@ -19,6 +19,7 @@ En este modulo no es necesario modificar nada.
 __author__ = 'juliowaissman'
 
 from collections import deque
+import random
 
 
 class GrafoRestriccion(object):
@@ -244,7 +245,7 @@ def consistencia(gr, ap, xi, vi, tipo):
                     dom_red[xa] = set({})
                 dom_red[xa] = dom_red[xa].union(temp)
                 # Agregamos mas nodos a pendientes. Estos nodos
-                # son los vecinos del vecino pendiente actual, que no sean 
+                # son los vecinos del vecino pendiente actual, que no sean
                 # la variable xi de interes.
                 pendientes.extend([(z, xa) for z in gr.vecinos[xa] if z != xb])
 
@@ -263,8 +264,9 @@ def reduceAC3(xa, xb, gr):
             gr.dominio[xa].discard(va)
     return reduccion
 
-
-def min_conflictos(gr, rep=100, maxit=100):
+# Le meti estos parametros para las pruebas o bien pude haber creado otro
+# metodo para hacer las pruebas.
+def min_conflictos(gr, ap ={}, consist = 0, traza = False, rep=100, maxit=100):
     for _ in range(maxit):
         a = minimos_conflictos(gr, rep)
         if a is not None:
@@ -277,4 +279,24 @@ def minimos_conflictos(gr, rep=100):
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+
+    #Asignacion espantosa. Lo mejor seria meter grado heuristico para
+    #la asignacion inicial ya que esto reduciria un chingo los tiempos
+    asig = {i : random.choice(list(gr.dominio[i])) for i in gr.dominio}
+    var = list(gr.dominio)
+    conflictos = []
+    for _ in range(rep):
+        for xi in var:
+            for vec in gr.vecinos[xi]:
+                 if not (gr.restriccion((xi, asig[xi]),
+                 (vec, asig[vec]))):
+                    conflictos.append(xi)
+                    conflictos = list(set(conflictos))
+        if not conflictos:
+            return asig
+        xj = random.choice(conflictos)
+        num_conf = [(10e9, 0)] # O infinito, pero prefiero meter un valor real
+        for vj in gr.dominio[xj]:
+            num_conf.append((sum((1 for vec in gr.vecinos[xj] if not gr.restriccion((xj, vj), (vec, asig[vec])))), vj) )
+        asig[xj] = min(num_conf)[1]
+    return None
