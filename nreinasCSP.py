@@ -7,7 +7,7 @@ nreinasCSP.py
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Fabian encinas silvas'
 
 
 import csp
@@ -82,6 +82,11 @@ def prueba_reinas(n, metodo, tipo=1, traza=False):
     print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
     g_r = Nreinas(n)
     asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
+    if tipo < 1:
+        asignacion=metodo(g_r, maxit=10000)
+    else:
+        asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
+
     if n < 20:
         Nreinas.muestra_asignacion(asignacion)
     else:
@@ -89,30 +94,34 @@ def prueba_reinas(n, metodo, tipo=1, traza=False):
     print("Y se realizaron {} backtrackings".format(g_r.backtracking))
 
 
+
 if __name__ == "__main__":
+    # Como se puede ver en los backtrakings de resultado el 2 consistencia
+    #reduce significativamente la cantidad de backtraking a comparacion de 
+    # 1 consistencia
 
     # Utilizando 1 consistencia
-    # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
+     #prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1) #4 backtrakings
+    #prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1) #42 backtrakings
+    #prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)#446 backtrakings
+    #prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1) #con 50 reinas se realizaron 1222 backtrakings
+    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1) # 30 backtrakings tardado
 
     # Utilizando consistencia
     # ==========================================================================
     # Probar y comentar los resultados del métdo de arco consistencia
     # ==========================================================================
-    # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+    # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2) # 0 backtrakings
+    #prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)# 2 backtrakings
+    #prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2) #94 backtrakings
+    #prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2) #se realizaron 184 backtrakings
+    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2) #8 backtrakings tardado
 
     # Utilizando minimos conflictos
     # ==========================================================================
     # Probar y comentar los resultados del métdo de mínios conflictos
     # ==========================================================================
-    # prueba_reinas(4, csp.min_conflictos)
+    #prueba_reinas(4, csp.min_conflictos)
     # prueba_reinas(8, csp.min_conflictos)
     # prueba_reinas(16, csp.min_conflictos)
     # prueba_reinas(51, csp.min_conflictos)

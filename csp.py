@@ -17,7 +17,8 @@ En este modulo no es necesario modificar nada.
 """
 
 __author__ = 'juliowaissman'
-
+import random
+from math import inf
 from collections import deque
 
 
@@ -229,7 +230,21 @@ def consistencia(gr, ap, xi, vi, tipo):
         #    Implementar el algoritmo de AC3
         #    y print()robarlo con las n-reinas
         # ================================================
-        raise NotImplementedError("AC-3  a implementar")
+        pendientes = deque([(xj, xi) for xj in gr.vecinos[xi] if xj not in ap])
+        while pendientes:
+            xa, xb = pendientes.popleft()
+            temp = reduceAC3(xa, xb, gr)
+            if temp:
+                if not gr.dominio[xa]:
+                    gr.dominio[xa] = temp
+                    for v in dom_red.keys():
+                        gr.dominio[v] = gr.dominio[v].union(dom_red[v])
+                    return None
+                if xa not in dom_red:
+                    dom_red[xa] = set({})
+                dom_red[xa] = dom_red[xa].union(temp)
+                pendientes.extend([(xj,xa) for xj in gr.vecinos[xa] if xj != xb and xj not in ap])
+
 
     return dom_red
 
@@ -260,4 +275,32 @@ def minimos_conflictos(gr, rep=100):
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+    ac = {elemento : random.choice(list(gr.dominio[elemento]))
+             for elemento in gr.dominio.keys()}
+    variables = [x for x in gr.dominio.keys()]
+    for _ in range(rep):
+        random.shuffle(variables)
+        for v in variables:
+            if conflicto(gr, v, ac[v], ac):
+                ac[v] = encMinimosConflictos(gr, v, ac)
+                break
+        else:
+            return ac
+    return None
+
+def conflicto(gr, x_n, vx_n, ac):
+    for vecino in gr.vecinos[x_n]:
+        if not gr.restriccion((x_n, vx_n),(vecino,ac[vecino])):
+            return True
+    return False
+
+def encMinimosConflictos(gr, v, ac):
+    minimo = inf
+    var = None
+    for elemento in gr.dominio[v]:
+        if sum([1 for x in gr.vecinos[v] if not gr.restriccion((v,elemento),(x,ac[x]))]) < minimo:
+            var = elemento
+            minimo = sum([1 for x in gr.vecinos[v] if not gr.restriccion((v,elemento),(x,ac[x]))])
+
+    if var is not None:
+        return var
