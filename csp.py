@@ -19,7 +19,7 @@ En este modulo no es necesario modificar nada.
 __author__ = 'juliowaissman'
 
 from collections import deque
-
+import random
 
 class GrafoRestriccion(object):
     """
@@ -229,8 +229,8 @@ def consistencia(gr, ap, xi, vi, tipo):
     if tipo == 2:
         # ================================================
         #    Implementar el algoritmo de AC3
-        #    y print()robarlo con las n-reinas
-        # ================================================
+        #    y print()robarlo con las n-reinas # no entendi, robar print()?
+
         pendientes = deque([(xj, xi) for xj in gr.vecinos[xi] if xj not in ap])
         while pendientes:
             x, y = pendientes.popleft()
@@ -248,6 +248,7 @@ def consistencia(gr, ap, xi, vi, tipo):
                 for z in gr.vecinos[x]:
                     if z != y:
                         pendientes.append([z, x])
+        # ================================================
         # raise NotImplementedError("AC-3  a implementar")
 
     return dom_red
@@ -278,5 +279,24 @@ def minimos_conflictos(gr, rep=100):
     # ================================================
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
+    def conflictos(gr,asignacion,variable, valor):
+        return sum(1 for vecino in gr.vecinos[variable] if not gr.restriccion((variable, valor), (vecino, asignacion[vecino])))
+    #a
+    estado_aleatorio = { variable : random.choice(list(valor)) for (variable, valor) in gr.dominio.items() }
+
+    for _ in range(rep):
+        cantidad_conflictos = { variable : conflictos(gr, estado_aleatorio, variable, estado_aleatorio[variable]) for variable in estado_aleatorio }
+        # si el estado no cuenta con conflictos lo regresamos
+        if not sum(cantidad_conflictos.values()):
+            return estado_aleatorio
+
+        # Tomamos una variable con conflictos
+        variable = random.choice([i for i in cantidad_conflictos if cantidad_conflictos[i]])
+
+        variable_conflicto = {valor : conflictos(gr, estado_aleatorio, variable, valor) for valor in gr.dominio[variable]}
+        conflictos_min = min(variable_conflicto.values())
+        # Escogemos aleatorio otro valor que reduce los conflictos_min
+        estado_aleatorio[variable] = random.choice([v for v in variable_conflicto if variable_conflicto[v] == conflictos_min])
+
     # ================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+    #raise NotImplementedError("Minimos conflictos  a implementar")

@@ -47,9 +47,21 @@ entonces es que el valor es desconocido.
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'gilbertoesp'
 
+"""
+Trabajo realizado con las siguientes referencias
+https://github.com/jjups96/tarea03-SatisfaccionRestricciones
+https://github.com/ErickLF/tarea04-SatisfaccionRestricciones
+https://github.com/PatQz/tarea04-SatisfaccionRestricciones
+https://github.com/athenavianney/tarea04-SatisfaccionRestricciones
+ttps://github.com/aimacode/aima-python
 
+Este script, regresa un error, el origen de tal error, no lo pude entender, dado
+que minimos conflictos y ac-3 funcionan para nreinas, asumo que las implementaciones 
+son entregables, por lo tanto entrego esta sin la actividad de sudoku, el punto 5 de 
+la evaluacion
+"""
 import csp
 
 
@@ -83,12 +95,12 @@ class Sudoku(csp.GrafoRestriccion):
 
             self.vecinos[i] = (
                 # los renglones empiezan en los multiplos de 9, entonces agregamos todo este conjunto de vecinos al self.vecinos
-                set(range(9 * r, 9 * r + 9) if x != i)      | #renglones
+                #set(range(9 * r, 9 * r + 9) if x != i)      | #renglones
+                {x for x in range(9 * r, 9 * r + 9) if x != i} |
                 # las columnas se acceden llendo al renglon luego avanzando hasta la columna correspondiente
                 set(c + x * 9 for x in range(9) if x != c)  | #columna
-                # recorremos la seccion donde se ubica la casilla evaluada
-                set(3 * (a*3 + (r//3)*9 + c//3) + b for a in range(3) for b in range(3))
-                - {i} # se quita a si mismo de la vencidad
+                # recorremos la seccion donde se ubica la casilla evaluada - cuadro
+                set(3 * (a*3 + (r//3)*9 + c//3) + b for a in range(3) for b in range(3))- {i} # se quita a si mismo de la vecindad
             )
 
         # =================================================================
@@ -107,6 +119,9 @@ class Sudoku(csp.GrafoRestriccion):
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
+        # Dos unicas variables vecinas deben tener la condicion de no ser iguales, en cambio
+        # si fuera una 9-restriccion se pediria que todos fueran diferentes
+        return vi != vj
         # =================================================================
         raise NotImplementedError("Implementa la restricción binaria")
 

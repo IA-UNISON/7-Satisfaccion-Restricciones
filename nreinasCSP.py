@@ -11,7 +11,7 @@ __author__ = 'juliowaissman'
 
 
 import csp
-
+import time
 
 class Nreinas(csp.GrafoRestriccion):
     """
@@ -88,17 +88,30 @@ def prueba_reinas(n, metodo, tipo=1, traza=False):
         print([asignacion[i] for i in range(n)])
     print("Y se realizaron {} backtrackings".format(g_r.backtracking))
 
+def prueba_reinas_min(n, metodo, traza=False):
+    print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
+    g_r = Nreinas(n)
+    t_inicial =time.time()
+    asignacion = metodo(g_r)
+    t_final = time.time()
+    if n < 20:
+        Nreinas.muestra_asignacion(asignacion)
+    else:
+        print([asignacion[i] for i in range(n)])
+    #print("Y se realizaron {} backtrackings".format(g_r.backtracking))
+        # como no hay backtrackings se calcula el tiempo como referencia
+        print("Termino en {} segundos.".format(t_final - t_inicial))
 
 if __name__ == "__main__":
-    print("Ejercicio 2. Comparando 2-consistencia y 1-consistencia")
+    #print("Ejercicio 2. Comparando 2-consistencia y 1-consistencia")
     # Utilizando 1 consistencia
     # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    print("Arco Consistencia tipo = 1")
-    prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
-    prueba_reinas(201, csp.asignacion_grafo_restriccion, tipo=1)
+    #print("Arco Consistencia tipo = 1")
+    #prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
+    #prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
+    #prueba_reinas(201, csp.asignacion_grafo_restriccion, tipo=1)
     # Utilizando 2 consistencia
     # ==========================================================================
     # Probar y comentar los resultados del métdo de arco consistencia
@@ -109,17 +122,23 @@ if __name__ == "__main__":
     # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    print("Arco Consistencia tipo = 2")
-    prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
-    prueba_reinas(201, csp.asignacion_grafo_restriccion, tipo=2)
+    #print("Arco Consistencia tipo = 2")
+    #prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
+    #prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+    #prueba_reinas(201, csp.asignacion_grafo_restriccion, tipo=2)
     # Utilizando minimos conflictos
     # ==========================================================================
     # Probar y comentar los resultados del métdo de mínios conflictos
+    print("Resolviendo n-reinas con minimos conflictos")
     # ==========================================================================
-    # prueba_reinas(4, csp.min_conflictos)
-    # prueba_reinas(8, csp.min_conflictos)
-    # prueba_reinas(16, csp.min_conflictos)
-    # prueba_reinas(51, csp.min_conflictos)
-    # prueba_reinas(101, csp.min_conflictos)
-    # prueba_reinas(1000, csp.min_conflictos)
+    """
+    En este metodo observe que min_con llega a ser muy variante, dado que observe una corrida
+    de escritorio para 101 reinas que fue ejecutada en  0.95se, un tiempo muy por debajo de lo
+    esperado, pues en otras ejecuciones muestra tiempos de 15 seg para la misma cantidad de Nreinas
+    En corridas_txt
+    """
+    #prueba_reinas_min(4, csp.min_conflictos)
+    #prueba_reinas_min(8, csp.min_conflictos)
+    #prueba_reinas_min(16, csp.min_conflictos)
+    prueba_reinas_min(51, csp.min_conflictos)
+    prueba_reinas_min(101, csp.min_conflictos)
