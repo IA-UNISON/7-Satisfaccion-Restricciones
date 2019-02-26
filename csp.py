@@ -232,7 +232,7 @@ def consistencia(grafo, asig_parcial, x_i, v_i, tipo):
         #    Implementar el algoritmo de AC3
         #    y print()robarlo con las n-reinas
         # ================================================
-        raise NotImplementedError("AC-3  a implementar")
+        #raise NotImplementedError("AC-3  a implementar")
 
     return dom_red
 
