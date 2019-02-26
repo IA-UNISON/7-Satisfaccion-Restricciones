@@ -11,6 +11,7 @@ __author__ = 'juliowaissman'
 
 
 import csp
+import time
 
 
 class Nreinas(csp.GrafoRestriccion):
@@ -37,7 +38,6 @@ class Nreinas(csp.GrafoRestriccion):
         for var in range(n):
             self.dominio[var] = set(range(n))
             self.vecinos[var] = {i for i in range(n) if i != var}
-
     def restriccion(self, xi_vi, xj_vj):
         """
         Verifica si se cumple la restriccion binaria entre las variables xi
@@ -78,15 +78,23 @@ class Nreinas(csp.GrafoRestriccion):
             print(interlinea)
 
 
-def prueba_reinas(n, metodo, tipo=1, traza=False):
+def prueba_reinas(n, metodo, tipo=None, traza=False):
     print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
     g_r = Nreinas(n)
-    asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
+    if tipo is None:
+        t_inicial = time.time()
+        asignacion = metodo(g_r)
+        t_final = time.time()
+    else:
+        t_inicial = time.time()
+        asignacion = metodo(g_r, asignacion=None, consist=tipo, traza=traza)
+        t_final = time.time()
     if n < 20:
         Nreinas.muestra_asignacion(asignacion)
     else:
         print([asignacion[i] for i in range(n)])
-    print("Y se realizaron {} backtrackings".format(g_r.backtracking))
+    print("Tiempo de ejecución: ",t_final-t_inicial," segundos.")
+    print("{} backtrackings.".format(g_r.backtracking))
 
 
 if __name__ == "__main__":
@@ -96,23 +104,23 @@ if __name__ == "__main__":
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
+    #prueba_reinas(8, csp.asignacion_grafo_restriccion, tipo=1)
 
     # Utilizando consistencia
     # ==========================================================================
     # Probar y comentar los resultados del métdo de arco consistencia
     # ==========================================================================
-    # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+    #prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    #prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    #prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    #prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
+    #prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
 
     # Utilizando minimos conflictos
     # ==========================================================================
     # Probar y comentar los resultados del métdo de mínios conflictos
     # ==========================================================================
-    # prueba_reinas(4, csp.min_conflictos)
+    prueba_reinas(4, csp.min_conflictos)
     # prueba_reinas(8, csp.min_conflictos)
     # prueba_reinas(16, csp.min_conflictos)
     # prueba_reinas(51, csp.min_conflictos)

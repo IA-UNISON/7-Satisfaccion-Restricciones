@@ -19,7 +19,7 @@ En este modulo no es necesario modificar nada.
 __author__ = 'juliowaissman'
 
 from collections import deque
-
+import random
 
 class GrafoRestriccion:
     """
@@ -66,7 +66,7 @@ class GrafoRestriccion:
         """
         x_i, v_i = xi_vi
         x_j, v_j = xj_vj
-        raise NotImplementedError("Método a implementar")
+        #raise NotImplementedError("Método a implementar")
 
 
 def asignacion_grafo_restriccion(grafo, asignacion=None, consist=1, traza=False):
@@ -97,16 +97,14 @@ def asignacion_grafo_restriccion(grafo, asignacion=None, consist=1, traza=False)
 
     # Selección de variables, el código viene más adelante
     var = selecciona_variable(grafo, asignacion)
-
     # Los valores se ordenan antes de probarlos
     for val in ordena_valores(grafo, asignacion, var):
-
         # Función con efecto colateral, en dominio
         # si no es None, se tiene los valores que se
         # redujeron del dominio del objeto gr. Al salir
         # del ciclo for, se debe de restaurar el dominio
         dominio_reducido = consistencia(grafo, asignacion, var, val, consist)
-
+        
         if dominio_reducido is not None:
             # Se realiza la asignación de esta variable
             asignacion[var] = val
@@ -117,7 +115,7 @@ def asignacion_grafo_restriccion(grafo, asignacion=None, consist=1, traza=False)
 
             # Se manda llamar en forma recursiva (búsqueda en profundidad)
             apn = asignacion_grafo_restriccion(grafo, asignacion, consist, traza)
-
+            #print("assig dentro del for",val,apn)
             # Restaura el dominio
             for valor in dominio_reducido:
                 grafo.dominio[valor] = grafo.dominio[valor].union(dominio_reducido[valor])
@@ -126,6 +124,7 @@ def asignacion_grafo_restriccion(grafo, asignacion=None, consist=1, traza=False)
             if apn is not None:
                 return apn
             del asignacion[var]
+    #print("uyregresonone")
     grafo.backtracking += 1
     return None
 
@@ -230,10 +229,23 @@ def consistencia(grafo, asig_parcial, x_i, v_i, tipo):
     if tipo == 2:
         # ================================================
         #    Implementar el algoritmo de AC3
-        #    y print()robarlo con las n-reinas
+        #    y probarlo con las n-reinas
         # ================================================
-        raise NotImplementedError("AC-3  a implementar")
 
+        pendientes = deque([(x_j, x_i) for x_j in grafo.vecinos[x_i] if x_j not in asig_parcial])
+        while pendientes:
+            x_a,x_b = pendientes.popleft()
+            temp = reduce_ac3(x_a, x_b, grafo)
+            if temp:
+                if not grafo.dominio[x_a]:
+                    grafo.dominio[x_a] = temp
+                    for valor in dom_red:
+                        grafo.dominio[valor] = grafo.dominio[valor].union(dom_red[valor])
+                    return None
+                if x_a not in dom_red:
+                    dom_red[x_a] = set({})
+                dom_red[x_a] = dom_red[x_a].union(temp)
+                pendientes += deque([(x_j, x_a) for x_j in grafo.vecinos[x_a] if (x_j not in asig_parcial and x_j!= x_b)])
     return dom_red
 
 
@@ -266,13 +278,25 @@ def min_conflictos(grafo, rep=100, maxit=100):
     return None
 
 
-def minimos_conflictos(grafo, rep=100):
-    """
-    Incluir el docstring porfavor
-
-    """
+def minimos_conflictos(g_r, rep=100):
     # ================================================
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+    
+    estado = {var: random.choice(list(val)) for (var, val) in g_r.dominio.items()}
+    
+    def conflictos(g_r, asignacion, var, val):
+        return sum(1 for vecino in g_r.vecinos[var] if not g_r.restriccion((var, val), (vecino , asignacion[vecino ])))
+
+    for _ in range(rep):
+        num_conflictos = {var: conflictos(g_r, estado, var, estado[var])
+                        for var in estado}
+        if not sum(num_conflictos.values()):
+            return estado
+        var = random.choice([i for i in num_conflictos if num_conflictos[i]])
+        conflictos_var = {val: conflictos(g_r, estado, var, val) for val in g_r.dominio[var]}
+        min_conf = min(conflictos_var.values())
+        estado[var] = random.choice([v for v in conflictos_var if conflictos_var[v] == min_conf])
+    return None
+

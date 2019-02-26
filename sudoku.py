@@ -52,7 +52,6 @@ __author__ = 'juliowaissman'
 
 import csp
 
-
 class Sudoku(csp.GrafoRestriccion):
     """
     Esta es la clase que tienen que desarrollar y comentar. Las
@@ -69,18 +68,24 @@ class Sudoku(csp.GrafoRestriccion):
         """
         super().__init__()
 
-        self.dominio = {i: [val] if val > 0 else range(1, 10)
+        self.dominio = {i: [val] if val > 0 else set(range(1, 10))
                         for (i, val) in enumerate(pos_ini)}
-
-        vecinos = {}
+        self.vecinos = {}
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
 
-        if not vecinos:
-            raise NotImplementedError("Faltan los vecinos")
+        for var in range(81):
+            renglon,columna=self.obtener_renglon_columna(var)
+            self.vecinos[var]= set(j for j in range(renglon*9,renglon*9+9) if j != var)
+            for j in range(81):
+                renglon_j,columna_j = self.obtener_renglon_columna(j)
+                if j != var and columna_j == columna:
+                    self.vecinos[var].add(j)
+                elif j != var and (renglon// 3 == renglon_j//3) and (columna//3==columna_j//3):
+                    self.vecinos[var].add(j)
 
-    def restriccion_binaria(self, xi_vi, xj_vj):
+    def restriccion(self, xi_vi, xj_vj):
         """
         El mero chuqui. Por favor comenta tu código correctamente
 
@@ -92,17 +97,24 @@ class Sudoku(csp.GrafoRestriccion):
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
         # =================================================================
-        raise NotImplementedError("Implementa la restricción binaria")
+        #raise NotImplementedError("Implementa la restricción binaria")
+        
+        return vi!=vj
+        
+    def obtener_renglon_columna(self,i):
+        renglon = i//9
+        columna = i - 9*renglon
+        return renglon, columna
 
 
-def imprime_sdk(asignación):
+def imprime_sdk(asignacion):
     """
     Imprime un sudoku en pantalla en forma más o menos graciosa. Esta
     función solo sirve para la tarea y para la revisión de la
     tarea. No modificarla por ningun motivo.
 
     """
-    s = [asignación[i] for i in range(81)]
+    s = [asignacion[i] for i in range(81)]
     rayita = '\n-------------+----------------+---------------\n'
     c = ''
     for i in range(9):
@@ -119,7 +131,7 @@ if __name__ == "__main__":
     # es verificando que la solución sea satisfactoria para estos dos
     # sudokus.
     # =========================================================================
-
+    
     s1 = [0, 0, 3, 0, 2, 0, 6, 0, 0,
           9, 0, 0, 3, 0, 5, 0, 0, 1,
           0, 0, 1, 8, 0, 6, 4, 0, 0,
@@ -129,8 +141,8 @@ if __name__ == "__main__":
           0, 0, 2, 6, 0, 9, 5, 0, 0,
           8, 0, 0, 2, 0, 3, 0, 0, 9,
           0, 0, 5, 0, 1, 0, 3, 0, 0]
-
     imprime_sdk(s1)
+    
     print("Solucionando un Sudoku dificil")
     sudoku1 = Sudoku(s1)
     sol1 = csp.asignacion_grafo_restriccion(sudoku1)
