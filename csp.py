@@ -71,7 +71,7 @@ class GrafoRestriccion:
 
 def asignacion_grafo_restriccion(grafo, asignacion=None, consist=1, traza=False):
     """
-    Asigación de una solución al grafo de restriccion si existe
+    Asignación de una solución al grafo de restriccion si existe
     por búsqueda primero en profundidad.
 
     Para utilizarlo con un objeto tipo GrafoRestriccion gr:
@@ -107,6 +107,7 @@ def asignacion_grafo_restriccion(grafo, asignacion=None, consist=1, traza=False)
         # del ciclo for, se debe de restaurar el dominio
         dominio_reducido = consistencia(grafo, asignacion, var, val, consist)
 
+        #significa que si hay consistencia
         if dominio_reducido is not None:
             # Se realiza la asignación de esta variable
             asignacion[var] = val
@@ -228,12 +229,20 @@ def consistencia(grafo, asig_parcial, x_i, v_i, tipo):
     # Por ejemplo, para las 4 reinas deben de ser 0 backtrackings y para las
     # 101 reina, al rededor de 4
     if tipo == 2:
-        # ================================================
-        #    Implementar el algoritmo de AC3
-        #    y print()robarlo con las n-reinas
-        # ================================================
-        raise NotImplementedError("AC-3  a implementar")
-
+       pendientes = deque([(x_j, x_i) for x_j in grafo.vecinos[x_i] if x_j not in asig_parcial])
+       while pendientes:
+           x_a, x_b = pendientes.popleft()
+           temporal = reduce_ac3(x_a,x_b,grafo)
+           if temporal:
+               if not grafo.dominio[x_a]:
+                   grafo.dominio[x_a] = temporal
+                   for valor in dom_red:
+                       grafo.dominio[valor] = grafo.dominio[valor].union(dom_red[valor])
+                   return None
+               if x_a not in dom_red:
+                   dom_red[x_a] = set({})
+               dom_red[x_a] = dom_red[x_a].union(temporal)
+               pendientes += deque( [ (aux, x_a) for aux in grafo.vecinos[x_a] if x_a != aux ] )
     return dom_red
 
 

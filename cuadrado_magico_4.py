@@ -16,7 +16,23 @@ de 4 x 4.
 
 """
 
-__author__ = 'Agrega aquí tu nombre'
+import csp
+#import numpy as np
+
+__author__ = 'Irving Borboa'
+
+class CuadradoMagico(csp.GrafoRestriccion):
+
+    def __init__(self, n=4):
+        super().__init__()
+        for var in range(n):
+            self.dominio[var] = set(range(16))
+            self.vecinos[var] = {i for i in range(n) if i != var}
+            
+    def restricción(self,  xi_vi, xj_vj):
+        xi, vi = xi_vi
+        xj, vj = xj_vj
+        #if vi != 
+        
 
 
-# Inserta tu código aquí
