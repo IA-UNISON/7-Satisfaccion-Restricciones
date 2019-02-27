@@ -19,6 +19,7 @@ En este modulo no es necesario modificar nada.
 __author__ = 'juliowaissman'
 
 from collections import deque
+from random import choice
 
 
 class GrafoRestriccion:
@@ -284,4 +285,29 @@ def minimos_conflictos(grafo, rep=100):
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+    
+
+    aux = {x: choice(list(v))  for (x, v) in grafo.dominio.items()} 
+    
+    for j in range( 0, rep ): 
+        
+        numAtaques = {}
+        for x in aux:
+            numAtaques[x] = ataques(grafo, aux, x, aux[x])
+        
+        if not sum(numAtaques.values()):
+            return aux
+
+        x = choice([i for i in numAtaques if numAtaques[i]])
+
+        a = {v: ataques(grafo, aux, x, v) for v in grafo.dominio[x]}
+        
+        mini = min(a.values())
+        
+        aux[x] = choice([ v for v in a if a[v] == mini])
+
+
+    return None
+
+def ataques(grafo, asignacion, x, v ):
+        return sum(1 for x_i in grafo.vecinos[x] if not grafo.restriccion((x, v), (x_i, asignacion[x_i])))

@@ -77,10 +77,8 @@ class Sudoku(csp.GrafoRestriccion):
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
         
-        if not vecinos:
-            raise NotImplementedError("Faltan los vecinos")
 
-    def restriccion_binaria(self, xi_vi, xj_vj):
+    def restriccion(self, xi_vi, xj_vj):
         """
         El mero chuqui. Por favor comenta tu código correctamente
 
@@ -92,7 +90,7 @@ class Sudoku(csp.GrafoRestriccion):
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
         # =================================================================
-        raise NotImplementedError("Implementa la restricción binaria")
+        return vi != vj
 
 
 def imprime_sdk(asignación):
