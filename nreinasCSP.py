@@ -11,7 +11,7 @@ __author__ = 'juliowaissman'
 
 
 import csp
-
+import time
 
 class Nreinas(csp.GrafoRestriccion):
     """
@@ -93,31 +93,40 @@ def prueba_reinas(n, metodo, tipo=1, traza=False):
 
 
 if __name__ == "__main__":
-
+    
+    tiempo_inicial = time.time()
     # Utilizando 1 consistencia
-    prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+    #prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     #prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     #prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     #prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
-    #prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
+    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
+    tiempo_final = time.time()
+    print("tiempo ejecucion (segundos): {}".format(tiempo_final-tiempo_inicial))
 
     # Utilizando consistencia
     # ==========================================================================
     # Probar y comentar los resultados del métdo de arco consistencia
     # ==========================================================================
-    prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    tiempo_inicial = time.time()
+    #prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     #prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     #prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     #prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
-    #prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+    tiempo_final = time.time()
+    print("tiempo ejecucion (segundos): {}".format(tiempo_final-tiempo_inicial))
 
     # Utilizando minimos conflictos
     # ==========================================================================
     # Probar y comentar los resultados del métdo de mínios conflictos
     # ==========================================================================
+    tiempo_inicial = time.time()
     #prueba_reinas(4, csp.min_conflictos, tipo = 3)
     #prueba_reinas(8, csp.min_conflictos, tipo = 3)
     #prueba_reinas(16, csp.min_conflictos, tipo = 3)
     #prueba_reinas(51, csp.min_conflictos, tipo = 3)
     prueba_reinas(101, csp.min_conflictos, tipo = 3)
     #prueba_reinas(1000, csp.min_conflictos, tipo = 3)
+    tiempo_final = time.time()
+    print("tiempo ejecucion (segundos): {}".format(tiempo_final-tiempo_inicial))
