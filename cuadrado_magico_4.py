@@ -48,7 +48,7 @@ class CuadradoMagico4x4(csp.GrafoRestriccion):
         x_i, v_i = xi_vi
         x_j, v_j = xj_vj
 
-        return v_i != v_j and
+        return v_i != v_j
 
 
 # Inserta tu código aquí
