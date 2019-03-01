@@ -18,5 +18,37 @@ de 4 x 4.
 
 __author__ = 'Ricardo E. Alvarado Mata'
 
+import csp
+
+
+class CuadradoMagico4x4(csp.GrafoRestriccion):
+
+    def __init__(self):
+        super().__init__()
+
+        self.dominio = {i: range(1,17) for i in range(16)}
+
+        self.vecinos = {}
+        for var in range(16):
+            self.vecinos[var] = set()
+            for i in range(4):
+                ren = i+(var//9)*9
+                col = i*9+(var%9)
+
+                if ren != var:
+                    self.vecinos[var].add(ren)
+                if col != var:
+                    self.vecinos[var].add(col)
+                if var % 5 == 0 and i != var:
+                    self.vecinos[var].add(i*5)
+                if var % 3 == 0 and i != var:
+                    self.vecinos[var].add(i*3)
+            
+    def restriccion(self, xi_vi, xj_vj):
+        x_i, v_i = xi_vi
+        x_j, v_j = xj_vj
+
+        return v_i != v_j and
+
 
 # Inserta tu código aquí

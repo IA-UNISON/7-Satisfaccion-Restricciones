@@ -159,8 +159,11 @@ if __name__ == "__main__":
           8, 0, 0, 2, 0, 3, 0, 0, 9,
           0, 0, 5, 0, 1, 0, 3, 0, 0]
 
-    imprime_sdk(s1)
+    # Siendo sinceros la imprecion no era muy clara
+    # asi que tube que modificarla
+
     print("Solucionando un Sudoku dificil >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+    imprime_sdk(s1)
     sudoku1 = Sudoku(s1)
     sol1 = csp.asignacion_grafo_restriccion(sudoku1)
     print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
@@ -180,5 +183,5 @@ if __name__ == "__main__":
     imprime_sdk(s2)
     sudoku2 = Sudoku(s2)
     sol2 = csp.asignacion_grafo_restriccion(sudoku2)
-    imprime_sdk(sol2)
     print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+    imprime_sdk(sol2)
