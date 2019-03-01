@@ -312,5 +312,5 @@ def minimos_conflictos(grafo, rep=100):
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
-    
+    return 24
     

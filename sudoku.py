@@ -49,7 +49,6 @@ entonces es que el valor es desconocido.
 
 __author__ = 'juliowaissman'
 
-
 import csp
 
 
@@ -69,20 +68,50 @@ class Sudoku(csp.GrafoRestriccion):
         """
         super().__init__()
 
-        self.dominio = {i: [val] if val > 0 else range(1, 10)
+        self.dominio = {i: set([val]) if val > 0 else set(range(1, 10))
                         for (i, val) in enumerate(pos_ini)}
 
-        vecinos = {}
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
 
-        if not vecinos:
-            raise NotImplementedError("Faltan los vecinos")
+        self.vecinos = {}
+        # Cada numero en el rango (1,81) es mapeado a una
+        # posicion bidimencional en una matriz de 9x9 en donde
+        # el vecino de cada variable es el conjunto de todos
+        # los elementos de su columna, fila y cuadro en el
+        # que pertenece dicha variable.
+        for var in range(81):
+            self.vecinos[var] = set()
+            # Calculamos el renglon donde inica la caja
+            # en donde se encuentra el numero.
+            box_ren = ((var//9)//3)*27
+            # Calculamos la donde inica la caja
+            # en donde se encuentra el numero.
+            box_col = ((var%9)//3)*3
+            for i in range(9):
+                ren = i+(var//9)*9
+                col = i*9+(var%9)
+                delta_box = i%3+(i//3)*9
 
-    def restriccion_binaria(self, xi_vi, xj_vj):
+                if ren != var:
+                    self.vecinos[var].add(ren)
+                if col != var:
+                    self.vecinos[var].add(col)
+                if box_ren+box_col+delta_box != var:
+                    self.vecinos[var].add(box_ren+box_col+delta_box)
+
+    def restriccion(self, xi_vi, xj_vj):
         """
-        El mero chuqui. Por favor comenta tu código correctamente
+        La restriccion se cumple si las casillas tienen valores diferentes
+        o no son vecinos
+
+        @param xi: El nombre de una variable
+        @param vi: El valor que toma la variable xi (dentro de self.dominio[xi]
+        @param xj: El nombre de una variable
+        @param vj: El valor que toma la variable xi (dentro de self.dominio[xj]
+
+        @return: True si se cumple la restricción
 
         """
         xi, vi = xi_vi
@@ -92,7 +121,7 @@ class Sudoku(csp.GrafoRestriccion):
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
         # =================================================================
-        raise NotImplementedError("Implementa la restricción binaria")
+        return vi != vj or xi not in self.vecinos[xj]
 
 
 def imprime_sdk(asignación):
@@ -131,9 +160,10 @@ if __name__ == "__main__":
           0, 0, 5, 0, 1, 0, 3, 0, 0]
 
     imprime_sdk(s1)
-    print("Solucionando un Sudoku dificil")
+    print("Solucionando un Sudoku dificil >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     sudoku1 = Sudoku(s1)
     sol1 = csp.asignacion_grafo_restriccion(sudoku1)
+    print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
     imprime_sdk(sol1)
 
     s2 = [4, 0, 0, 0, 0, 0, 8, 0, 5,
@@ -146,8 +176,9 @@ if __name__ == "__main__":
           5, 0, 0, 2, 0, 0, 0, 0, 0,
           1, 0, 4, 0, 0, 0, 0, 0, 0]
 
+    print("\nY otro tambien dificil >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     imprime_sdk(s2)
     sudoku2 = Sudoku(s2)
-    print("Y otro tambien dificil")
     sol2 = csp.asignacion_grafo_restriccion(sudoku2)
     imprime_sdk(sol2)
+    print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
