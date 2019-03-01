@@ -16,7 +16,7 @@ de 4 x 4.
 
 """
 
-__author__ = 'Agrega aquí tu nombre'
+__author__ = 'Ricardo E. Alvarado Mata'
 
 
 # Inserta tu código aquí

@@ -113,7 +113,7 @@ def asignacion_grafo_restriccion(grafo, asignacion=None, consist=1, traza=False)
 
             # Solo para efectos de impresión
             if traza:
-                print(((len(asignacion) - 1) * '\t') + "{} = {}".format(var, val))
+                print(((len(asignacion) - 1) * '\t') + "var[{}]: {}".format(var, val))
 
             # Se manda llamar en forma recursiva (búsqueda en profundidad)
             apn = asignacion_grafo_restriccion(grafo, asignacion, consist, traza)
@@ -206,19 +206,31 @@ def consistencia(grafo, asig_parcial, x_i, v_i, tipo):
     # Se ve raro la forma en que lo hice pero es para dejar mas fácil
     # el desarrollo del algoritmo de AC-3,  y dejar claras las diferencias.
     if tipo == 1:
-        pendientes = deque([(x_j, x_i) for x_j in grafo.vecinos[x_i] if x_j not in asig_parcial])
+        # Realmente no es necesario insertar la tupla (x_j, x_i) con insertar x_j para la 
+        # 1-consistencia.
+        pendientes = deque([x_j for x_j in grafo.vecinos[x_i] if x_j not in asig_parcial])
         while pendientes:
-            x_a, x_b = pendientes.popleft()
-            temp = reduce_ac3(x_a, x_b, grafo)
+            # Sacamos a los vecinos de la cola.
+            # Se podria reemplazar x_b con x_i.
+            x_j = pendientes.popleft()
+            # Aqui se reduce el dominio de los vecinos.
+            temp = reduce_ac3(x_j, x_i, grafo)
             if temp:
-                if not grafo.dominio[x_a]:
-                    grafo.dominio[x_a] = temp
+                # En caso de que el domino del vecino
+                # sea haya reducido hasta el conjunto 
+                # vacio.
+                if not grafo.dominio[x_j]:
+                    # Restauramos el dominio del vecino
+                    # que se inteto reducir.
+                    grafo.dominio[x_j] = temp
                     for valor in dom_red:
+                        # Restauramos el dominio de todas las variables a las que 
+                        # se les habia reducido el domino.
                         grafo.dominio[valor] = grafo.dominio[valor].union(dom_red[valor])
                     return None
-                if x_a not in dom_red:
-                    dom_red[x_a] = set({})
-                dom_red[x_a] = dom_red[x_a].union(temp)
+                if x_j not in dom_red:
+                    dom_red[x_j] = set({})
+                dom_red[x_j] = dom_red[x_j].union(temp)
 
     # Tipo 2: lo ya no tan claramente sensato
     # Al no estar muy bien codificado desde el punto de vista de eficiencia
@@ -230,9 +242,32 @@ def consistencia(grafo, asig_parcial, x_i, v_i, tipo):
     if tipo == 2:
         # ================================================
         #    Implementar el algoritmo de AC3
-        #    y print()robarlo con las n-reinas
+        #    y probarlo con las n-reinas
         # ================================================
-        raise NotImplementedError("AC-3  a implementar")
+        pendientes = deque([(x_j, x_i) for x_j in grafo.vecinos[x_i] if x_j not in asig_parcial])
+        while pendientes:
+            # Sacamos a los vecinos de la cola.
+            # Se podria reemplazar x_b con x_i.
+            x_a, x_b = pendientes.popleft()
+            # Aqui se reduce el dominio de los vecinos.
+            temp = reduce_ac3(x_a, x_b, grafo)
+            if temp:
+                # En caso de que el domino del vecino
+                # sea haya reducido hasta el conjunto 
+                # vacio.
+                if not grafo.dominio[x_a]:
+                    # Restauramos el dominio del vecino
+                    # que se inteto reducir.
+                    grafo.dominio[x_a] = temp
+                    for valor in dom_red:
+                        # Restauramos el dominio de todas las variables a las que 
+                        # se les habia reducido el domino.
+                        grafo.dominio[valor] = grafo.dominio[valor].union(dom_red[valor])
+                    return None
+                if x_a not in dom_red:
+                    dom_red[x_a] = set({})
+                dom_red[x_a] = dom_red[x_a].union(temp)
+                pendientes.extend([(x_c, x_a) for x_c in grafo.vecinos[x_a] if x_c != x_a])
 
     return dom_red
 
@@ -245,6 +280,8 @@ def reduce_ac3(x_a, x_b, grafo):
     reduccion = set([])
     valores_xa = list(grafo.dominio[x_a])
     for v_a in valores_xa:
+        # No es necesario el ciclo for, cuando x_b entra en esta funcion
+        # su dominio siempre contiene un unico elemento.
         for v_b in grafo.dominio[x_b]:
             if grafo.restriccion((x_a, v_a), (x_b, v_b)):
                 break
@@ -275,4 +312,5 @@ def minimos_conflictos(grafo, rep=100):
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+    
+    
