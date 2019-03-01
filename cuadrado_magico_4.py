@@ -16,7 +16,24 @@ de 4 x 4.
 
 """
 
-__author__ = 'Agrega aquí tu nombre'
+import csp
+
+__author__ = 'Brayan Durazo'
 
 
-# Inserta tu código aquí
+class CuadroMagico(csp.GrafoRestriccion):
+    
+    def __init__(self):
+        super().__init__()
+        self.dominio = list()
+    
+    
+    def restriccion(self, xi_vi, xj_vj):
+        return None
+
+    def muestra_asignacion(asignacion):
+        return None
+
+
+    def prueba_cuadromagico(n, metodo, tipo=1, traza=False):
+        return None

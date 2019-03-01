@@ -51,7 +51,7 @@ __author__ = 'juliowaissman'
 
 
 import csp
-
+import time
 
 class Sudoku(csp.GrafoRestriccion):
     """
@@ -71,29 +71,31 @@ class Sudoku(csp.GrafoRestriccion):
 
         self.dominio = {i: [val] if val > 0 else range(1, 10)
                         for (i, val) in enumerate(pos_ini)}
-
-        vecinos = {}
+        
+        #a = 0
+        self.vecinos = {}
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
+        for k in self.dominio.keys():
+            self.vecinos[k] = ({k/9*9+i for i in range(0,9)} | 
+                         {(k%9)+9*i for i in range(0,9)} |
+                         {k/27*27 + 9*i + (k%9)/3*3 + j for i in range(0, 3) 
+                                        for j in range(0,3)}) - {k}
 
-        if not vecinos:
-            raise NotImplementedError("Faltan los vecinos")
-
-    def restriccion_binaria(self, xi_vi, xj_vj):
+    def restriccion(self, xi_vi, xj_vj):
         """
         El mero chuqui. Por favor comenta tu código correctamente
 
         """
         xi, vi = xi_vi
         xj, vj = xj_vj
-
+        
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
         # =================================================================
-        raise NotImplementedError("Implementa la restricción binaria")
-
+        return vi != vj
 
 def imprime_sdk(asignación):
     """
