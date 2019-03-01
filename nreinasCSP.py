@@ -81,7 +81,7 @@ class Nreinas(csp.GrafoRestriccion):
 def prueba_reinas(n, metodo, tipo=1, traza=False):
     print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
     g_r = Nreinas(n)
-    asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
+    asignacion = metodo(g_r, asignacion=None, consist=tipo, traza=traza)
     if n < 20:
         Nreinas.muestra_asignacion(asignacion)
     else:
