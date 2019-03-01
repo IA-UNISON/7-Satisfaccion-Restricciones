@@ -99,30 +99,30 @@ def prueba_reinas(n, metodo, tipo=None, traza=False):
 
 if __name__ == "__main__":
 
-    # Utilizando 1 consistencia
-    # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
-    # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
-    #prueba_reinas(8, csp.asignacion_grafo_restriccion, tipo=1)
+    #Utilizando 1 consistencia
+    prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+    prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+    prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+    prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
+    prueba_reinas(8, csp.asignacion_grafo_restriccion, tipo=1)
 
     # Utilizando consistencia
     # ==========================================================================
     # Probar y comentar los resultados del métdo de arco consistencia
     # ==========================================================================
-    #prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    #prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    #prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    #prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
-    #prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+    prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
+    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
 
     # Utilizando minimos conflictos
     # ==========================================================================
     # Probar y comentar los resultados del métdo de mínios conflictos
     # ==========================================================================
     prueba_reinas(4, csp.min_conflictos)
-    # prueba_reinas(8, csp.min_conflictos)
-    # prueba_reinas(16, csp.min_conflictos)
-    # prueba_reinas(51, csp.min_conflictos)
-    # prueba_reinas(101, csp.min_conflictos)
-    # prueba_reinas(1000, csp.min_conflictos)
+    prueba_reinas(8, csp.min_conflictos)
+    prueba_reinas(16, csp.min_conflictos)
+    prueba_reinas(51, csp.min_conflictos)
+    prueba_reinas(101, csp.min_conflictos)
+    prueba_reinas(1000, csp.min_conflictos)

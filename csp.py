@@ -98,15 +98,17 @@ def asignacion_grafo_restriccion(grafo, asignacion=None, consist=1, traza=False)
     # Selección de variables, el código viene más adelante
     var = selecciona_variable(grafo, asignacion)
     # Los valores se ordenan antes de probarlos
+    
     for val in ordena_valores(grafo, asignacion, var):
         # Función con efecto colateral, en dominio
         # si no es None, se tiene los valores que se
         # redujeron del dominio del objeto gr. Al salir
         # del ciclo for, se debe de restaurar el dominio
         dominio_reducido = consistencia(grafo, asignacion, var, val, consist)
-        
+        #print(dominio_reducido)
         if dominio_reducido is not None:
             # Se realiza la asignación de esta variable
+            
             asignacion[var] = val
 
             # Solo para efectos de impresión
@@ -124,7 +126,7 @@ def asignacion_grafo_restriccion(grafo, asignacion=None, consist=1, traza=False)
             if apn is not None:
                 return apn
             del asignacion[var]
-    #print("uyregresonone")
+    #print("fuk")
     grafo.backtracking += 1
     return None
 
@@ -283,6 +285,17 @@ def minimos_conflictos(g_r, rep=100):
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
+    """
+        Realiza el algoritmo de mínimos conflictos
+
+
+        @param gr: El grafo al que se le aplicará el agoritmo
+        @param rep: El número de repeticiones para el algoritmo
+       
+
+        @return: El estado si encuentra uno dentro del número de repeticiones
+
+        """
     
     estado = {var: random.choice(list(val)) for (var, val) in g_r.dominio.items()}
     

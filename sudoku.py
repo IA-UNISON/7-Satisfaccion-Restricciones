@@ -87,7 +87,7 @@ class Sudoku(csp.GrafoRestriccion):
 
     def restriccion(self, xi_vi, xj_vj):
         """
-        El mero chuqui. Por favor comenta tu código correctamente
+        La unica restriccion es que los valores sean diferentes.
 
         """
         xi, vi = xi_vi
