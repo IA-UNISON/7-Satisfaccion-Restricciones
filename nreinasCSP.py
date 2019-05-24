@@ -96,7 +96,7 @@ if __name__ == "__main__":
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
+    prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
 
     # Utilizando consistencia
     # ==========================================================================
@@ -106,7 +106,10 @@ if __name__ == "__main__":
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+    prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
+    #COMENTARIOS
+    # VEO CLARAMENTE QUE UTILIZANDO 1 CONSISTENCIA REQUERIMOS DE UN MAYOR NUMER DE BACKTRAKINGS EN CAMBIO
+    # CON ARCO CONSISTENCIA EL NUMERO DE BACKTRAKINGS SE REDUCE DE MANERA ENORME
 
     # Utilizando minimos conflictos
     # ==========================================================================
