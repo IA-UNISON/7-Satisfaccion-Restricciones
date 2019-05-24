@@ -77,8 +77,18 @@ class Sudoku(csp.GrafoRestriccion):
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
 
-        if not vecinos:
-            raise NotImplementedError("Faltan los vecinos")
+        for i in range(81):
+            col = i%9
+            ren = i//9
+            
+            self.vecinos[i] = {j for j in range(ren*9, ren*9+9)} | {j for j in range(col,81,9)}#se insertan las casillas del renglon y la columna
+
+            grupoXInicio = col-col%3
+            grupoYInicio = ren-ren%3
+
+            for j in range(grupoYInicio*9+grupoXInicio, grupoYInicio*9 + 3*9,9): #ingresamos a las casillas a la cual buscamos los vecinos
+                self.vecinos[i] = self.vecinos[i] | {k for k in range(j,j+3)}
+            self.vecinos[i]= self.vecinos[i] - {i}
 
     def restriccion_binaria(self, xi_vi, xj_vj):
         """
