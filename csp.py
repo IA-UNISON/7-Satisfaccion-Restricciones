@@ -16,7 +16,7 @@ En este modulo no es necesario modificar nada.
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Miguel Romero'
 
 from collections import deque
 
@@ -64,6 +64,7 @@ class GrafoRestriccion:
         @return: True si se cumple la restricción
 
         """
+        
         x_i, v_i = xi_vi
         x_j, v_j = xj_vj
         raise NotImplementedError("Método a implementar")
@@ -199,8 +200,12 @@ def consistencia(grafo, asig_parcial, x_i, v_i, tipo):
     for (x_j, v_j) in asig_parcial.items():
         if x_j in grafo.vecinos[x_i] and not grafo.restriccion((x_i, v_i), (x_j, v_j)):
             return None
+
+    #dom_red es un diccionario cuyo llave es x_i y su valor es un conjunto que contiene
+    #los valores que se eliminaron del dominio de x_i cuando se le asignó v_i.
     dom_red[x_i] = {v for v in grafo.dominio[x_i] if v != v_i}
-    grafo.dominio[x_i] = {v_i}
+    
+    grafo.dominio[x_i] = {v_i}  #Ahora el dominio de x_i solo contiene a v_i
 
     # Tipo 1: lo claramente sensato
     # Se ve raro la forma en que lo hice pero es para dejar mas fácil
@@ -232,7 +237,38 @@ def consistencia(grafo, asig_parcial, x_i, v_i, tipo):
         #    Implementar el algoritmo de AC3
         #    y print()robarlo con las n-reinas
         # ================================================
-        raise NotImplementedError("AC-3  a implementar")
+
+        #(x_j, x_i) son los arcos
+        pendientes = deque([(x_j, x_i) for x_j in gr.vecinos[x_i] if x_j not in asig_parcial])
+        while pendientes:
+            #Se selecciona el primer arco en el deque
+            x_a, x_b = pendientes.popleft()
+            #Conjunto de elementos en el dominio de x_a que fueron eliminados
+            temp = reduceAC3(x_a, x_b, gr)
+
+
+            #Si temp no está vacío...
+            if temp:
+                #Si el dominio de x_a está vacío...
+                if not gr.dominio[x_a]:
+                    #Se restauran los valores del dominio de x_a
+                    gr.dominio[x_a] = temp
+                    #Se restauran los valores que se eliminaron del dominio del nodo (variable) correspondiente
+                    for nodo in dom_red.keys():
+                        gr.dominio[nodo] = gr.dominio[nodo].union(dom_red[nodo])
+                    return None
+                else:
+                    #Este if nunca
+                    if x_a not in dom_red:
+                        dom_red[x_a] = set({})
+
+                    #Se restauran los valores que se eliminaro del dominio de x_a
+                    dom_red[x_a] = dom_red[x_a].union(temp)
+                    #Se agregan al deque los vecinos de x_a, excepto x_b
+                    pendientes.extend([(z, x_a) for z in gr.vecinos[x_a] if z != x_b])
+        
+        
+        #raise NotImplementedError("AC-3  a implementar")
 
     return dom_red
 
@@ -240,17 +276,22 @@ def consistencia(grafo, asig_parcial, x_i, v_i, tipo):
 def reduce_ac3(x_a, x_b, grafo):
     """
     Funcion interna para consistencia (tanto tipo 1 como tipo 2)
-
+    @return: un conjunto con los valores que fueron eliminados
+    del dominio de x_a.
     """
     reduccion = set([])
     valores_xa = list(grafo.dominio[x_a])
     for v_a in valores_xa:
+        #Si no existe un v_b en x_b que satisfaga la restriccion(v_a, v_b), entonces
+        #se elimina v_a de x_a cuando termina el for interno (sentencia else)
         for v_b in grafo.dominio[x_b]:
             if grafo.restriccion((x_a, v_a), (x_b, v_b)):
                 break
         else:
             reduccion.add(v_a)
             grafo.dominio[x_a].discard(v_a)
+
+
     return reduccion
 
 
