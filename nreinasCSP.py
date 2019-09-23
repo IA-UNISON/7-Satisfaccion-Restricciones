@@ -7,7 +7,7 @@ nreinasCSP.py
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Miguel Romero'
 
 
 import csp
@@ -81,7 +81,8 @@ class Nreinas(csp.GrafoRestriccion):
 def prueba_reinas(n, metodo, tipo=1, traza=False):
     print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
     g_r = Nreinas(n)
-    asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
+    ap={}
+    asignacion = metodo(g_r, ap, consist=tipo, traza=traza)
     if n < 20:
         Nreinas.muestra_asignacion(asignacion)
     else:
@@ -100,13 +101,31 @@ if __name__ == "__main__":
 
     # Utilizando consistencia
     # ==========================================================================
-    # Probar y comentar los resultados del métdo de arco consistencia
+    # Probar y comentar los resultados del método de arco consistencia
     # ==========================================================================
     # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
     prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+
+
+    #===========+==============================+==============================+=
+    #   #Reinas | 1-consistencia backtrackings | 2-consistencia backtrackings |
+    #===========+==============================+==============================+=
+    #    4                   2                                   0
+    #    8                  21                                   1
+    #   16                 223                                  47
+    #   50                 611                                  92
+    #  101                  15                                   4
+    #==========================================================================
+    #El método de 2-consistencia realiza mucho menos backtrackings que el
+    #1-consistencia, sin embargo, aquél es más lento.
+    
+
+    
+
+     
 
     # Utilizando minimos conflictos
     # ==========================================================================

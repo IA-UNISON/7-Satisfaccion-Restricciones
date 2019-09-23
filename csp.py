@@ -239,23 +239,23 @@ def consistencia(grafo, asig_parcial, x_i, v_i, tipo):
         # ================================================
 
         #(x_j, x_i) son los arcos
-        pendientes = deque([(x_j, x_i) for x_j in gr.vecinos[x_i] if x_j not in asig_parcial])
+        pendientes = deque([(x_j, x_i) for x_j in grafo.vecinos[x_i] if x_j not in asig_parcial])
         while pendientes:
             #Se selecciona el primer arco en el deque
             x_a, x_b = pendientes.popleft()
             #Conjunto de elementos en el dominio de x_a que fueron eliminados
-            temp = reduceAC3(x_a, x_b, gr)
+            temp = reduce_ac3(x_a, x_b, grafo)
 
 
             #Si temp no está vacío...
             if temp:
                 #Si el dominio de x_a está vacío...
-                if not gr.dominio[x_a]:
+                if not grafo.dominio[x_a]:
                     #Se restauran los valores del dominio de x_a
-                    gr.dominio[x_a] = temp
+                    grafo.dominio[x_a] = temp
                     #Se restauran los valores que se eliminaron del dominio del nodo (variable) correspondiente
                     for nodo in dom_red.keys():
-                        gr.dominio[nodo] = gr.dominio[nodo].union(dom_red[nodo])
+                        grafo.dominio[nodo] = grafo.dominio[nodo].union(dom_red[nodo])
                     return None
                 else:
                     #Si x_a no está en las llaves de dom_red, entonces se agrega y se le pone
@@ -266,7 +266,7 @@ def consistencia(grafo, asig_parcial, x_i, v_i, tipo):
                     #Se restauran los valores que se eliminaron del dominio de x_a
                     dom_red[x_a] = dom_red[x_a].union(temp)
                     #Se agregan al deque los vecinos de x_a, excepto x_b
-                    pendientes.extend([(z, x_a) for z in gr.vecinos[x_a] if z != x_b])
+                    pendientes.extend([(z, x_a) for z in grafo.vecinos[x_a] if z != x_b])
         
         
         #raise NotImplementedError("AC-3  a implementar")
