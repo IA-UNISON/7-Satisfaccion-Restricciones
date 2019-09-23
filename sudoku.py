@@ -47,7 +47,7 @@ entonces es que el valor es desconocido.
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Miguel Romero'
 
 
 import csp
@@ -69,13 +69,28 @@ class Sudoku(csp.GrafoRestriccion):
         """
         super().__init__()
 
-        self.dominio = {i: [val] if val > 0 else range(1, 10)
+        #El dominio de las variable (casillas en el tablero) consiste en un
+        #diccionario, en el cual las llaves son los indices del 0 al 80 y cuyos
+        #valores son una lista con los números que pueden tomar las casillas en
+        #blanco (1-9) o una lista con el número que tiene fijo. 
+        self.dominio = {i: [val] if val > 0 else [j for j in range(1, 10)]
                         for (i, val) in enumerate(pos_ini)}
 
-        vecinos = {}
+        self.vecinos = {}
         # =================================================================
         #  25 puntos: INSERTAR SU CÓDIGO AQUI (para vecinos)
         # =================================================================
+
+        for i in self.dominio.keys():
+            ren_i = i//9    #Se calcula el renglón de la casilla i
+            col_i = i%9     #Se calcula la columna de la casilla i
+            self.vecinos[i] = []
+            for j in self.dominio.keys():
+                ren_j = j//9
+                col_j = j%9
+                if i != j and ren_i//3 == ren_j//3 and col_i//3 == col_j//3:
+                    self.vecinos[i].append(j)
+        
 
         if not vecinos:
             raise NotImplementedError("Faltan los vecinos")
