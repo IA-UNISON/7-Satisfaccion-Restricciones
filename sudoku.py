@@ -73,7 +73,7 @@ class Sudoku(csp.GrafoRestriccion):
         #diccionario, en el cual las llaves son los indices del 0 al 80 y cuyos
         #valores son una lista con los números que pueden tomar las casillas en
         #blanco (1-9) o una lista con el número que tiene fijo. 
-        self.dominio = {i: [val] if val > 0 else [j for j in range(1, 10)]
+        self.dominio = {i: {val} if val > 0 else {j for j in range(1, 10)}
                         for (i, val) in enumerate(pos_ini)}
 
         self.vecinos = {}
@@ -84,18 +84,16 @@ class Sudoku(csp.GrafoRestriccion):
         for i in self.dominio.keys():
             ren_i = i//9    #Se calcula el renglón de la casilla i
             col_i = i%9     #Se calcula la columna de la casilla i
-            self.vecinos[i] = []
+            self.vecinos[i] = set()
             for j in self.dominio.keys():
                 ren_j = j//9
                 col_j = j%9
                 if (ren_i//3 == ren_j//3 and col_i//3 == col_j//3) or \
                 ren_i == ren_j or col_i == col_j:
-                    self.vecinos[i].append(j)
+                    self.vecinos[i].add(j)
             self.vecinos[i].remove(i)
         
-
-        if not vecinos:
-            raise NotImplementedError("Faltan los vecinos")
+        
 
 
     def restriccion_binaria(self, xi_vi, xj_vj):
@@ -112,6 +110,13 @@ class Sudoku(csp.GrafoRestriccion):
         # =================================================================
 
         #
+
+        return vi != vj
+
+    def restriccion(self, xi_vi, xj_vj):
+        
+        xi, vi = xi_vi
+        xj, vj = xj_vj
 
         return vi != vj
 
@@ -151,8 +156,10 @@ if __name__ == "__main__":
           8, 0, 0, 2, 0, 3, 0, 0, 9,
           0, 0, 5, 0, 1, 0, 3, 0, 0]
 
+
+    print("Sudoku dificil 1: ")
     imprime_sdk(s1)
-    print("Solucionando un Sudoku dificil")
+    print("Solucionando Sudoku dificil 1: ")
     sudoku1 = Sudoku(s1)
     sol1 = csp.asignacion_grafo_restriccion(sudoku1)
     imprime_sdk(sol1)
@@ -167,8 +174,9 @@ if __name__ == "__main__":
           5, 0, 0, 2, 0, 0, 0, 0, 0,
           1, 0, 4, 0, 0, 0, 0, 0, 0]
 
+    print("Sudoku dificil 2: ")
     imprime_sdk(s2)
     sudoku2 = Sudoku(s2)
-    print("Y otro tambien dificil")
+    print("Solucionando Sudoku dificil 2: ")
     sol2 = csp.asignacion_grafo_restriccion(sudoku2)
     imprime_sdk(sol2)

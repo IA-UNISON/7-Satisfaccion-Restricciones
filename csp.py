@@ -121,7 +121,7 @@ def asignacion_grafo_restriccion(grafo, asignacion=None, consist=1, traza=False)
 
             # Restaura el dominio
             for valor in dominio_reducido:
-                grafo.dominio[valor] = grafo.dominio[valor].union(dominio_reducido[valor])
+                grafo.dominio[valor] = (grafo.dominio[valor]).union(dominio_reducido[valor])
 
             # Si la asignación es completa revuelve el resultado
             if apn is not None:
@@ -290,7 +290,7 @@ def reduce_ac3(x_a, x_b, grafo):
                 break
         else:
             reduccion.add(v_a)
-            grafo.dominio[x_a].discard(v_a)
+            grafo.dominio[x_a].remove(v_a)
 
 
     return reduccion
