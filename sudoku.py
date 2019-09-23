@@ -88,12 +88,15 @@ class Sudoku(csp.GrafoRestriccion):
             for j in self.dominio.keys():
                 ren_j = j//9
                 col_j = j%9
-                if i != j and ren_i//3 == ren_j//3 and col_i//3 == col_j//3:
+                if (ren_i//3 == ren_j//3 and col_i//3 == col_j//3) or \
+                ren_i == ren_j or col_i == col_j:
                     self.vecinos[i].append(j)
+            self.vecinos[i].remove(i)
         
 
         if not vecinos:
             raise NotImplementedError("Faltan los vecinos")
+
 
     def restriccion_binaria(self, xi_vi, xj_vj):
         """
@@ -107,7 +110,10 @@ class Sudoku(csp.GrafoRestriccion):
         #  25 puntos: INSERTAR SU CÓDIGO AQUI
         # (restricciones entre variables vecinas)
         # =================================================================
-        raise NotImplementedError("Implementa la restricción binaria")
+
+        #
+
+        return vi != vj
 
 
 def imprime_sdk(asignación):
