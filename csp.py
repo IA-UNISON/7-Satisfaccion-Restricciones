@@ -258,11 +258,12 @@ def consistencia(grafo, asig_parcial, x_i, v_i, tipo):
                         gr.dominio[nodo] = gr.dominio[nodo].union(dom_red[nodo])
                     return None
                 else:
-                    #Este if nunca
+                    #Si x_a no está en las llaves de dom_red, entonces se agrega y se le pone
+                    #como valor a un conjunto vacío.
                     if x_a not in dom_red:
                         dom_red[x_a] = set({})
 
-                    #Se restauran los valores que se eliminaro del dominio de x_a
+                    #Se restauran los valores que se eliminaron del dominio de x_a
                     dom_red[x_a] = dom_red[x_a].union(temp)
                     #Se agregan al deque los vecinos de x_a, excepto x_b
                     pendientes.extend([(z, x_a) for z in gr.vecinos[x_a] if z != x_b])
