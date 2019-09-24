@@ -19,6 +19,7 @@ En este modulo no es necesario modificar nada.
 __author__ = 'juliowaissman'
 
 from collections import deque
+import random
 
 
 class GrafoRestriccion:
@@ -164,7 +165,7 @@ def ordena_valores(grafo, asig_parcial, x_i):
     @return: Un generador con los valores de gr.dominio[xi] ordenados
 
     """
-    def conflictos(v_i):
+    def conflictos(v_i):        
         return sum((1 for x_j in grafo.vecinos[x_i] if x_j not in asig_parcial
                     for v_j in grafo.dominio[x_j]
                     if grafo.restriccion((x_i, v_i), (x_j, v_j))))
@@ -188,6 +189,7 @@ def consistencia(grafo, asig_parcial, x_i, v_i, tipo):
     @param asig_parcial: Un diccionario con una asignación parcial
     @param x_i: La variable a ordenar los valores
     @param v_i: Un valor que puede tomar xi
+    @param tipo: El tipo de consistencia que se quiere
 
     @return: Un diccionario con el dominio que se redujo (como efecto
              colateral), a gr.dominio
@@ -232,7 +234,21 @@ def consistencia(grafo, asig_parcial, x_i, v_i, tipo):
         #    Implementar el algoritmo de AC3
         #    y print()robarlo con las n-reinas
         # ================================================
-        raise NotImplementedError("AC-3  a implementar")
+        pendientes = deque([(x_j, x_i) for x_j in grafo.vecinos[x_i] if x_j not in asig_parcial])
+        while pendientes:
+            x_a, x_b = pendientes.popleft()
+            reduccion = reduce_ac3(x_a, x_b, grafo)
+            if reduccion:
+                if not grafo.dominio[x_a]: #si esta vacio
+                    grafo.dominio[x_a] = reduccion
+                    for v in dom_red.keys():
+                        grafo.dominio[v] = grafo.dominio[v].union(dom_red[v])
+                    return None
+                else:
+                    if x_a not in dom_red:
+                        dom_red[x_a] = set({})
+                    dom_red[x_a] = dom_red[x_a].union(reduccion)
+                    pendientes.extend([(z, x_a) for z in grafo.vecinos[x_a] if z != x_b])
 
     return dom_red
 
@@ -275,4 +291,61 @@ def minimos_conflictos(grafo, rep=100):
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+
+    # asignacion aleatoria
+    asignacion = {var: random.choice(list(grafo.dominio[var])) for var in grafo.dominio}
+    variables = list(grafo.dominio.keys())
+
+    for _ in range(int(rep)):
+
+        # revisa si hay variables con conflictos
+        conflictos = [var for var in variables if hayConflictos(var, grafo, asignacion)]
+
+        if not conflictos:      #si no hay variables con conflictos, termina
+            return asignacion
+
+        # si hay algun conflicto se selecciona una variable al azar
+        # y se le asigna un valor que minimice sus conflictos
+        var_aleatoria = random.choice(conflictos)
+        asignacion[var_aleatoria] = minimoConflicto(var_aleatoria, grafo, asignacion)
+
+    return None             #no se encontro una configuracion adecuada
+
+
+def hayConflictos(var, grafo, asignacion):
+    """
+    Esta funcion checa si existe algun conflicto entre la variable con el resto
+    de sus vecinos.
+    
+    @param var: Variable del dominio del grafo
+    @param grafo: Grafo de restriccion del problema
+    @param asignacion: La asignacion de las variables actual
+    @return True si encuentra al menos un conflicto, False de lo contrario
+    """
+    for vecino in grafo.vecinos[var]:
+        if not grafo.restriccion((var, asignacion[var]), (vecino, asignacion[vecino])):
+            return True
+
+    return False
+
+from math import inf
+"""
+Obtiene la variable con el minimo conflicto con sus vecinos
+@param var: Variable del dominio del grafo
+@param grafo: Grafo de restriccion del problema
+@param asignacion: La asignacion de variables hasta el momento
+@return El numero minimo de conflictos que tiene var con sus vecinos
+"""
+def minimoConflicto(var, grafo, asignacion):
+    n_conflictos = [(inf, 0)]
+    for valor in grafo.dominio[var]:
+        n_conflictos.append(
+            (sum(
+                    (1 for vecino in grafo.vecinos[var]
+                    if not grafo.restriccion((var, valor), (vecino, asignacion[vecino]))
+                    )
+                ), 
+            valor)
+        )
+
+    return min(n_conflictos)[1]     # regresa el segundo indice, que es el valor del vecino con menos conflictos

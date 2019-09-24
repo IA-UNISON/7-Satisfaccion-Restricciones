@@ -68,20 +68,20 @@ class Nreinas(csp.GrafoRestriccion):
 
         """
         n = len(asignacion)
-        interlinea = "+" + "-+" * n
+        interlinea = "+" + "---+" * n
         print(interlinea)
         for i in range(n):
             linea = '|'
             for j in range(n):
-                linea += 'X|' if j == asignacion[i] else ' |'
+                linea += ' X |' if j == asignacion[i] else '   |'
             print(linea)
             print(interlinea)
 
 
 def prueba_reinas(n, metodo, tipo=1, traza=False):
-    print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
+    print("\n" + '--' * 20 + '\n Para {} reinas\n'.format(n) + '__' * 20)
     g_r = Nreinas(n)
-    asignacion = metodo(g_r, ap={}, consist=tipo, traza=traza)
+    asignacion = metodo(g_r, asignacion={}, consist=tipo, traza=traza)
     if n < 20:
         Nreinas.muestra_asignacion(asignacion)
     else:
@@ -92,12 +92,14 @@ def prueba_reinas(n, metodo, tipo=1, traza=False):
 if __name__ == "__main__":
 
     # Utilizando 1 consistencia
+    # print("Con 1-consistencia")
     # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
+    # prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
 
+    # print("Con AC3")
     # Utilizando consistencia
     # ==========================================================================
     # Probar y comentar los resultados del métdo de arco consistencia
@@ -106,15 +108,34 @@ if __name__ == "__main__":
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+    #prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
 
     # Utilizando minimos conflictos
     # ==========================================================================
     # Probar y comentar los resultados del métdo de mínios conflictos
     # ==========================================================================
-    # prueba_reinas(4, csp.min_conflictos)
-    # prueba_reinas(8, csp.min_conflictos)
-    # prueba_reinas(16, csp.min_conflictos)
-    # prueba_reinas(51, csp.min_conflictos)
-    # prueba_reinas(101, csp.min_conflictos)
-    # prueba_reinas(1000, csp.min_conflictos)
+    def prueba_minimos_conflictos(n_reinas):
+        g_r = Nreinas(n_reinas)
+        
+        asignacion = csp.min_conflictos(g_r, 1000, 100)
+        if asignacion is not None:
+            print([asignacion[i] for i in range(len(asignacion))])
+            print("Y se realizaron {} backtrackings.".format(g_r.backtracking))
+        else:
+            print("no se encontro solucion")
+            
+    # prueba_minimos_conflictos(4)
+    # prueba_minimos_conflictos(8)
+    # prueba_minimos_conflictos(16)
+    # prueba_minimos_conflictos(51)
+    prueba_minimos_conflictos(101)
+    #prueba_minimos_conflictos(1000)
+    
+"""
+OBSERVACIONES:
+
+El metodo AC3 tarda el doble que el 1-consistencia con 101 reinas. Sin embargo, hace mucho menos backtracking (4).
+Tarda 27.92s. Por otro lado, el 1-consistencia realiza 15 backtracking, y tarda 11.13s (medido con IPython)
+
+En el caso de los minimos conflictos, es donde se tardo mas, y mucho mas, con 256.91s segun IPython
+"""
