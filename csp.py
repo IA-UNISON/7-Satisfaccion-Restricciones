@@ -16,7 +16,7 @@ En este modulo no es necesario modificar nada.
 
 """
 
-__author__ = 'juliowaissman'
+__author__ = 'Mario C. Enriquez Rodriguez'
 
 from collections import deque
 
@@ -75,7 +75,7 @@ def asignacion_grafo_restriccion(grafo, asignacion=None, consist=1, traza=False)
     por búsqueda primero en profundidad.
 
     Para utilizarlo con un objeto tipo GrafoRestriccion gr:
-    >>> asignacion = asignacion_grafo_restriccion(gr)
+    #>>> asignacion = asignacion_grafo_restriccion(gr)
 
     @param grafo: Un objeto tipo GrafoRestriccion
     @param asignacion: Un diccionario con una asignación parcial
@@ -232,8 +232,20 @@ def consistencia(grafo, asig_parcial, x_i, v_i, tipo):
         #    Implementar el algoritmo de AC3
         #    y print()robarlo con las n-reinas
         # ================================================
-        raise NotImplementedError("AC-3  a implementar")
-
+        pendientes = deque([(x_j, x_i) for x_j in grafo.vecinos[x_i] if x_j not in asig_parcial])
+        while pendientes:
+            x_a, x_b = pendientes.popleft()
+            temp = reduce_ac3(x_a, x_b, grafo)
+            if temp:
+                if not grafo.dominio[x_a]:
+                    grafo.dominio[x_a] = temp
+                    for valor in dom_red:
+                        grafo.dominio[valor] = grafo.dominio[valor].union(dom_red[valor])
+                    return None
+                if x_a not in dom_red:
+                    dom_red[x_a] = set({})
+                dom_red[x_a] = dom_red[x_a].union(temp)
+                [pendientes.append((x_c, x_a)) if x_c != x_b else None for x_c in grafo.vecinos[x_a]]
     return dom_red
 
 
@@ -275,4 +287,11 @@ def minimos_conflictos(grafo, rep=100):
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+
+
+    # Copy paste de la definicion en ordena_valores conflictos con algunos cambios
+    def conflictos(v_j, x_i, v_i):
+        return sum((1 for x_j in grafo.vecinos[x_i] if not grafo.restriccion((x_i, v_i), (x_j, v_j[x_j]))))
+    estado_aleatorio = {var: random.choice(list(val)) for (var, val) in grafo.dominio.items()}
+    #TODO
+    return None
