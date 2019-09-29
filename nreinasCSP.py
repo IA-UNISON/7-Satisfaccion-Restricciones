@@ -87,17 +87,35 @@ def prueba_reinas(n, metodo, tipo=1, traza=False):
         Nreinas.muestra_asignacion(asignacion)
     else:
         print([asignacion[i] for i in range(n)])
-    print("Y se realizaron {} backtrackings".format(g_r.backtracking))
+        print("Y se realizaron {} backtrackings".format(g_r.backtracking))
 
+#Fin funcion prueba_reinas
 
+def prueba_reinas_min_conf(n, fun_min_confs):
+    
+    
+    print("\n" + '-' * 20 + '\n Para {} reinas\n'.format(n) + '_' * 20)
+    g_r = Nreinas(n)
+
+    asignacion = fun_min_confs(g_r, 1000)
+
+    if n < 20 and asignacion != None:
+        Nreinas.muestra_asignacion(asignacion)
+    elif asignacion != None:
+        print([asignacion[i] for i in range(n)])
+        print("Y se realizaron {} backtrackings".format(g_r.backtracking))
+    else:
+        print("Se acabaron las iteraciones!")
+
+    
 if __name__ == "__main__":
 
     # Utilizando 1 consistencia
-    # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
+    #prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=1)
     # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=1)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
+    #prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=1)
 
     # Utilizando consistencia
     # ==========================================================================
@@ -105,9 +123,9 @@ if __name__ == "__main__":
     # ==========================================================================
     # prueba_reinas(4, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(8, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
-    # prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
+    #prueba_reinas(16, csp.asignacion_grafo_restriccion, traza=True, tipo=2)
     # prueba_reinas(50, csp.asignacion_grafo_restriccion, tipo=2)
-    prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
+    #prueba_reinas(101, csp.asignacion_grafo_restriccion, tipo=2)
 
 
     #===========+==============================+==============================+=
@@ -119,6 +137,8 @@ if __name__ == "__main__":
     #   50                 611                                  92
     #  101                  15                                   4
     #==========================================================================
+
+    #DIFERENCIAS ENCONTRADAS:
     #El método de 2-consistencia realiza mucho menos backtrackings que el
     #1-consistencia, sin embargo, aquél es más lento.
     
@@ -131,9 +151,14 @@ if __name__ == "__main__":
     # ==========================================================================
     # Probar y comentar los resultados del métdo de mínios conflictos
     # ==========================================================================
-    # prueba_reinas(4, csp.min_conflictos)
-    # prueba_reinas(8, csp.min_conflictos)
-    # prueba_reinas(16, csp.min_conflictos)
-    # prueba_reinas(51, csp.min_conflictos)
-    # prueba_reinas(101, csp.min_conflictos)
-    # prueba_reinas(1000, csp.min_conflictos)
+    prueba_reinas_min_conf(4, csp.minimos_conflictos)
+    #prueba_reinas_min_conf(8, csp.minimos_conflictos)
+    #prueba_reinas_min_conf(16, csp.minimos_conflictos)
+    #prueba_reinas_min_conf(51, csp.minimos_conflictos)
+    #prueba_reinas_min_conf(101, csp.minimos_conflictos)
+    #prueba_reinas_min_conf(1000, csp.minimos_conflictos)
+
+    #DIFERENCIAS ENCONTRADAS:
+    #El algoritmo de minimos conflictos es mucho más lento que el AC-3. Se nota la 
+    #diferencia en velocidad a partir de n = 16. Además, mínimos conflictos tiene
+    #la desventaja de no ser completo.

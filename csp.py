@@ -19,7 +19,7 @@ En este modulo no es necesario modificar nada.
 __author__ = 'Miguel Romero'
 
 from collections import deque
-
+from random import choice
 
 class GrafoRestriccion:
     """
@@ -308,7 +308,7 @@ def min_conflictos(grafo, rep=100, maxit=100):
     return None
 
 
-def minimos_conflictos(grafo, rep=100):
+def minimos_conflictos(grafo, max_iters=100):
     """
     Incluir el docstring porfavor
 
@@ -317,4 +317,69 @@ def minimos_conflictos(grafo, rep=100):
     #    Implementar el algoritmo de minimos conflictos
     #    y probarlo con las n-reinas
     # ================================================
-    raise NotImplementedError("Minimos conflictos  a implementar")
+
+
+    asignacion = {}
+
+    for _ in range(max_iters):
+
+        #Se genera una asignación aleatoria de las variables.
+        for i in range( len(grafo.dominio) ):
+            asignacion[i] = choice(list(grafo.dominio[i]))
+
+
+        for _ in range(max_iters):
+
+            conflictos = cuenta_conflictos(grafo, asignacion)
+            
+            #Si no se encuentran conflictos se ha encontrado una solución.
+            if max(conflictos.values()) == 0:
+                return asignacion
+
+            #Se crea una lista con las variables en conflicto
+            variables_en_conflicto = [i for i in conflictos if conflictos[i] !=0]
+
+            #Se escoje una de las variables en conflicto de manera aleatoria
+            rand_var = choice(variables_en_conflicto)
+
+            #El diccionario conf_totales tendrá en cada llave el valor que se asignó a rand_var
+            #y como valor la suma de los conflictos de cada variable en ese estado.
+            conf_totales = {}
+            for i in grafo.dominio[rand_var]:
+                asignacion[rand_var] = i
+                conflictos = cuenta_conflictos(grafo, asignacion)
+                #Se suman los conflictos de cada variable cuando a ran_var se le asigna i.
+                conf_totales[i] = sum(conflictos.values())
+
+
+            min_conf = min(conf_totales.values())
+
+            key_list = list(conf_totales.keys())
+            val_list = list(conf_totales.values())
+            
+            asignacion[rand_var] = key_list[val_list.index(min_conf)]
+    
+
+#Fin funcion minimos_conflictos
+
+"""
+@param grafo es un grafo de restriccion
+@param asignacion es un diccionario donde cada llave es una variable en un CSP y
+cada valor es el valor de su dominio que se le asignó para un estado dado.
+@return Un diccionario donde cada llave es una variable en un CSP y cada valor
+es el número de conflictos (restricciones no cumplidas) que tiene esa variable con sus vecinos.
+"""
+def cuenta_conflictos(grafo, asignacion):
+
+    conflictos = {}
+    for (x_i, v_i) in asignacion.items():
+            conflictos[x_i] = 0
+            #Se cuentan los conflictos
+            for i in grafo.vecinos[x_i]:
+                if not grafo.restriccion((x_i, v_i), (i, asignacion[i])):
+                    conflictos[x_i] += 1
+
+    return conflictos
+
+#Fin funcion cuenta_conflictos
+                

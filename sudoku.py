@@ -109,7 +109,6 @@ class Sudoku(csp.GrafoRestriccion):
         # (restricciones entre variables vecinas)
         # =================================================================
 
-        #
 
         return vi != vj
 

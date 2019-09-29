@@ -16,7 +16,45 @@ de 4 x 4.
 
 """
 
-__author__ = 'Agrega aquí tu nombre'
+__author__ = 'Miguel Romero valdés'
 
 
 # Inserta tu código aquí
+
+import csp
+
+class CuadroMagico(csp.GrafoRestriccion):
+
+"""Magic square constant: n(n^2+1)/2"""
+
+    def __init__(self):
+
+        super().__init__()
+        for var in range(4*4):
+            self.dominio[var] = set(range(1, 4**4 + 1))
+            self.vecinos[var] = {i for i in range(4*4) if i != var}
+            #MSC: Magic Square Constant
+            self.MSC = 34
+
+    #Fin constructor
+
+
+    def restriccion(self, xi_vi, xj_vj):
+
+        xi, vi = xi_vi
+        xj, vj = xj_vj
+        
+
+        return vi != vj
+
+    #Fin funcion restriccion
+
+
+
+if __name__ == "__main__":
+
+
+    
+
+        
+                   
